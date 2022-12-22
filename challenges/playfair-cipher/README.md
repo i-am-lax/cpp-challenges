@@ -6,7 +6,9 @@ The Playfair cipher is an encryption system that was devised in the mid-19th cen
 
 1. A 6 × 6 encoding grid containing the letters of the alphabet A-Z and the digits 0-9 is set up. The order in which these 36 characters appear in the grid is determined by a codeword. The first occurrence of the letters or digits in the codeword appear first, followed by the unused letters and digits in lexical order. The left grid in the figure below shows the encoding grid for the codeword `IMPERIAL`.
 
-<center><img src="figure.png" width="500"></center>
+<p align="center">
+  <img width="500" src="figure.png">
+</p>
 
 2. The message to be encrypted (the plain text) is then split into bigrams (groups of two letters). Spaces and punctuation in the plain text are ignored, and an X is added to the plain text to complete the last pair if necessary. Thus the message `COME TO THE QUEEN’S TOWER AT 7 O’CLOCK.` is divided up into the bigrams `CO ME TO TH EQ UE EN ST OW ER AT 7O CL OC KX`.
 
