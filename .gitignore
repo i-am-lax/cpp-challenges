@@ -1,0 +1,11 @@
+# ignore executables (files with no extensions)
+*
+!*.*
+!*/
+!makefile
+
+.DS_Store
+.clang-format
+*.dSYM
+*.o
+
