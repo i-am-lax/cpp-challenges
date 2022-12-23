@@ -14,4 +14,8 @@ const std::map<char, char> CODES = {
  * result to 'soundex' */
 void encode(const char *surname, char *soundex);
 
+/* Compare two Soundex codes ('one' and 'two') and return 1 if the codes are the
+ * same otherwise return 0 */
+int compare(const char *one, const char *two);
+
 #endif

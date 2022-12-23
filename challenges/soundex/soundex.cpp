@@ -38,3 +38,15 @@ void encode(const char *surname, char *soundex) {
         surname++;
     }
 }
+
+/* Recursively compare two Soundex codes ('one' and 'two') and return 1 if the
+ * codes are the same otherwise return 0 */
+int compare(const char *one, const char *two) {
+    if (*one == '\0' && *two == '\0') {
+        return 1;
+    }
+    if (*one == *two) {
+        return compare(one + 1, two + 1);
+    }
+    return 0;
+}

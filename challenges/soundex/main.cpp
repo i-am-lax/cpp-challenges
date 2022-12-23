@@ -20,19 +20,19 @@ int main() {
     encode("Jackson", soundex);
     cout << "The soundex coding for 'Jackson' is " << soundex << endl;
 
-    // // question 2
+    // question 2
 
-    // cout << "====================== Question 2 ======================" << endl;
+    cout << "====================== Question 2 ======================" << endl;
 
-    // cout << "The soundex codes S250 and S255 are ";
-    // if (!compare("S250", "S255"))
-    //     cout << "not ";
-    // cout << "equal" << endl;
+    cout << "The soundex codes S250 and S255 are ";
+    if (!compare("S250", "S255"))
+        cout << "not ";
+    cout << "equal" << endl;
 
-    // cout << "The soundex codes W252 and W252 are ";
-    // if (!compare("W252", "W252"))
-    //     cout << "not ";
-    // cout << "equal" << endl;
+    cout << "The soundex codes W252 and W252 are ";
+    if (!compare("W252", "W252"))
+        cout << "not ";
+    cout << "equal" << endl;
 
     // // question 3
 
