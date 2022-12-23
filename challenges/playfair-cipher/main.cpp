@@ -17,22 +17,22 @@ int main() {
     cout << "encoding as:" << endl;
     cout << "'" << prepared << "'." << endl << endl;
 
-    // // Question 2
+    // Question 2
 
-    // cout << "====================== Question 2 ======================" << endl;
+    cout << "====================== Question 2 ======================" << endl;
 
-    // char playfair[6][6];
-    // grid("IMPERIAL", playfair);
+    char playfair[6][6];
+    grid("IMPERIAL", playfair);
 
-    // cout << "The encoding grid corresponding to the codeword 'IMPERIAL' is:"
-    //      << endl;
-    // for (int row = 0; row < 6; row++) {
-    //     for (int col = 0; col < 6; col++)
-    //         cout << ((isalnum(playfair[row][col])) ? playfair[row][col] : '?')
-    //              << ' ';
-    //     cout << endl;
-    // }
-    // cout << endl;
+    cout << "The encoding grid corresponding to the codeword 'IMPERIAL' is:"
+         << endl;
+    for (int row = 0; row < 6; row++) {
+        for (int col = 0; col < 6; col++)
+            cout << ((isalnum(playfair[row][col])) ? playfair[row][col] : '?')
+                 << ' ';
+        cout << endl;
+    }
+    cout << endl;
 
     // // Question 3
 
