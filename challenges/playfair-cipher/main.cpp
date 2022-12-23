@@ -34,28 +34,28 @@ int main() {
     }
     cout << endl;
 
-    // // Question 3
+    // Question 3
 
-    // cout << "====================== Question 3 ======================" << endl;
+    cout << "====================== Question 3 ======================" << endl;
 
-    // char out1, out2;
-    // bigram(playfair, 'C', 'O', out1, out2);
+    char out1, out2;
+    bigram(playfair, 'C', 'O', out1, out2);
 
-    // cout << "The bigram 'CO' encodes as '" << out1 << out2 << "'" << endl;
+    cout << "The bigram 'CO' encodes as '" << out1 << out2 << "'" << endl;
 
-    // bigram(playfair, 'N', '9', out1, out2);
+    bigram(playfair, 'N', '9', out1, out2);
 
-    // cout << "The bigram 'N9' encodes as '" << out1 << out2 << "'" << endl
-    //      << endl;
+    cout << "The bigram 'N9' encodes as '" << out1 << out2 << "'" << endl
+         << endl;
 
-    // // Question 4
-    // cout << "====================== Question 4 ======================" << endl;
+    // Question 4
+    cout << "====================== Question 4 ======================" << endl;
 
-    // char encoded[100];
-    // encode(playfair, prepared, encoded);
+    char encoded[100];
+    encode(playfair, prepared, encoded);
 
-    // cout << "The string '" << prepared << "' encodes as:" << endl;
-    // cout << "'" << encoded << "'" << endl << endl;
+    cout << "The string '" << prepared << "' encodes as:" << endl;
+    cout << "'" << encoded << "'" << endl << endl;
 
     // Bonus question (uncomment to attempt)
 
