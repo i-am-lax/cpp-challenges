@@ -7,7 +7,7 @@ using namespace std;
 
 /* Use pointer arithmetic to produce an output string ('output') suitable for
  * Playfair encoding by removing non-alphanumeric characters, converting letters
- * to uppercase and adding an 'X' if the length is odd.  */
+ * to uppercase and adding an 'X' if the length is odd. */
 void prepare(const char *input, char *output) {
     // length of string
     int length = 0;
@@ -30,34 +30,35 @@ void prepare(const char *input, char *output) {
     *output = '\0';
 }
 
-void grid(const char *codeword, char square[6][6]) {
-    /* generate grid sequence:
-     * - we know our sequence has a max length of 36 (25 letters + 10 digits)
-     * - length(set) >= length(sequence)
-     * - add chars from set to sequence if they're not already in sequence to
-     * get unique values */
-    char set[MAX_LENGTH], sequence[37];
-
-    // ordering comprises of codeword, letters and then digits
-    strcpy(set, codeword);
-    strcat(set, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
-
-    // if char from set not in sequence then append
-    int seqidx = 0;
-    for (int setidx = 0; set[setidx] != '\0'; setidx++) {
-        if (!strchr(sequence, set[setidx])) {
-            sequence[seqidx] = set[setidx];
-            sequence[seqidx+1] = '\0';
-            seqidx++;
-        }
-    }
-
-    // add char sequence to grid
-    seqidx = 0;
+/* Return true if char 'ch' exists in 6x6 grid 'square' */
+bool char_exists(char square[6][6], const char ch) {
     for (int row = 0; row < 6; row++) {
         for (int col = 0; col < 6; col++) {
-            square[row][col] = sequence[seqidx];
-            seqidx++;
+            if (square[row][col] == ch) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+/* Populate 6x6 Playfair encoding 'square' corresponding to a given 'codeword' */
+void grid(const char *codeword, char square[6][6]) {
+    // create full char set ordered by: codeword, letters and digits
+    char charset[MAX_LENGTH];
+    strcpy(charset, codeword);
+    strcat(charset, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+
+    // add char sequence to grid if it doesn't already exist
+    int idx = 0;
+    for (int row = 0; row < 6; row++) {
+        for (int col = 0; col < 6; col++) {
+            // increment index until we find one to add
+            while (char_exists(square, charset[idx])) {
+                idx++;
+            }
+            square[row][col] = charset[idx];
+            idx++;
         }
     }
 }
