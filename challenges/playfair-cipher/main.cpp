@@ -49,25 +49,25 @@ int main() {
          << endl;
 
     // Question 4
+
     cout << "====================== Question 4 ======================" << endl;
 
     char encoded[100];
     encode(playfair, prepared, encoded);
 
     cout << "The string '" << prepared << "' encodes as:" << endl;
-    cout << "'" << encoded << "'" << endl << endl;
+    cout << "'" << encoded << "'" << endl;
 
-    // Bonus question (uncomment to attempt)
+    // Bonus question
 
-    /*
     cout << "==================== Bonus Question ====================" << endl;
 
     char decoded[100];
-    decode(playfair,"VEKVPDQIQDEDEMMVEHSJPVHENOGMIRHVVMEG",decoded);
+    decode(playfair, "VEKVPDQIQDEDEMMVEHSJPVHENOGMIRHVVMEG", decoded);
 
-    cout << "The string 'VEKVPDQIQDEDEMMVEHSJPVHENOGMIRHVVMEG' decodes as:" <<
-    endl; cout << "'" << decoded << "'" << endl;
-    */
+    cout << "The string 'VEKVPDQIQDEDEMMVEHSJPVHENOGMIRHVVMEG' decodes as:"
+         << endl;
+    cout << "'" << decoded << "'" << endl;
 
     return 0;
 }

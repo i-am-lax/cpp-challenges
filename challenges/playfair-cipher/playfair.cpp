@@ -1,9 +1,6 @@
 #include "playfair.h"
 #include <cctype>
-
-// TO DELETE
-#include <iostream>
-using namespace std;
+#include <cstring>
 
 // Position data structure to hold row and column values on encoding grid
 struct Position {
@@ -47,13 +44,24 @@ bool char_exists(const char square[6][6], const char ch) {
     return false;
 }
 
-/* Populate 6x6 Playfair encoding 'square' corresponding to a given 'codeword'
- */
+/* Set squares in grid to '.' char for safe execution across multiple runs */
+void reset(char square[6][6]) {
+    for (int row = 0; row < 6; row++) {
+        for (int col = 0; col < 6; col++) {
+            square[row][col] = '.';
+        }
+    }
+}
+
+/* Populate 6x6 encoding 'square' corresponding to a given 'codeword' */
 void grid(const char *codeword, char square[6][6]) {
     // create full char set ordered by: codeword, letters and digits
     char charset[MAX_LENGTH];
     strcpy(charset, codeword);
     strcat(charset, "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789");
+
+    // reset grid
+    reset(square);
 
     // add char sequence to grid if it doesn't already exist
     int idx = 0;
@@ -98,4 +106,24 @@ void bigram(const char square[6][6], const char inchar1, const char inchar2,
     // get corresponding char at position and write to outchar1 and outchar2
     outchar1 = square[pout1.row][pout1.col];
     outchar2 = square[pout2.row][pout2.col];
+}
+
+/* Recursivly encodes bigrams of a prepared input string 'prepared' using
+ * encoding grid 'square' and stores result in 'encoded'. Note that the same
+ * function can be used for decoding as well. */
+void encode(const char playfair[6][6], const char *prepared, char *encoded) {
+    // base case
+    if (*prepared == '\0') {
+        // add sentinel once encoding finished
+        *encoded = '\0';
+        return;
+    }
+    bigram(playfair, *prepared, *(prepared + 1), *encoded, *(encoded + 1));
+    // recursive call to encode the next bigram
+    encode(playfair, prepared + 2, encoded + 2);
+}
+
+/* Encode function can also be used to decode */
+void decode(const char square[6][6], const char *encoded, char *decoded) {
+    encode(square, encoded, decoded);
 }
