@@ -18,4 +18,8 @@ void encode(const char *surname, char *soundex);
  * same otherwise return 0 */
 int compare(const char *one, const char *two);
 
+/* Returns the number of words in 'sentence' that have the same Soundex encoding
+ * as 'surname' */
+int count(const char *surname, const char *sentence);
+
 #endif

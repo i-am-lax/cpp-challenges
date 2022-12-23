@@ -1,9 +1,7 @@
 #include "soundex.h"
 #include <cctype>
-
-// TO DELETE
-#include <iostream>
-using namespace std;
+#include <cstring>
+#include <sstream>
 
 /* Generates the Soundex encoding corresponding to a given 'surname' and writes
  * result to 'soundex':
@@ -42,11 +40,44 @@ void encode(const char *surname, char *soundex) {
 /* Recursively compare two Soundex codes ('one' and 'two') and return 1 if the
  * codes are the same otherwise return 0 */
 int compare(const char *one, const char *two) {
+    // if we have reached the ends of the strings then they're equal
     if (*one == '\0' && *two == '\0') {
         return 1;
     }
+    // if the characters are equal we can compare the next one
     if (*one == *two) {
         return compare(one + 1, two + 1);
     }
     return 0;
+}
+
+/* Returns the number of words in 'sentence' that have the same Soundex encoding
+ * as 'surname' */
+int count(const char *surname, const char *sentence) {
+    // count for output
+    int count = 0;
+
+    // declare strings to hold sentence copy and soundex codes
+    char sentence_copy[strlen(sentence) + 1], soundex[5], word_soundex[5];
+
+    // create copy of sentence
+    strcpy(sentence_copy, sentence);
+
+    // get soundex code for surname
+    encode(surname, soundex);
+
+    // tokenise sentence on space, comma or fullstop
+    char delimiter[] = " ,.";
+    char *word = strtok(sentence_copy, delimiter);
+    while (word) {
+        // get encoding for word
+        encode(word, word_soundex);
+        // increment count if encodings equal
+        if (compare(word_soundex, soundex)) {
+            count++;
+        }
+        // get the next token
+        word = strtok(NULL, delimiter);
+    }
+    return count;
 }
