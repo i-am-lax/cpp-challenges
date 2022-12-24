@@ -3,6 +3,27 @@
 
 using namespace std;
 
+void test_compare(const char *str1, const char *str2) {
+    cout << "The strings '" << str1 << "' and '" << str2 << "' are ";
+    if (!compare(str1, str2))
+        cout << "NOT ";
+    cout << "the same" << endl << " (ignoring punctuation and case)" << endl;
+}
+
+void test_palindrome(const char *str) {
+    cout << "The string '" << str << "' is ";
+    if (!palindrome(str))
+        cout << "NOT ";
+    cout << "a palindrome." << endl;
+}
+
+void test_anagram(const char *str1, const char *str2) {
+    cout << "The string '" << str1 << "' is ";
+    if (!anagram(str1, str2))
+        cout << "NOT ";
+    cout << "an anagram of '" << str2 << "'" << endl;
+}
+
 int main() {
 
     /*** QUESTION 1 ***/
@@ -13,45 +34,28 @@ int main() {
     cout << "'desserts' reversed is '" << reversed << "'" << endl << endl;
 
     /*** QUESTION 2 ***/
-    cout << "The strings 'this, and THAT......' and 'THIS and THAT!!!' are ";
-    if (!compare("this, and THAT......", "THIS and THAT!!!"))
-        cout << "NOT ";
-    cout << "the same" << endl << "  (ignoring punctuation and case)" << endl;
-
-    cout << "The strings 'this, and THAT' and 'THIS, but not that' are ";
-    if (!compare("this, and THAT", "THIS, but not that"))
-        cout << "NOT ";
-    cout << "the same" << endl
-         << "  (ignoring punctuation and case)" << endl
-         << endl;
+    test_compare("this, and THAT......", "THIS and THAT!!!");
+    test_compare("this, and THAT", "THIS, but not that");
+    cout << endl;
 
     /*** QUESTION 3 ***/
 
-    cout << "The string 'rotor' is ";
-    if (!palindrome("rotor"))
-        cout << "NOT ";
-    cout << "a palindrome." << endl;
-
-    cout << "The string 'Madam I'm adam' is ";
-    if (!palindrome("Madam I'm adam"))
-        cout << "NOT ";
-    cout << "a palindrome." << endl;
-    cout << "The string 'Madam I'm not adam' is ";
-    if (!palindrome("Madam I'm not adam"))
-        cout << "NOT ";
-    cout << "a palindrome." << endl << endl;
+    test_palindrome("rotor");
+    test_palindrome("Madam I'm adam");
+    test_palindrome("Madam I'm not adam");
+    test_palindrome("A man, a plan, a canal, Panama!");
+    test_palindrome("a. ..");
+    test_palindrome(".. ..!");
+    test_palindrome("Mr. Owl ate my metal worm.");
+    cout << endl;
 
     /*** QUESTION 4 ***/
 
-    cout << "The string 'I am a weakish speller!' is ";
-    if (!anagram("I am a weakish speller!", "William Shakespeare"))
-        cout << "NOT ";
-    cout << "an anagram of 'William Shakespeare'" << endl;
-
-    cout << "The string 'I am a good speller!' is ";
-    if (!anagram("I am a good speller!", "William Shakespeare"))
-        cout << "NOT ";
-    cout << "an anagram of 'William Shakespeare'" << endl;
+    test_anagram("I am a weakish speller!", "William Shakespeare");
+    test_anagram("I am a good speller!", "William Shakespeare");
+    test_anagram("Here come dots...", "The Morse Code");
+    test_anagram("stain", "satin");
+    cout << endl;
 
     return 0;
 }

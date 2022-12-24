@@ -1,4 +1,4 @@
-# Palindrome
+# Palindromes and Anagrams
 
 ## Description
 
