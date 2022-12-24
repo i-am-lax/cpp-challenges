@@ -25,21 +25,21 @@ int main() {
          << "  (ignoring punctuation and case)" << endl
          << endl;
 
-    // /*** QUESTION 3 ***/
+    /*** QUESTION 3 ***/
 
-    // cout << "The string 'rotor' is ";
-    // if (!palindrome("rotor"))
-    //     cout << "NOT ";
-    // cout << "a palindrome." << endl;
+    cout << "The string 'rotor' is ";
+    if (!palindrome("rotor"))
+        cout << "NOT ";
+    cout << "a palindrome." << endl;
 
-    // cout << "The string 'Madam I'm adam' is ";
-    // if (!palindrome("Madam I'm adam"))
-    //     cout << "NOT ";
-    // cout << "a palindrome." << endl;
-    // cout << "The string 'Madam I'm not adam' is ";
-    // if (!palindrome("Madam I'm not adam"))
-    //     cout << "NOT ";
-    // cout << "a palindrome." << endl << endl;
+    cout << "The string 'Madam I'm adam' is ";
+    if (!palindrome("Madam I'm adam"))
+        cout << "NOT ";
+    cout << "a palindrome." << endl;
+    cout << "The string 'Madam I'm not adam' is ";
+    if (!palindrome("Madam I'm not adam"))
+        cout << "NOT ";
+    cout << "a palindrome." << endl << endl;
 
     // /*** QUESTION 4 ***/
 

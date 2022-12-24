@@ -2,6 +2,7 @@
 #include <cctype>
 #include <cstring>
 
+// TO DELETE
 #include <iostream>
 using namespace std;
 
@@ -44,4 +45,15 @@ int compare(const char *one, const char *two) {
         return compare(one + 1, two + 1);
     }
     return 0;
+}
+
+int palindrome(const char *sentence) {
+    // initialise string to hold reverse of sentence
+    char rev[strlen(sentence)];
+
+    // reverse the string
+    reverse(sentence, rev);
+
+    // then compare them and return result
+    return compare(sentence, rev);
 }
