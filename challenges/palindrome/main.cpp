@@ -41,17 +41,17 @@ int main() {
         cout << "NOT ";
     cout << "a palindrome." << endl << endl;
 
-    // /*** QUESTION 4 ***/
+    /*** QUESTION 4 ***/
 
-    // cout << "The string 'I am a weakish speller!' is ";
-    // if (!anagram("I am a weakish speller!", "William Shakespeare"))
-    //     cout << "NOT ";
-    // cout << "an anagram of 'William Shakespeare'" << endl;
+    cout << "The string 'I am a weakish speller!' is ";
+    if (!anagram("I am a weakish speller!", "William Shakespeare"))
+        cout << "NOT ";
+    cout << "an anagram of 'William Shakespeare'" << endl;
 
-    // cout << "The string 'I am a good speller!' is ";
-    // if (!anagram("I am a good speller!", "William Shakespeare"))
-    //     cout << "NOT ";
-    // cout << "an anagram of 'William Shakespeare'" << endl;
+    cout << "The string 'I am a good speller!' is ";
+    if (!anagram("I am a good speller!", "William Shakespeare"))
+        cout << "NOT ";
+    cout << "an anagram of 'William Shakespeare'" << endl;
 
     return 0;
 }
