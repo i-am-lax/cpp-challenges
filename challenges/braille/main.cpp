@@ -49,17 +49,14 @@ int main() {
 
     cout << endl;
 
-    //     cout << "====================== Question 3 ======================" <<
-    //     endl
-    //          << endl;
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-    //     print_braille("Hello!", cout);
+    print_braille("Hello!", cout);
+    cout << endl;
 
-    //     cout << endl;
-
-    //     print_braille("S-Club7?", cout);
-
-    //     cout << endl;
+    print_braille("S-Club7?", cout);
+    cout << endl;
 
     return 0;
 }

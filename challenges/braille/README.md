@@ -58,5 +58,5 @@ should result in the following output written to `cout` (i.e. displayed on the s
 .. O. O. O. O. O. ..
 .. OO .O O. O. .O OO
 .O .. .. O. O. O. O.
-    H e l l o !
+   H  e  l  l  o  !
 ```

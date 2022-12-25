@@ -3,6 +3,9 @@
 
 #include <map>
 
+const int MAX_LENGTH = 512;
+
+// Braille letter encodings
 const std::map<char, const char *> MAPPING = {
     {'~', "......"}, {'^', ".....0"}, {'#', "..0000"}, {'.', ".0..00"},
     {',', ".0...."}, {';', ".00..."}, {'-', "..0..0"}, {'!', ".00.0."},
@@ -16,7 +19,18 @@ const std::map<char, const char *> MAPPING = {
     {'z', "0.0.00"},
 };
 
+/* Produces a string (given by 'braille') that represents the Braille encoding
+ * of a single input character (given by 'ch'). In the string encoding, a
+ * Braille cell is represented as 6 consecutive characters, one for each dot
+ * position. Raised dots are encoded as 'O' and unraised dots as '.'. The length
+ * of 'braille' is returned */
 int encode_character(const char ch, char *braille);
+
+// Produces the Braille encoding of 'plaintext' and stores in 'braille'
 void encode(const char *plaintext, char *braille);
+
+/* Writes the corresponding sequence of 3x2 Braille cells for 'plaintext' to an
+ * output stream 'output' (such as cout or a file) */
+void print_braille(const char *plaintext, std::ostream &output);
 
 #endif
