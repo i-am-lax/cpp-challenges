@@ -13,7 +13,7 @@ using namespace std;
  * lowercase encodings
  * - Punctuation is mapped to their encoding if it exists otherwise given a
  * default value  */
-int encode_character(const char ch, char *braille) {
+int encode_character(const char &ch, char *braille) {
     // ensure braille is clear
     *braille = '\0';
 
@@ -80,12 +80,13 @@ void print_braille(const char *plaintext, ostream &output) {
     /* align the plaintext chars making sure additional spaces accounted for if
      * char is uppercase or a digit as the encoding would have 2 3x2
      * grids associated to it */
-    for (int i = 0; plaintext[i] != '\0'; i++) {
-        if (isupper(plaintext[i]) || isdigit(plaintext[i])) {
+    while(*plaintext != '\0') {
+        if (isupper(*plaintext) || isdigit(*plaintext)) {
             // pad with 3 additional spaces
             output << "   ";
         }
-        cout << plaintext[i] << "  ";
+        output << *plaintext << "  ";
+        plaintext++;
     }
     output << endl;
 }

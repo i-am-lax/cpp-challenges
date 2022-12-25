@@ -24,7 +24,7 @@ const std::map<char, const char *> MAPPING = {
  * Braille cell is represented as 6 consecutive characters, one for each dot
  * position. Raised dots are encoded as 'O' and unraised dots as '.'. The length
  * of 'braille' is returned */
-int encode_character(const char ch, char *braille);
+int encode_character(const char &ch, char *braille);
 
 // Produces the Braille encoding of 'plaintext' and stores in 'braille'
 void encode(const char *plaintext, char *braille);
