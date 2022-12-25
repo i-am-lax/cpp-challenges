@@ -17,5 +17,6 @@ const std::map<char, const char *> MAPPING = {
 };
 
 int encode_character(const char ch, char *braille);
+void encode(const char *plaintext, char *braille);
 
 #endif

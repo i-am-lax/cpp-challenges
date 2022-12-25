@@ -33,3 +33,13 @@ int encode_character(const char ch, char *braille) {
     }
     return strlen(braille);
 }
+
+void encode(const char *plaintext, char *braille) {
+    // base case: terminate once we reach end of plaintext
+    if (*plaintext == '\0') {
+        return;
+    }
+    // shift the braille pointer by however many chars required for encoding
+    int size = encode_character(*plaintext, braille);
+    encode(plaintext + 1, braille + size);
+}

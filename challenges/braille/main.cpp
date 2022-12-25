@@ -35,30 +35,31 @@ int main() {
 
     braille[0] = '\0';
 
-//     cout << "====================== Question 2 ======================" << endl
-//          << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-//     encode("Hello!", braille);
-//     cout << "The string 'Hello!' encoded in braille is:" << endl
-//          << braille << endl
-//          << endl;
+    encode("Hello!", braille);
+    cout << "The string 'Hello!' encoded in braille is:" << endl
+         << braille << endl
+         << endl;
 
-//     encode("S-Club7?", braille);
-//     cout << "The string 'S-Club7?' encoded in braille is:" << endl
-//          << braille << endl;
+    encode("S-Club7?", braille);
+    cout << "The string 'S-Club7?' encoded in braille is:" << endl
+         << braille << endl;
 
-//     cout << endl;
+    cout << endl;
 
-//     cout << "====================== Question 3 ======================" << endl
-//          << endl;
+    //     cout << "====================== Question 3 ======================" <<
+    //     endl
+    //          << endl;
 
-//     print_braille("Hello!", cout);
+    //     print_braille("Hello!", cout);
 
-//     cout << endl;
+    //     cout << endl;
 
-//     print_braille("S-Club7?", cout);
+    //     print_braille("S-Club7?", cout);
 
-//     cout << endl;
+    //     cout << endl;
 
     return 0;
 }
