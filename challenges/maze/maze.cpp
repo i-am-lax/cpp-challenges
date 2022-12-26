@@ -1,8 +1,10 @@
+#include "maze.h"
 #include <cassert>
 #include <cstring>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <list>
 
 using namespace std;
 
@@ -154,4 +156,78 @@ bool valid_solution(const char *path, char **maze, const int &height,
         return true;
     }
     return false;
+}
+
+bool is_valid_move(char **maze, const int &height, const int &width, int &row,
+                   int &col) {
+    // if it is a barrier then return false
+    if (maze[row][col] == '|' || maze[row][col] == '+' ||
+        maze[row][col] == '-') {
+        return false;
+    }
+    if (row < 0 || row >= height) {
+        return false;
+    }
+    if (col < 0 || col >= width) {
+        return false;
+    }
+    if (maze[row][col] == '#') {
+        return false;
+    }
+    return true;
+}
+
+/* */
+bool solve(char **maze, const int &height, const int &width, int row, int col,
+           char *path) {
+    // set of directions to explore
+    list<char> directions = {'N', 'E', 'S', 'W'};
+
+    /* for each direction we make a move:
+    - if the move lands on the exit then we update and return
+    - otherwise if it is a valid move and we haven't visited it before we update
+    the grid and make a recursive call to explore possibilities from there
+    - if we hit a dead end or there is no solution then we backtrack */
+    for (auto const &d : directions) {
+        int prev_row = row, prev_col = col;
+        make_move(d, row, col);
+        if (is_valid_move(maze, height, width, row, col)) {
+            if (maze[row][col] == 'X') {
+                maze[row][col] = '#';
+                *path = d;
+                return true;
+            }
+            maze[row][col] = '#';
+            *path = d;
+            print_maze(maze, height, width);
+            if (solve(maze, height, width, row, col, path+1)) {
+                return true;
+            }
+            maze[row][col] = ' ';
+            *path = '\0';
+        }
+        row = prev_row;
+        col = prev_col;
+    }
+    return false;
+}
+
+void find_path(char **maze, const int &height, const int &width,
+               const char start, const char end) {
+    // store path
+    char path[MAX_PATH];
+
+    // retrieve coordinates for 'start' and 'end'
+    int row, col, end_row, end_col;
+    find_marker(start, maze, height, width, row, col);
+    cout << "Start marker is: " << row << " " << col << endl;
+    find_marker(end, maze, height, width, end_row, end_col);
+
+    // identify path
+    if (solve(maze, height, width, row, col, path)) {
+        cout << "Solution exists!" << endl;
+        cout << "Path: " << path << endl;
+    } else {
+        cout << "No solution!" << endl;
+    }
 }

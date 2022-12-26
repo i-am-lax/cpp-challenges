@@ -1,6 +1,9 @@
 #ifndef MAZE_H
 #define MAZE_H
 
+// Maximum string length for maze path
+const int MAX_PATH = 50;
+
 /* Allocate and deallocate dynamic 2D arrays */
 char **allocate_2D_array(int rows, int columns);
 void deallocate_2D_array(char **m, int rows);
@@ -16,5 +19,8 @@ bool find_marker(const char ch, char **maze, const int &height,
 
 bool valid_solution(const char *path, char **maze, const int &height,
                     const int &width);
+
+void find_path(char **maze, const int &height, const int &width,
+                const char start, const char end);
 
 #endif
