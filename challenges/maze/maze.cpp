@@ -107,3 +107,51 @@ bool find_marker(const char ch, char **maze, const int &height,
     column = -1;
     return false;
 }
+
+/* Internal helper function to adjust the row or column index based on the
+ * direction provided (N/S/E/W) */
+void make_move(const char direction, int &row, int &col) {
+    switch (direction) {
+    case 'N':
+        row--;
+        break;
+    case 'E':
+        col++;
+        break;
+    case 'S':
+        row++;
+        break;
+    case 'W':
+        col--;
+        break;
+    default:
+        cerr << "[Error] Invalid direction: " << direction << endl;
+    }
+}
+
+bool valid_solution(const char *path, char **maze, const int &height,
+                    const int &width) {
+    // find coordinates for entrance and exit markers
+    int row, col, end_row, end_col;
+    find_marker('>', maze, height, width, row, col);
+    find_marker('X', maze, height, width, end_row, end_col);
+
+    /* start at coordinates for '>' and then for each direction, check if it is
+     * a barrier ('|', '+' or '-') */
+    while (*path != '\0') {
+        if (maze[row][col] == '|' || maze[row][col] == '+' ||
+            maze[row][col] == '-') {
+            return false;
+        }
+        // make the move and increment either the row or col
+        make_move(*path, row, col);
+        path++;
+    }
+
+    /* if final position is equivalent to that of the 'X' end marker then it is
+     * valid */
+    if (row == end_row && col == end_col) {
+        return true;
+    }
+    return false;
+}

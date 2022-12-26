@@ -14,4 +14,7 @@ void print_maze(char **m, int height, int width);
 bool find_marker(const char ch, char **maze, const int &height,
                  const int &width, int &row, int &column);
 
+bool valid_solution(const char *path, char **maze, const int &height,
+                    const int &width);
+
 #endif
