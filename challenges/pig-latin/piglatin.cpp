@@ -88,13 +88,13 @@ void translateStream(istream &input, ostream &cout) {
         return;
     }
 
-    // if punctuation or new line then output right away
-    if (ispunct(ch) || ch == '\n') {
+    // if not letter or digit then output right away
+    if (!isalnum(ch)) {
         cout << ch;
     }
     /* if we encounter a letter then keep incrementing until we capture the word
      * and convert to piglatin */
-    else if (isalnum(ch)) {
+    else {
         int idx = 0;
         while (isalnum(ch)) {
             word[idx] = ch;
