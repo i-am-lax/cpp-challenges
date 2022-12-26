@@ -91,3 +91,19 @@ void print_maze(char **m, int height, int width) {
         cout << endl;
     }
 }
+
+bool find_marker(const char ch, char **maze, const int &height,
+                 const int &width, int &row, int &column) {
+    for (int r = 0; r < height; r++) {
+        for (int c = 0; c < width; c++) {
+            if (maze[r][c] == ch) {
+                row = r;
+                column = c;
+                return true;
+            }
+        }
+    }
+    row = -1;
+    column = -1;
+    return false;
+}

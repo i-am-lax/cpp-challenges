@@ -11,4 +11,7 @@ char **load_maze(const char *filename, int &height, int &width);
 /* Print a maze */
 void print_maze(char **m, int height, int width);
 
+bool find_marker(const char ch, char **maze, const int &height,
+                 const int &width, int &row, int &column);
+
 #endif
