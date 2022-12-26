@@ -4,8 +4,11 @@
 
 using namespace std;
 
+/* Returns the position of the first "vowel" in the input 'word'. If the word
+ * does not contain a vowel then the function returns -1. */
 int findFirstVowel(const char *word) {
     for (int idx = 0; word[idx] != '\0'; idx++) {
+        // if letter is actual vowel then return position
         if (VOWELS.count(tolower(word[idx]))) {
             return idx;
         }
@@ -18,6 +21,15 @@ int findFirstVowel(const char *word) {
     return -1;
 }
 
+/* Produces a Pig Latin translation for a given English word ('input') and
+ * stores output in 'piglatin'. Logic:
+ * - if word begins with a character that is a digit, leave the word as is
+ * - if word contains no vowels append “ay” to it
+ * - if word begins with a vowel, append “way” to it
+ * - if word begins with a letter that is not a vowel, move all the characters
+ * before the vowel to the end of the word, and append "ay"
+ * - if word begins with an initial captial letter then so should the
+ * corresponding Pig Latin word */
 void translateWord(const char *english, char *piglatin) {
     // ensure char array is clear
     *piglatin = '\0';
@@ -62,6 +74,10 @@ void translateWord(const char *english, char *piglatin) {
     }
 }
 
+/* Takes words from an input stream (e.g. cin or a file input stream) and writes
+ * a corresponding Pig Latin translation to an output stream. Words are
+ * identified as a series of alphanumeric characters and then translated into
+ * Pig Latin whereas other characters are written as is */
 void translateStream(istream &input, ostream &cout) {
     // declare variables
     char ch, word[MAX_LENGTH], piglatin[MAX_LENGTH];

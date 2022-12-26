@@ -5,5 +5,6 @@ Series of C++ challenges typically involving recursion:
 2. [Soundex Coding System](challenges/soundex/)
 3. [Palindromes and Anagrams](challenges/palindrome/)
 4. [Braille System](challenges/braille/)
-5. [Playfair Cipher](challenges/playfair-cipher/)
-6. [Maze](challenges/maze/)
+5. [Pig Latin](challenges/pig-latin/)
+6. [Playfair Cipher](challenges/playfair-cipher/)
+7. [Maze](challenges/maze/)
