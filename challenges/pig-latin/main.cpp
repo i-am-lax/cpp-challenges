@@ -44,17 +44,17 @@ int main() {
     cout << "In Pig Latin 'Yellow' is '" << translated << "'." << endl;
     cout << endl;
 
-    // /* QUESTION 3 */
+    /* QUESTION 3 */
 
-    // cout << "====================== Question 3 ======================" << endl;
+    cout << "====================== Question 3 ======================" << endl;
 
-    // cout << "The file 'fruit.txt' translated into Pig Latin is:" << endl
-    //      << endl;
-    // ifstream input;
-    // input.open("fruit.txt");
-    // translateStream(input, cout);
-    // input.close();
-    // cout << endl;
+    cout << "The file 'fruit.txt' translated into Pig Latin is:" << endl
+         << endl;
+    ifstream input;
+    input.open("fruit.txt");
+    translateStream(input, cout);
+    input.close();
+    cout << endl;
 
     return 0;
 }

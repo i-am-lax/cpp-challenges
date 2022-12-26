@@ -1,5 +1,8 @@
 #include "piglatin.h"
 #include <cctype>
+#include <iostream>
+
+using namespace std;
 
 int findFirstVowel(const char *word) {
     for (int idx = 0; word[idx] != '\0'; idx++) {
@@ -55,4 +58,15 @@ void translateWord(const char *english, char *piglatin) {
             *piglatin = tolower(*piglatin);
         }
     }
+}
+
+void translateStream(istream &input, ostream &cout) {
+    char word[MAX_LENGTH], piglatin[MAX_LENGTH];
+    if (!input) {
+        return;
+    }
+    input >> word;
+    translateWord(word, piglatin);
+    cout << piglatin << " ";
+    translateStream(input, cout);
 }
