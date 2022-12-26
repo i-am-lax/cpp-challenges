@@ -39,7 +39,9 @@ void translateWord(const char *english, char *piglatin) {
     // if first letter is vowel, add "way" to it
     else if (first == 0) {
         strcat(piglatin, "way");
-    } else {
+    }
+    // if vowel is not the first letter
+    else {
         // check if word is capitalised
         bool isCapital = isupper(*english);
 
@@ -61,12 +63,31 @@ void translateWord(const char *english, char *piglatin) {
 }
 
 void translateStream(istream &input, ostream &cout) {
-    char word[MAX_LENGTH], piglatin[MAX_LENGTH];
+    // declare variables
+    char ch, word[MAX_LENGTH], piglatin[MAX_LENGTH];
+
+    // base case: return if end of stream reached
+    input.get(ch);
     if (!input) {
         return;
     }
-    input >> word;
-    translateWord(word, piglatin);
-    cout << piglatin << " ";
+
+    // if punctuation or new line then output right away
+    if (ispunct(ch) || ch == '\n') {
+        cout << ch;
+    }
+    /* if we encounter a letter then keep incrementing until we capture the word
+     * and convert to piglatin */
+    else if (isalnum(ch)) {
+        int idx = 0;
+        while (isalnum(ch)) {
+            word[idx] = ch;
+            idx++;
+            input.get(ch);
+        }
+        word[idx] = '\0';
+        translateWord(word, piglatin);
+        cout << piglatin << ch;
+    }
     translateStream(input, cout);
 }
