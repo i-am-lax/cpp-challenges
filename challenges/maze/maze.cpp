@@ -8,7 +8,7 @@
 
 using namespace std;
 
-/* Allocate a dynamic 2D array */
+/* Allocate a dynamic 2D array with dimensions: [rows, columns] */
 char **allocate_2D_array(int rows, int columns) {
     char **m = new char *[rows];
     assert(m);
@@ -26,7 +26,14 @@ void deallocate_2D_array(char **m, int rows) {
     delete[] m;
 }
 
-/* Internal helper function which gets the dimensions of a maze */
+/* Deallocate a character array */
+void deallocate_char_array(char *ptr) {
+    delete[] ptr;
+    ptr = nullptr;
+}
+
+/* Internal helper function which gets the dimensions of a maze from a file
+ * given by 'filename' and stores the values in 'height' and 'width' */
 bool get_maze_dimensions(const char *filename, int &height, int &width) {
     char line[512];
 
@@ -47,7 +54,7 @@ bool get_maze_dimensions(const char *filename, int &height, int &width) {
     return false;
 }
 
-/* load a maze from a file*/
+// Load a maze from a file given by 'filename' with dimensions [height, width]
 char **load_maze(const char *filename, int &height, int &width) {
 
     bool success = get_maze_dimensions(filename, height, width);
@@ -69,7 +76,7 @@ char **load_maze(const char *filename, int &height, int &width) {
     return m;
 }
 
-/* Print a maze */
+// Print a maze ('m') with dimensions [height, width]
 void print_maze(char **m, int height, int width) {
     cout << setw(4) << " "
          << " ";
@@ -94,8 +101,12 @@ void print_maze(char **m, int height, int width) {
     }
 }
 
+/* Identify marker 'ch' in the input maze with dimensions 'height' x 'width' and
+ * return true if it exists and overwrite 'row' and 'column' with the
+ * coordinates, otherwise return false with 'row' and 'column' both set to -1 */
 bool find_marker(const char ch, char **maze, const int &height,
                  const int &width, int &row, int &column) {
+    // set row and column to coordinates of marker if found
     for (int r = 0; r < height; r++) {
         for (int c = 0; c < width; c++) {
             if (maze[r][c] == ch) {
@@ -105,13 +116,14 @@ bool find_marker(const char ch, char **maze, const int &height,
             }
         }
     }
+    // otherwise return default values
     row = -1;
     column = -1;
     return false;
 }
 
 /* Internal helper function to adjust the row or column index based on the
- * direction provided (N/S/E/W) */
+ * direction provided (N/E/S/W) */
 void make_move(const char direction, int &row, int &col) {
     switch (direction) {
     case 'N':
@@ -131,6 +143,26 @@ void make_move(const char direction, int &row, int &col) {
     }
 }
 
+/* Internal helper function to check if a given position on the input maze is
+ * valid - if it is a barrier or out of range then we return false */
+bool is_valid_move(char **maze, const int &height, const int &width, int &row,
+                   int &col) {
+    if (maze[row][col] == '|' || maze[row][col] == '+' ||
+        maze[row][col] == '-') {
+        return false;
+    }
+    if (row < 0 || row >= height) {
+        return false;
+    }
+    if (col < 0 || col >= width) {
+        return false;
+    }
+    return true;
+}
+
+/* Return true if a given 'path' (a series of N/S/E/W chars) through a 'height'
+ * × 'width' maze leads from entrance marker '>' to exit marker 'X' without
+ * moving beyond the boundaries of the maze or passing through a hedge */
 bool valid_solution(const char *path, char **maze, const int &height,
                     const int &width) {
     // find coordinates for entrance and exit markers
@@ -139,10 +171,9 @@ bool valid_solution(const char *path, char **maze, const int &height,
     find_marker('X', maze, height, width, end_row, end_col);
 
     /* start at coordinates for '>' and then for each direction, check if it is
-     * a barrier ('|', '+' or '-') */
+     * a barrier or out of range */
     while (*path != '\0') {
-        if (maze[row][col] == '|' || maze[row][col] == '+' ||
-            maze[row][col] == '-') {
+        if (!is_valid_move(maze, height, width, row, col)) {
             return false;
         }
         // make the move and increment either the row or col
@@ -158,30 +189,19 @@ bool valid_solution(const char *path, char **maze, const int &height,
     return false;
 }
 
-bool is_valid_move(char **maze, const int &height, const int &width, int &row,
-                   int &col) {
-    // if it is a barrier then return false
-    if (maze[row][col] == '|' || maze[row][col] == '+' ||
-        maze[row][col] == '-') {
-        return false;
-    }
-    if (row < 0 || row >= height) {
-        return false;
-    }
-    if (col < 0 || col >= width) {
-        return false;
-    }
-    if (maze[row][col] == '#') {
-        return false;
-    }
-    return true;
-}
-
-/* */
-bool solve(char **maze, const int &height, const int &width, int row, int col,
-           char *path) {
+/* Recursive auxiliary function to generate the solution for the input 'maze'
+ * from 'start' and 'end' markers and write this out to 'path'. Based on the
+ * current position given by 'row' and 'col we explore every possibility until
+ * we eventually reach the 'end' marker, or exhaust all options */
+bool find_path_aux(char **maze, const int &height, const int &width, int row,
+                   int col, const char start, const char end, char *path) {
     // set of directions to explore
     list<char> directions = {'N', 'E', 'S', 'W'};
+
+    // update grid for starting position
+    if (maze[row][col] == start) {
+        maze[row][col] = '#';
+    }
 
     /* for each direction we make a move:
     - if the move lands on the exit then we update and return
@@ -191,18 +211,21 @@ bool solve(char **maze, const int &height, const int &width, int row, int col,
     for (auto const &d : directions) {
         int prev_row = row, prev_col = col;
         make_move(d, row, col);
-        if (is_valid_move(maze, height, width, row, col)) {
-            if (maze[row][col] == 'X') {
+        if (is_valid_move(maze, height, width, row, col) &&
+            maze[row][col] != '#') {
+            if (maze[row][col] == end) {
                 maze[row][col] = '#';
                 *path = d;
                 return true;
             }
             maze[row][col] = '#';
             *path = d;
-            print_maze(maze, height, width);
-            if (solve(maze, height, width, row, col, path+1)) {
+            // print_maze(maze, height, width);
+            if (find_path_aux(maze, height, width, row, col, start, end,
+                              path + 1)) {
                 return true;
             }
+            // backtrack
             maze[row][col] = ' ';
             *path = '\0';
         }
@@ -212,22 +235,21 @@ bool solve(char **maze, const int &height, const int &width, int row, int col,
     return false;
 }
 
-void find_path(char **maze, const int &height, const int &width,
-               const char start, const char end) {
-    // store path
-    char path[MAX_PATH];
+/* Return the sequence of N/E/S/W directions in 'path' if one exists to solve
+ * 'maze' from the 'start' marker to the 'end' marker, otherwise return "no
+ * solution" */
+char *find_path(char **maze, const int &height, const int &width,
+                const char start, const char end) {
+    // allocate memory on heap for path
+    char *path = new char[MAX_LENGTH];
 
-    // retrieve coordinates for 'start' and 'end'
-    int row, col, end_row, end_col;
+    // retrieve coordinates for 'start' position
+    int row, col;
     find_marker(start, maze, height, width, row, col);
-    cout << "Start marker is: " << row << " " << col << endl;
-    find_marker(end, maze, height, width, end_row, end_col);
 
-    // identify path
-    if (solve(maze, height, width, row, col, path)) {
-        cout << "Solution exists!" << endl;
-        cout << "Path: " << path << endl;
-    } else {
-        cout << "No solution!" << endl;
+    // identify path and generate sequence
+    if (!find_path_aux(maze, height, width, row, col, start, end, path)) {
+        strcpy(path, "No solution.");
     }
+    return path;
 }

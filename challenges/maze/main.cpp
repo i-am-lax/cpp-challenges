@@ -6,7 +6,7 @@ using namespace std;
 
 int main() {
 
-    /* this section illustrates the use of the pre-supplied functions */
+    // This section illustrates the use of the pre-supplied functions */
     cout << "============== Pre-supplied functions ==================" << endl
          << endl;
 
@@ -14,7 +14,7 @@ int main() {
     int height, width;
 
     cout << "Loading simple maze...";
-    /* loads the maze from the file "simple.txt" and sets height and width */
+    // Loads the maze from the file "simple.txt" and sets height and width
     maze = load_maze("simple.txt", height, width);
     assert(maze);
     cout << " done (height = " << height << ", width = " << width << ")."
@@ -22,7 +22,7 @@ int main() {
          << endl;
 
     cout << "Printing simple maze:" << endl;
-    /* prints the maze with row and column numbers */
+    // Prints the maze with row and column numbers
     print_maze(maze, height, width);
     cout << endl;
 
@@ -61,25 +61,30 @@ int main() {
     cout << "====================== Question 3 ======================" << endl
          << endl;
 
-    /* an easy example with a known solution */
-    cout << "A path through the maze from '>' to 'X' is: " << endl;
-    //cout << find_path(maze, height, width, '>', 'X') << endl << endl;
-    find_path(maze, height, width, '>', 'X');
+    char *path;
+    
+    // Easy example with a known solution
+    cout << "A path through the maze from '>' to 'X' is: ";
+    path = find_path(maze, height, width, '>', 'X');
+    cout << path << endl;
 
     cout << "The path is shown below: " << endl;
     print_maze(maze, height, width);
     cout << endl;
 
+    deallocate_char_array(path);
     deallocate_2D_array(maze, height);
 
-//     /* an impossible example - should return "no solution" */
-//     maze = load_maze("simple.txt", height, width);
-//     assert(maze);
+    // An impossible example - should return "no solution"
+    maze = load_maze("simple.txt", height, width);
+    assert(maze);
 
-//     cout << "A path through the maze from '>' to 'U' is: " << endl;
-//     cout << find_path(maze, height, width, '>', 'U') << endl << endl;
+    cout << "A path through the maze from '>' to 'U' is: ";
+    path = find_path(maze, height, width, '>', 'U');
+    cout << path << endl;
 
-//     deallocate_2D_array(maze, height);
+    deallocate_char_array(path);
+    deallocate_2D_array(maze, height);
 
     //     cout << "=================== Bonus Question =====================" <<
     //     endl
