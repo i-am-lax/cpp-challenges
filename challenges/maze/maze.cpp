@@ -4,7 +4,6 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
-#include <list>
 
 using namespace std;
 
@@ -195,9 +194,7 @@ bool valid_solution(const char *path, char **maze, const int &height,
  * we eventually reach the 'end' marker, or exhaust all options */
 bool find_path_aux(char **maze, const int &height, const int &width, int row,
                    int col, const char start, const char end, char *path) {
-    // set of directions to explore
-    list<char> directions = {'N', 'E', 'S', 'W'};
-
+    
     // update grid for starting position
     if (maze[row][col] == start) {
         maze[row][col] = '#';
@@ -208,7 +205,7 @@ bool find_path_aux(char **maze, const int &height, const int &width, int row,
     - otherwise if it is a valid move and we haven't visited it before we update
     the grid and make a recursive call to explore possibilities from there
     - if we hit a dead end or there is no solution then we backtrack */
-    for (auto const &d : directions) {
+    for (auto const &d : DIRECTIONS) {
         int prev_row = row, prev_col = col;
         make_move(d, row, col);
         if (is_valid_move(maze, height, width, row, col) &&
@@ -220,7 +217,6 @@ bool find_path_aux(char **maze, const int &height, const int &width, int row,
             }
             maze[row][col] = '#';
             *path = d;
-            // print_maze(maze, height, width);
             if (find_path_aux(maze, height, width, row, col, start, end,
                               path + 1)) {
                 return true;
@@ -235,7 +231,7 @@ bool find_path_aux(char **maze, const int &height, const int &width, int row,
     return false;
 }
 
-/* Return the sequence of N/E/S/W directions in 'path' if one exists to solve
+/* Return the sequence of N/E/S/W directions if one exists to solve
  * 'maze' from the 'start' marker to the 'end' marker, otherwise return "no
  * solution" */
 char *find_path(char **maze, const int &height, const int &width,
@@ -249,7 +245,7 @@ char *find_path(char **maze, const int &height, const int &width,
 
     // identify path and generate sequence
     if (!find_path_aux(maze, height, width, row, col, start, end, path)) {
-        strcpy(path, "No solution.");
+        strcpy(path, "no solution");
     }
     return path;
 }

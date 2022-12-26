@@ -1,7 +1,13 @@
 #ifndef MAZE_H
 #define MAZE_H
 
-const int MAX_LENGTH = 50;
+#include <list>
+
+// maximum character constraint
+const int MAX_LENGTH = 512;
+
+// set of possible directions
+const std::list<char> DIRECTIONS = {'N', 'E', 'S', 'W'};
 
 // Allocate and deallocate dynamic arrays
 char **allocate_2D_array(int rows, int columns);
@@ -30,11 +36,11 @@ bool find_marker(const char ch, char **maze, const int &height,
 bool valid_solution(const char *path, char **maze, const int &height,
                     const int &width);
 
-/* Finds a valid solution 'path' through a 'height' × 'width' maze beginning at
- * marker character 'start' and terminating at marker character 'end'. The path
- * is marked on the maze using '#' characters, and the function returns a string
- * of direction movements. If there is no path, the function returns the string
- * "no solution". */
+/* Finds a solution through a 'height' × 'width' maze beginning at marker
+ * character 'start' and terminating at marker character 'end'. The path is
+ * marked on the maze using '#' characters, and the function returns a string of
+ * direction movements. If there is no path, the function returns the string "no
+ * solution". */
 char *find_path(char **maze, const int &height, const int &width,
                 const char start, const char end);
 
