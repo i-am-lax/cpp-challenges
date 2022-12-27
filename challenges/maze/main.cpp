@@ -6,7 +6,6 @@ using namespace std;
 
 int main() {
 
-    // This section illustrates the use of the pre-supplied functions */
     cout << "============== Pre-supplied functions ==================" << endl
          << endl;
 
@@ -14,7 +13,7 @@ int main() {
     int height, width;
 
     cout << "Loading simple maze...";
-    // Loads the maze from the file "simple.txt" and sets height and width
+    /* Loads the maze from the file "simple.txt" and sets height and width */
     maze = load_maze("simple.txt", height, width);
     assert(maze);
     cout << " done (height = " << height << ", width = " << width << ")."
@@ -22,7 +21,7 @@ int main() {
          << endl;
 
     cout << "Printing simple maze:" << endl;
-    // Prints the maze with row and column numbers
+    /* Prints the maze with row and column numbers */
     print_maze(maze, height, width);
     cout << endl;
 
@@ -61,35 +60,29 @@ int main() {
     cout << "====================== Question 3 ======================" << endl
          << endl;
 
-    char *path;
-
-    // Easy example with a known solution
-    cout << "A path through the maze from '>' to 'X' is: ";
-    path = find_path(maze, height, width, '>', 'X');
-    cout << path << endl;
+    /* An easy example with a known solution */
+    cout << "A path through the maze from '>' to 'X' is: " << endl;
+    cout << find_path(maze, height, width, '>', 'X') << endl << endl;
 
     cout << "The path is shown below: " << endl;
     print_maze(maze, height, width);
     cout << endl;
 
-    deallocate_char_array(path);
     deallocate_2D_array(maze, height);
 
-    // An impossible example - should return "no solution"
+    /* Impossible example - should return "no solution" */
     maze = load_maze("simple.txt", height, width);
     assert(maze);
 
-    cout << "A path through the maze from '>' to 'U' is: ";
-    path = find_path(maze, height, width, '>', 'U');
-    cout << path << endl;
+    cout << "A path through the maze from '>' to 'U' is: " << endl;
+    cout << find_path(maze, height, width, '>', 'U') << endl << endl;
 
-    deallocate_char_array(path);
     deallocate_2D_array(maze, height);
 
     cout << "=================== Bonus Question =====================" << endl
          << endl;
 
-    // Find path from the entrance to the middle of the Hatfield House maze
+    /* Find path from the entrance to the middle of the Hatfield House maze */
     maze = load_maze("hatfield.txt", height, width);
     assert(maze);
 
@@ -98,29 +91,25 @@ int main() {
     cout << endl;
 
     cout << "A path through the maze from '>' to 'M' is: " << endl;
-    path = find_path(maze, height, width, '>', 'M');
-    cout << path << endl;
+    cout << find_path(maze, height, width, '>', 'M') << endl << endl;
 
     cout << "The path is shown below: " << endl;
     print_maze(maze, height, width);
     cout << endl;
 
-    deallocate_char_array(path);
     deallocate_2D_array(maze, height);
 
-    /* Find path from the middle to the exit of the Hatfield House maze */
+    /* Find the path from the middle to the exit of the Hatfield House maze */
     maze = load_maze("hatfield.txt", height, width);
     assert(maze);
 
     cout << "A path through the maze from 'M' to 'X' is: " << endl;
-    path = find_path(maze, height, width, 'M', 'X');
-    cout << path << endl;
+    cout << find_path(maze, height, width, 'M', 'X') << endl << endl;
 
     cout << "The path is shown below: " << endl;
     print_maze(maze, height, width);
     cout << endl;
 
-    deallocate_char_array(path);
     deallocate_2D_array(maze, height);
 
     cout << "======================= The End ========================" << endl

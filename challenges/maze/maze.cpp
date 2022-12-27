@@ -25,12 +25,6 @@ void deallocate_2D_array(char **m, int rows) {
     delete[] m;
 }
 
-/* Deallocate a character array */
-void deallocate_char_array(char *ptr) {
-    delete[] ptr;
-    ptr = nullptr;
-}
-
 /* Internal helper function which gets the dimensions of a maze from a file
  * given by 'filename' and stores the values in 'height' and 'width' */
 bool get_maze_dimensions(const char *filename, int &height, int &width) {
@@ -193,8 +187,8 @@ bool valid_solution(const char *path, char **maze, const int &height,
  * current position given by 'row' and 'col we explore every possibility until
  * we eventually reach the 'end' marker, or exhaust all options */
 bool find_path_aux(char **maze, const int &height, const int &width, int row,
-                   int col, const char start, const char end, char *path) {
-    
+                   int col, const char start, const char end, string &path) {
+
     // update grid for starting position
     if (maze[row][col] == start) {
         maze[row][col] = '#';
@@ -212,18 +206,18 @@ bool find_path_aux(char **maze, const int &height, const int &width, int row,
             maze[row][col] != '#') {
             if (maze[row][col] == end) {
                 maze[row][col] = '#';
-                *path = d;
+                path += d;
                 return true;
             }
             maze[row][col] = '#';
-            *path = d;
+            path += d;
             if (find_path_aux(maze, height, width, row, col, start, end,
-                              path + 1)) {
+                              path)) {
                 return true;
             }
             // backtrack
             maze[row][col] = ' ';
-            *path = '\0';
+            path.pop_back();
         }
         row = prev_row;
         col = prev_col;
@@ -234,10 +228,9 @@ bool find_path_aux(char **maze, const int &height, const int &width, int row,
 /* Return the sequence of N/E/S/W directions if one exists to solve
  * 'maze' from the 'start' marker to the 'end' marker, otherwise return "no
  * solution" */
-char *find_path(char **maze, const int &height, const int &width,
-                const char start, const char end) {
-    // allocate memory on heap for path
-    char *path = new char[MAX_LENGTH];
+string find_path(char **maze, const int &height, const int &width,
+                 const char start, const char end) {
+    string path;
 
     // retrieve coordinates for 'start' position
     int row, col;
@@ -245,7 +238,7 @@ char *find_path(char **maze, const int &height, const int &width,
 
     // identify path and generate sequence
     if (!find_path_aux(maze, height, width, row, col, start, end, path)) {
-        strcpy(path, "no solution");
+        path = "no solution";
     }
     return path;
 }

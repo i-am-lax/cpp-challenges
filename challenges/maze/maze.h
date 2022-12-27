@@ -2,6 +2,7 @@
 #define MAZE_H
 
 #include <list>
+#include <string>
 
 // maximum character constraint
 const int MAX_LENGTH = 512;
@@ -41,7 +42,7 @@ bool valid_solution(const char *path, char **maze, const int &height,
  * marked on the maze using '#' characters, and the function returns a string of
  * direction movements. If there is no path, the function returns the string "no
  * solution". */
-char *find_path(char **maze, const int &height, const int &width,
-                const char start, const char end);
+std::string find_path(char **maze, const int &height, const int &width,
+                      const char start, const char end);
 
 #endif
