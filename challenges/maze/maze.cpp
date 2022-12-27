@@ -186,8 +186,8 @@ bool valid_solution(const char *path, char **maze, const int &height,
  * from 'start' and 'end' markers and write this out to 'path'. Based on the
  * current position given by 'row' and 'col we explore every possibility until
  * we eventually reach the 'end' marker, or exhaust all options */
-bool find_path_aux(char **maze, const int &height, const int &width, int row,
-                   int col, const char start, const char end, string &path) {
+bool find_path_aux(char **maze, const int &height, const int &width, int &row,
+                   int &col, const char start, const char end, string &path) {
 
     // update grid for starting position
     if (maze[row][col] == start) {
