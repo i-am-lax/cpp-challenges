@@ -49,53 +49,44 @@ int binary_to_decimal(const char *binary) {
 
 /* Internal helper function to compute the parity for 3 input values */
 char parity(const char b1, const char b2, const char b3) {
-    if ((b1 + b2 + b3) % 2 == 0) {
-        return '0';
-    }
-    return '1';
+    return ((b1 + b2 + b3) % 2 == 0) ? '0' : '1';
 }
 
 /* Internal helper function to compute the parity for 4 input values */
 char parity(const char b1, const char b2, const char b3, const char b4) {
-    if ((b1 + b2 + b3 + b4) % 2 == 0) {
-        return '0';
-    }
-    return '1';
+   return ((b1 + b2 + b3 + b4) % 2 == 0) ? '0' : '1';
+}
+
+/* Internal helper function to flip the input 'bit' */
+void flip(char &bit) {
+    bit == '0' ? bit = '1' : bit = '0';
 }
 
 void add_error_correction(const char *data, char *corrected) {
-    // ensure input data is of correct length
-    if (strlen(data) == 0 || strlen(data) % 4 != 0) {
-        cerr << "[Error] Input data should be a multiple of 4 bits." << endl;
+    if (*data == '\0') {
+        *corrected = '\0';
+        return;
     }
-    while (*data != '\0') {
-        // 7-bit code word in the order: c1, c2, d1, c3, d2, d3, d4
-        corrected[0] =
-            parity(data[0], data[1], data[3]);   // c1 = parity(d1, d2, d4)
-        corrected[1] =
-            parity(data[0], data[2], data[3]);   // c2 = parity(d1, d3, d4)
-        corrected[2] = data[0];
-        corrected[3] =
-            parity(data[1], data[2], data[3]);   // c3 = parity(d2, d3, d4)
-        corrected[4] = data[1];
-        corrected[5] = data[2];
-        corrected[6] = data[3];
+    // 7-bit code word in the order: c1, c2, d1, c3, d2, d3, d4
+    corrected[0] =
+        parity(data[0], data[1], data[3]);   // c1 = parity(d1, d2, d4)
+    corrected[1] =
+        parity(data[0], data[2], data[3]);   // c2 = parity(d1, d3, d4)
+    corrected[2] = data[0];
+    corrected[3] =
+        parity(data[1], data[2], data[3]);   // c3 = parity(d2, d3, d4)
+    corrected[4] = data[1];
+    corrected[5] = data[2];
+    corrected[6] = data[3];
 
-        // adjust pointers
-        data += 4;
-        corrected += 7;
-    }
-    *corrected = '\0';
-}
-
-void flip(char &bit) {
-    bit == '0' ? bit = '1' : bit = '0';
+    // recursive call with adjusted pointers
+    add_error_correction(data + 4, corrected + 7);
 }
 
 int decode(const char *received, char *decoded) {
     // declare variables to store parity and total number of errors
     char p1, p2, p3;
-    int errors = 0;
+    int total_errors = 0;
 
     /* create copy of 'received' so we can flip the bit without
      * modifying original */
@@ -104,8 +95,6 @@ int decode(const char *received, char *decoded) {
     char *received_ptr = received_copy;
 
     while (*received_ptr != '\0') {
-        // error specific to these 4 bits
-        int local_error = 0;
 
         // compute three parity check values
         p1 = parity(received_ptr[3], received_ptr[4], received_ptr[5],
@@ -116,9 +105,9 @@ int decode(const char *received, char *decoded) {
                     received_ptr[6]);   // p3 = parity(b1, b3, b5, b7)
 
         // if one or more of p1, p2, p3 are 1, there has been an error
-        local_error = (p1 == '1') || (p2 == '1') || (p3 == '1');
+        bool error = (p1 == '1') || (p2 == '1') || (p3 == '1');
 
-        if (local_error) {
+        if (error) {
             char binary[] = {p1, p2, p3, '\0'};
             int decimal = binary_to_decimal(binary);
             flip(received_ptr[decimal-1]);
@@ -133,7 +122,7 @@ int decode(const char *received, char *decoded) {
         // adjust pointers and increment global errors
         decoded += 4;
         received_ptr += 7;
-        errors += local_error;
+        total_errors += error;
     }
-    return errors;
+    return total_errors;
 }
