@@ -43,27 +43,27 @@ int main() {
          << endl
          << endl;
 
-//     cout << "====================== Question 2 ======================" << endl
-//          << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-//     char correct[512];
-//     add_error_correction("0100", correct);
-//     cout << "0100"
-//          << " with error correction bits inserted is: " << endl
-//          << correct << endl
-//          << endl;
+    char correct[512];
+    add_error_correction("0100", correct);
+    cout << "0100"
+         << " with error correction bits inserted is: " << endl
+         << correct << endl
+         << endl;
 
-//     add_error_correction("0001", correct);
-//     cout << "0001"
-//          << " with error correction bits inserted is: " << endl
-//          << correct << endl
-//          << endl;
+    add_error_correction("01000001", correct);
+    cout << "01000001"
+         << " with error correction bits inserted is: " << endl
+         << correct << endl
+         << endl;
 
-//     add_error_correction("010000010111001001110100", correct);
-//     cout << "010000010111001001110100 with error correction bits inserted is: "
-//          << endl
-//          << correct << endl
-//          << endl;
+    add_error_correction("010000010111001001110100", correct);
+    cout << "010000010111001001110100 with error correction bits inserted is: "
+         << endl
+         << correct << endl
+         << endl;
 
 //     cout << "====================== Question 3 ======================" << endl
 //          << endl;

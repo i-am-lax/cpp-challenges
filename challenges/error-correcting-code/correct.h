@@ -14,4 +14,8 @@ void text_to_binary(const char* str, char* binary);
 
 void binary_to_text(const char* binary, char* str);
 
+char parity(const char b1, const char b2, const char b3);
+
+void add_error_correction(const char* data, char* corrected);
+
 #endif
