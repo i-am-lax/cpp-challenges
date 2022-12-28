@@ -1,3 +1,4 @@
+#include <cmath>
 #include <cstring>
 #include <iostream>
 
@@ -38,8 +39,25 @@ void binary_to_text(const char *binary, char *str) {
     binary_to_text(binary + 8, str + 1);
 }
 
+int binary_to_decimal(const char *binary) {
+    if (*binary == '\0') {
+        return 0;
+    }
+    return (*binary - '0') * pow(2, strlen(binary) - 1) +
+           binary_to_decimal(binary + 1);
+}
+
+/* Internal helper function to compute the parity for 3 input values */
 char parity(const char b1, const char b2, const char b3) {
     if ((b1 + b2 + b3) % 2 == 0) {
+        return '0';
+    }
+    return '1';
+}
+
+/* Internal helper function to compute the parity for 4 input values */
+char parity(const char b1, const char b2, const char b3, const char b4) {
+    if ((b1 + b2 + b3 + b4) % 2 == 0) {
         return '0';
     }
     return '1';
@@ -68,4 +86,54 @@ void add_error_correction(const char *data, char *corrected) {
         corrected += 7;
     }
     *corrected = '\0';
+}
+
+void flip(char &bit) {
+    bit == '0' ? bit = '1' : bit = '0';
+}
+
+int decode(const char *received, char *decoded) {
+    // declare variables to store parity and total number of errors
+    char p1, p2, p3;
+    int errors = 0;
+
+    /* create copy of 'received' so we can flip the bit without
+     * modifying original */
+    char received_copy[strlen(received) + 1];
+    strcpy(received_copy, received);
+    char *received_ptr = received_copy;
+
+    while (*received_ptr != '\0') {
+        // error specific to these 4 bits
+        int local_error = 0;
+
+        // compute three parity check values
+        p1 = parity(received_ptr[3], received_ptr[4], received_ptr[5],
+                    received_ptr[6]);   // p1 = parity(b4, b5, b6, b7)
+        p2 = parity(received_ptr[1], received_ptr[2], received_ptr[5],
+                    received_ptr[6]);   // p2 = parity(b2, b3, b6, b7)
+        p3 = parity(received_ptr[0], received_ptr[2], received_ptr[4],
+                    received_ptr[6]);   // p3 = parity(b1, b3, b5, b7)
+
+        // if one or more of p1, p2, p3 are 1, there has been an error
+        local_error = (p1 == '1') || (p2 == '1') || (p3 == '1');
+
+        if (local_error) {
+            char binary[] = {p1, p2, p3, '\0'};
+            int decimal = binary_to_decimal(binary);
+            flip(received_ptr[decimal-1]);
+        }
+
+        // original 4-bit data stream recovered as: b3, b5, b6, b7
+        decoded[0] = received_ptr[2];
+        decoded[1] = received_ptr[4];
+        decoded[2] = received_ptr[5];
+        decoded[3] = received_ptr[6];
+
+        // adjust pointers and increment global errors
+        decoded += 4;
+        received_ptr += 7;
+        errors += local_error;
+    }
+    return errors;
 }

@@ -65,41 +65,41 @@ int main() {
          << correct << endl
          << endl;
 
-//     cout << "====================== Question 3 ======================" << endl
-//          << endl;
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-//     char decoded[512];
-//     int errors = 0;
+    char decoded[512];
+    int errors = 0;
 
-//     strcpy(correct, "1001100");
-//     errors = decode(correct, decoded);
-//     cout << correct << " decoded is " << decoded << " (" << errors
-//          << " errors corrected)" << endl
-//          << endl;
+    strcpy(correct, "1001100");
+    errors = decode(correct, decoded);
+    cout << correct << " decoded is " << decoded << " (" << errors
+         << " errors corrected)" << endl
+         << endl;
 
-//     strcpy(correct, "1001110");
-//     errors = decode(correct, decoded);
-//     cout << correct << " decoded is " << decoded << " (" << errors
-//          << " errors corrected)" << endl
-//          << endl;
+    strcpy(correct, "1001110");
+    errors = decode(correct, decoded);
+    cout << correct << " decoded is " << decoded << " (" << errors
+         << " errors corrected)" << endl
+         << endl;
 
-//     strcpy(correct, "100111011010010001110010101000011011001100");
-//     errors = decode(correct, decoded);
-//     cout << correct << " decoded is:" << endl
-//          << decoded << " (" << errors << " errors corrected)" << endl;
-//     binary_to_text(decoded, text);
-//     cout << "which as text is '" << text << "'" << endl << endl;
+    strcpy(correct, "100111011010010001110010101000011011001100");
+    errors = decode(correct, decoded);
+    cout << correct << " decoded is:" << endl
+         << decoded << " (" << errors << " errors corrected)" << endl;
+    binary_to_text(decoded, text);
+    cout << "which as text is '" << text << "'" << endl << endl;
 
-//     /* but can you decode this? you can only do it if you do what it says */
-//     strcpy(correct, "0001100000100101000100000100110011001101001110110111111000"
-//                     "0101111001101100110010010101010100000000100110010000110101"
-//                     "010011001101010100110011");
-//     errors = decode(correct, decoded);
-//     cout << correct << " decoded is:" << endl
-//          << decoded << " (" << errors << " errors corrected)" << endl;
-//     binary_to_text(decoded, text);
-//     cout << "which as text is '" << text << "'" << endl << endl;
+    /* but can you decode this? you can only do it if you do what it says */
+    strcpy(correct, "0001100000100101000100000100110011001101001110110111111000"
+                    "0101111001101100110010010101010100000000100110010000110101"
+                    "010011001101010100110011");
+    errors = decode(correct, decoded);
+    cout << correct << " decoded is:" << endl
+         << decoded << " (" << errors << " errors corrected)" << endl;
+    binary_to_text(decoded, text);
+    cout << "which as text is '" << text << "'" << endl << endl;
 
-//     cout << "======================= The End ========================" << endl
-//          << endl;
+    cout << "======================= The End ========================" << endl
+         << endl;
 }
