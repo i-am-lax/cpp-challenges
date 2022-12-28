@@ -1,14 +1,13 @@
 #include <cassert>
 #include <cstring>
 #include <iostream>
+#include "river.h"
 
 using namespace std;
 
-#include "river.h"
-
 int main() {
 
-    /* This section illustrates the use of the pre-supplied functions. */
+    // This section illustrates the use of the pre-supplied functions
     cout << "============== Pre-supplied functions ==================" << endl
          << endl;
 
@@ -30,38 +29,38 @@ int main() {
 
     /* the scene shown in Figure 2 in the spec */
     cout << "The scene shown in Figure 2:" << endl;
-    scene = make_river_scene("CM", "MM");
+    scene = make_river_scene("CMB", "MM");
     print_scene(scene);
 
     /* the initial state */
-    cout << "The initial state: " << endl;
-    scene = make_river_scene("BCCCMMM", "");
-    print_scene(scene);
+//     cout << "The initial state: " << endl;
+//     scene = make_river_scene("BCCCMMM", "");
+//     print_scene(scene);
 
-    cout << "====================== Question 2 ======================" << endl
-         << endl;
+//     cout << "====================== Question 2 ======================" << endl
+//          << endl;
 
-    char left[10] = "MMMB";
-    int result = perform_crossing(left, "MM");
-    cout << status_description(result) << endl << endl;
-    cout << "After crossing left = " << left << endl;
+//     char left[10] = "MMMB";
+//     int result = perform_crossing(left, "MM");
+//     cout << status_description(result) << endl << endl;
+//     cout << "After crossing left = " << left << endl;
 
-    cout << "====================== Question 3 ======================" << endl
-         << endl;
+//     cout << "====================== Question 3 ======================" << endl
+//          << endl;
 
-    result = play_game();
+//     result = play_game();
 
-    cout << "The game ended as follows: " << status_description(result) << endl;
+//     cout << "The game ended as follows: " << status_description(result) << endl;
 
-    cout << "=================== Bonus Challenge ====================" << endl
-         << endl;
+//     cout << "=================== Bonus Challenge ====================" << endl
+//          << endl;
 
-    char answer[512];
-    strcpy(left, "MMMCCCB");
-    if (find_solution(left, answer) == VALID_GOAL_STATE)
-        cout << "Solution is " << answer << endl;
-    else
-        cout << "Solution does not exist." << endl;
+//     char answer[512];
+//     strcpy(left, "MMMCCCB");
+//     if (find_solution(left, answer) == VALID_GOAL_STATE)
+//         cout << "Solution is " << answer << endl;
+//     else
+//         cout << "Solution does not exist." << endl;
 
     return 0;
 }

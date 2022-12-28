@@ -7,6 +7,19 @@ using namespace std;
 
 #include "river.h"
 
+Position::Position(int _row, int _col) {
+    if (_row < 0 || _row > SCENE_HEIGHT) {
+        throw invalid_argument(
+            "[Invalid Argument Error]: row is out of range");
+    }
+    if (_col < 0 || _col > SCENE_WIDTH) {
+        throw invalid_argument(
+            "[Invalid Argument Error]: col is out of range");
+    }
+    row = _row;
+    col = _col;
+};
+
 /* You are pre-supplied with the functions below. Add your own
    function definitions to the end of this file. */
 
@@ -115,3 +128,53 @@ const char *status_description(int code) {
 }
 
 /* insert your functions here */
+char **make_river_scene(const char *left, const char *boat) {
+    // ensure the inputs are of the correct length (length <= 7 and boat <= 2)
+    if (strlen(left) > 7 || strlen(boat) > 2) {
+        throw invalid_argument(
+            "[Invalid Argument Error]: 'left' and 'boat' should be a "
+            "maximum of 7 and 2 characters respectively");
+    }
+
+    // create 2-D array to represent scene
+    char **scene = create_scene();
+
+    // declare variables for storing state
+    int missionary_count = 3, cannibal_count = 3;
+
+    // initial state of scene with riverbanks, sun and river
+    add_to_scene(scene, rs.lbank.row, rs.lbank.col, filename.at(BANK));
+    add_to_scene(scene, rs.rbank.row, rs.rbank.col, filename.at(BANK));
+    add_to_scene(scene, rs.sun.row, rs.sun.col, filename.at(SUN));
+    add_to_scene(scene, rs.river.row, rs.river.col, filename.at(RIVER));
+
+    /* sequence for left river bank:
+    - M denoting the presence of a missionary
+    - C denoting the presence of a cannibal
+    - B denoting that the boat is at the left bank */
+    bool boat_on_left = false;
+    while (*left != '\0') {
+        if (*left == 'B') {
+            add_to_scene(scene, rs.lboat.row, rs.lboat.col, filename.at(BOAT));
+            boat_on_left = true;
+        } else if (*left == 'M') {
+            add_to_scene(scene, rs.lmissionary.row, rs.lmissionary.col,
+                         filename.at(MISSIONARY));
+            missionary_count -= 1;
+        } else if (*left == 'C') {
+            add_to_scene(scene, rs.lcannibal.row, rs.lcannibal.col,
+                         filename.at(CANNIBAL));
+            cannibal_count -= 1;
+        }
+        left++;
+    }
+
+    /* boat can contain only M or C characters */
+
+    return scene;
+}
+
+// functions for adding / removing cannibals and missionaries and you can enter input position 0,1,2
+// making sure we adjust positions accordingly
+// having a boat position 0 and 1 (for where missionaries / cannibals cross)
+// maybe array of positions in ElementPositions class
