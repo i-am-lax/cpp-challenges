@@ -19,15 +19,13 @@ void text_to_binary(const char *str, char *binary);
 void binary_to_text(const char *binary, char *str);
 
 /* Outputs (in the output string parameter 'corrected') an error-corrected
-version of a data bit stream (the input string parameter 'data'). There are 7
-bits for every 4 bits of data. */
+ * version of a data bit stream (the input string parameter 'data'). There are 7
+ * bits for every 4 bits of data */
 void add_error_correction(const char *data, char *corrected);
 
 /* Outputs (in the output string parameter 'decoded') an error-corrected version
  * of a received bit stream (the input string parameter 'received'). The
  * function returns the number of errors corrected */
 int decode(const char *received, char *decoded);
-
-int binary_to_decimal(const char* binary);
 
 #endif

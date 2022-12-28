@@ -5,7 +5,7 @@ using namespace std;
 
 int main() {
 
-    /* this section illustrates the use of the pre-supplied helper functions */
+    // This section illustrates the use of the pre-supplied helper functions
     cout << "================== Helper functions ====================" << endl
          << endl;
 
@@ -90,7 +90,6 @@ int main() {
     binary_to_text(decoded, text);
     cout << "which as text is '" << text << "'" << endl << endl;
 
-    /* but can you decode this? you can only do it if you do what it says */
     strcpy(correct, "0001100000100101000100000100110011001101001110110111111000"
                     "0101111001101100110010010101010100000000100110010000110101"
                     "010011001101010100110011");
