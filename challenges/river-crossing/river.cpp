@@ -7,6 +7,8 @@ using namespace std;
 
 #include "river.h"
 
+/***** Implementation for Position *****/
+
 // Default constructor for position
 Position::Position() : row(-1), col(-1){};
 
@@ -21,11 +23,16 @@ Position::Position(int _row, int _col) {
     col = _col;
 };
 
-Position ElementPositions::get_bank_position(Element e, Direction d,
-                                             int index) {
+/***** Implementation for EntityPosition *****/
+
+/* Get coordinates (row, column) for a Missionary / Cannibal at 'index' on
+ * either the left or right bank based on Direction 'd'. The default position is
+ * used as a starting point and then offset */
+Position EntityPosition::get_bank_position(Entity e, Direction d, int index) {
     if (index < 0 || index > 2) {
-        throw invalid_argument("[Invalid Argument Error]: index is out of "
-                               "range - must be 0, 1 or 2.");
+        throw invalid_argument(
+            "[Invalid Argument Error]: index for get_bank_position() is out of "
+            "range - must be 0, 1 or 2.");
     }
     Position pos;
     switch (e) {
@@ -36,7 +43,7 @@ Position ElementPositions::get_bank_position(Element e, Direction d,
         pos = cannibal[d];
         break;
     default:
-        cerr << "Invalid element." << endl;
+        cerr << "Invalid entity." << endl;
         return pos;
     }
     // construct position (1, 2, 3) on bank using offset
@@ -44,10 +51,16 @@ Position ElementPositions::get_bank_position(Element e, Direction d,
     return pos;
 }
 
-Position ElementPositions::get_boat_position(Direction d, int index) {
+/* Get coordinates (row, column) at 'index' (first or second position)
+ * on the boat at either the left or right bank based on Direction 'd'. The
+ * default position for the boat on the left bank is used as a starting point
+ * after which the row is adjusted to match that of the cannibal, and column is
+ * offset */
+Position EntityPosition::get_boat_position(Direction d, int index) {
     if (index < 0 || index > 1) {
-        throw invalid_argument("[Invalid Argument Error]: index is out of "
-                               "range - must be 0 or 1.");
+        throw invalid_argument(
+            "[Invalid Argument Error]: index for get_boat_position() is out of "
+            "range - must be 0 or 1.");
     }
     Position pos = boat[d];
     pos.row = cannibal[d].row;
@@ -55,7 +68,8 @@ Position ElementPositions::get_boat_position(Direction d, int index) {
     return pos;
 }
 
-// Internal helper function which allocates a dynamic 2D array of rows x columns
+// Internal helper function which allocates a dynamic 2-D array of rows x
+// columns
 char **allocate_2D_array(int rows, int columns) {
     char **m = new (nothrow) char *[rows];
     assert(m);
@@ -66,7 +80,7 @@ char **allocate_2D_array(int rows, int columns) {
     return m;
 }
 
-// Internal helper function which deallocates a dynamic 2D array 'm'
+// Internal helper function which deallocates a dynamic 2-D array 'm'
 void deallocate_2D_array(char **m, int rows) {
     for (int r = 0; r < rows; r++)
         delete[] m[r];
@@ -107,7 +121,7 @@ void filter(char *line) {
 }
 
 /* Pre-supplied function which inserts an ASCII-art drawing stored in a file
-   into a given ASCII-art scene starting at coordinates (row, col)  */
+ * into a given ASCII-art scene starting at coordinates (row, col)  */
 bool add_to_scene(char **scene, int row, int col, const char *filename) {
 
     ifstream in(filename);
@@ -157,6 +171,10 @@ const char *status_description(int code) {
     return "Unknown error";
 }
 
+/* Returns 2-D array containing the ASCII-art scene based on 'left' (up to 7
+ * characters of M/C/B) which describes the contents of the left river bank, and
+ * 'boat' (up to 2 characters with M and C only) which describes the contents of
+ * the boat. */
 char **make_river_scene(const char *left, const char *boat) {
     // ensure the inputs are of the correct length (length <= 7 and boat <= 2)
     if (strlen(left) > 7 || strlen(boat) > 2) {
@@ -165,8 +183,8 @@ char **make_river_scene(const char *left, const char *boat) {
             "maximum of 7 and 2 characters respectively");
     }
 
-    // get element positions
-    ElementPositions rs;
+    // get entity positions
+    EntityPosition rs;
     Position pos;
 
     // create 2-D array to represent scene
@@ -241,33 +259,8 @@ char **make_river_scene(const char *left, const char *boat) {
     return scene;
 }
 
-bool is_valid_move(const char *left, const char *targets) {
-    // ensure correct length and also cannot make empty crossing
-    if (strlen(targets) == 0 || strlen(targets) > 2) {
-        return false;
-    }
-
-    // counts of missionaries and cannibals on left bank and potential crossing
-    int missionaries = count_entity(left, 'M');
-    int cannibals = count_entity(left, 'C');
-    int target_missionaries = count_entity(targets, 'M');
-    int target_cannibals = count_entity(targets, 'C');
-
-    // ensure contains correct entity set
-    while (*targets != '\0') {
-        if (*targets != 'M' && *targets != 'C') {
-            return false;
-        }
-        targets++;
-    }
-
-    // ensure entities in target <= entities on left bank
-    if (target_missionaries > missionaries || target_cannibals > cannibals) {
-        return false;
-    }
-    return true;
-}
-
+/* Internal helper function to count the occurences of 'entity' in the input
+ * string 'str' */
 int count_entity(const char *str, const char entity) {
     int count = 0;
     while (*str != '\0') {
@@ -279,8 +272,44 @@ int count_entity(const char *str, const char entity) {
     return count;
 }
 
-/* String is reconstructed based on counts of missionaries and cannibals in
- * targets */
+/* Internal helper function to check that performing a crossing with 'left' and
+ * 'targets' is valid based on:
+ * - 'targets' is the correct length (and an empty crossing is not possible)
+ * - 'targets' contains the correct entities (M or C)
+ * - ensure sum of left bank and target entities does not exceed maximum of 3 */
+bool is_valid_move(const char *left, const char *targets) {
+    // ensure correct length and also cannot make empty crossing
+    if (strlen(targets) == 0 || strlen(targets) > 2) {
+        return false;
+    }
+
+    // ensure contains correct entity set
+    while (*targets != '\0') {
+        if (*targets != 'M' && *targets != 'C') {
+            return false;
+        }
+        targets++;
+    }
+
+    // counts of missionaries and cannibals on left bank and potential crossing
+    int missionaries = count_entity(left, 'M');
+    int cannibals = count_entity(left, 'C');
+    int target_missionaries = count_entity(targets, 'M');
+    int target_cannibals = count_entity(targets, 'C');
+
+    // ensure total entities <= 3
+    if (target_missionaries + missionaries > MAX_CHARACTERS ||
+        target_cannibals + cannibals > MAX_CHARACTERS) {
+        return false;
+    }
+    return true;
+}
+
+/* Internal helper function whereby the string for the left bank (input 'left')
+ * is updated based on counts of missionaries and cannibals in targets. If
+ * targets is empty then we do nothing. If the parameter 'add' is set to true
+ * then we simply concatenate 'targets' onto 'left. Otherwise, we perform the
+ * subtraction. */
 void update_left(char *left, const char *targets, bool add) {
     // nothing to do if targets is empty
     if (strlen(targets) == 0) {
@@ -326,6 +355,12 @@ void update_left(char *left, const char *targets, bool add) {
     strcpy(left, output);
 }
 
+/* Performs a crossing of the river from one bank of the river to the other
+ * using the boat. The parameter 'left' is an input and an output parameter: it
+ * initially describes the contents of the left river bank, and is modified to
+ * reflect the result of the move. The parameter 'targets' is a string with one
+ * or two characters (M or C). The scene is displayed for each stage of the
+ * crossing. The return value is a status code. */
 int perform_crossing(char *left, const char *targets) {
     // case of an invalid targets string
     if (!is_valid_move(left, targets)) {
@@ -384,11 +419,18 @@ int perform_crossing(char *left, const char *targets) {
     return VALID_GOAL_STATE;
 }
 
+/* Allows a user to play the game of missionaries and cannibals by suggesting
+ * boat crossings via the keyboard. The return value is an appropriate status
+ * code. The default starting position is "BCCCMMM". The user is prompted for
+ * game continuation after each crossing provided that the game didn't end in a
+ * win or an error. */
 int play_game() {
     cout << "Game begins!" << endl;
-    // initial state
+    // initial game state
     char play, left[8] = "BCCCMMM", targets[3];
     int result;
+
+    // print starting scene
     char **scene = make_river_scene(left, "");
     print_scene(scene);
     destroy_scene(scene);
@@ -396,15 +438,19 @@ int play_game() {
     do {
         cout << "Suggest a crossing." << endl;
         cin >> targets;
-
-        cout << "Left is: " << left << " and Targets is: " << targets << endl;
         int result = perform_crossing(left, targets);
 
+        // if crossing resulted in a win or error then game is terminated
+        if (result != VALID_NONGOAL_STATE) {
+            return result;
+        }
+
+        // prompt user to complete playing provided the game hasn't ended
         cout << "Press 'y' if you'd like to continue playing otherwise press "
                 "any key."
              << endl;
         cin >> play;
-    } while (tolower(play) == 'y' || result == VALID_NONGOAL_STATE);
+    } while (tolower(play) == 'y');
 
     return result;
 }
