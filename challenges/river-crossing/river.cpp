@@ -272,95 +272,93 @@ char **make_river_scene(const char *left, const char *boat) {
     return scene;
 }
 
-/* Internal helper function to check that performing a crossing with 'left' and
- * 'targets' is valid based on:
+/* Internal helper function whereby the string for the left bank (input 'left')
+ * is updated based on counts of missionaries and cannibals in 'str'. If
+ * 'str' is empty then we do nothing. If the parameter 'add' is set to true
+ * then we simply concatenate 'str' onto 'left. Otherwise, we perform the
+ * subtraction. */
+void update_left(char *left, const char *str, bool add = false) {
+    // nothing to do if targets is empty
+    if (strlen(str) == 0) {
+        return;
+    }
+
+    // if add = true then simply concatenate
+    if (add) {
+        strcat(left, str);
+        return;
+    }
+
+    // declare string to store output
+    char output[strlen(left) + 1];
+    char *optr = output;
+
+    // get counts of entities in 'str'
+    int missionaries = count_entity(str, 'M');
+    int cannibals = count_entity(str, 'C');
+    bool boat = count_entity(str, 'B');
+
+    // copy chars from 'left' that are not in 'targets'
+    char *lptr = left;
+    while (*lptr != '\0') {
+        if (*lptr == 'M' && missionaries > 0) {
+            missionaries--;
+        } else if (*lptr == 'C' && cannibals > 0) {
+            cannibals--;
+        } else if (*lptr == 'B' && boat) {
+            boat = false;
+        } else {
+            *optr = *lptr;
+            optr++;
+        }
+        lptr++;
+    }
+    *optr = '\0';
+
+    // update left string
+    strcpy(left, output);
+}
+
+/* Internal helper function to check if target entity exceeds entity count
+ * on the corresponding bank */
+bool valid_entity_count(const char *left, const char *targets,
+                        const char entity) {
+    // counts of entity on left bank and potential crossing
+    bool boat_on_left = count_entity(left, 'B');
+    int count = count_entity(left, entity);
+    int target_count = count_entity(targets, entity);
+
+    // target entities cannot be greater than entities on...
+    // left bank
+    if (boat_on_left && target_count > count) {
+        return false;
+    }
+    // right bank
+    if (!boat_on_left && target_count > MAX_CHARACTERS - count) {
+        return false;
+    }
+    return true;
+}
+
+/* Internal helper function to check that 'targets is a valid input based on:
  * - 'targets' is the correct length (and an empty crossing is not possible)
- * - 'targets' contains the correct entities (M or C)
- * - ensure sum of left bank and target entities does not exceed maximum of 3 */
-bool is_valid_move(const char *left, const char *targets) {
+ * - 'targets' contains the correct entities (M or C) */
+bool valid_target_string(const char *targets) {
     // ensure correct length and also cannot make empty crossing
     if (strlen(targets) == 0 || strlen(targets) > 2) {
         return false;
     }
 
     // ensure contains correct entity set
-    while (*targets != '\0') {
-        if (*targets != 'M' && *targets != 'C') {
+    int idx = 0;
+    while (targets[idx] != '\0') {
+        if (targets[idx] != 'M' && targets[idx] != 'C') {
             return false;
         }
-        targets++;
-    }
-
-    // counts of missionaries and cannibals on left bank and potential crossing
-    int missionaries = count_entity(left, 'M');
-    int cannibals = count_entity(left, 'C');
-    bool boat_on_left = count_entity(left, 'B');
-    int target_missionaries = count_entity(targets, 'M');
-    int target_cannibals = count_entity(targets, 'C');
-
-    // target entities cannot be greater than entities on...
-    // left bank
-    if (boat_on_left &&
-        (target_missionaries > missionaries || target_cannibals > cannibals)) {
-        return false;
-    }
-    // right bank
-    if (!boat_on_left && (target_missionaries > MAX_CHARACTERS - missionaries ||
-                          target_cannibals > MAX_CHARACTERS - cannibals)) {
-        return false;
+        idx++;
     }
 
     return true;
-}
-
-/* Internal helper function whereby the string for the left bank (input 'left')
- * is updated based on counts of missionaries and cannibals in targets. If
- * targets is empty then we do nothing. If the parameter 'add' is set to true
- * then we simply concatenate 'targets' onto 'left. Otherwise, we perform the
- * subtraction. */
-void update_left(char *left, const char *targets, bool add = false) {
-    // nothing to do if targets is empty
-    if (strlen(targets) == 0) {
-        return;
-    }
-
-    // if add = true then simply concatenate
-    if (add) {
-        strcat(left, targets);
-        return;
-    }
-
-    // get counts of missionaries and cannibals
-    int missionaries = count_entity(targets, 'M');
-    int cannibals = count_entity(targets, 'C');
-    bool boat = count_entity(targets, 'B');
-
-    // declare string to store output
-    char output[strlen(left) + 1];
-    char *output_ptr = output;
-
-    // copy chars from left that are not in targets
-    char *left_ptr = left;
-    while (*left_ptr != '\0') {
-        if (*left_ptr == 'M' && missionaries > 0) {
-            left_ptr++;
-            missionaries--;
-        } else if (*left_ptr == 'C' && cannibals > 0) {
-            left_ptr++;
-            cannibals--;
-        } else if (*left_ptr == 'B' && boat) {
-            left_ptr++;
-            boat = false;
-        } else {
-            *output_ptr = *left_ptr;
-            output_ptr++;
-            left_ptr++;
-        }
-    }
-    *output_ptr = '\0';
-
-    // update left string
-    strcpy(left, output);
 }
 
 /* Internal helper function to compute from input 'left' describing the left
@@ -387,12 +385,18 @@ bool missionaries_eaten(const char *left) {
  * or two characters (M or C). The scene is displayed for each stage of the
  * crossing. The return value is a status code. */
 int perform_crossing(char *left, const char *targets) {
-    // case of an invalid targets string
-    if (!is_valid_move(left, targets)) {
+    // error checking on 'targets' input
+    if (!valid_target_string(targets)) {
         return ERROR_INVALID_MOVE;
     }
+    if (!valid_entity_count(left, targets, 'M')) {
+        return ERROR_INVALID_MISSIONARY_COUNT;
+    }
+    if (!valid_entity_count(left, targets, 'C')) {
+        return ERROR_INVALID_CANNIBAL_COUNT;
+    }
 
-    // check if boat is on the left or right
+    // check if boat is on the left or right bank
     bool boat_on_left = count_entity(left, 'B');
 
     // Phase 1: Loading the boat
@@ -436,6 +440,8 @@ int perform_crossing(char *left, const char *targets) {
  * win or an error.
  * Scenarios:
  * - MM (game ends with ERROR_MISSIONARIES_EATEN)
+ * - CC -> M (game ends with ERROR_INVALID_MISSIONARY_COUNT)
+ * - MC -> CC (game ends with ERROR_INVALID_CANNIBAL_COUNT)
  * - MC -> M -> CC -> C -> MM -> MC -> MM -> C -> CC -> C -> CC (game ends with
  * VALID_GOAL_STATE) */
 int play_game() {
