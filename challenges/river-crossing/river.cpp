@@ -246,28 +246,21 @@ bool is_valid_move(const char *left, const char *targets) {
     if (strlen(targets) == 0 || strlen(targets) > 2) {
         return false;
     }
-    int missionaries = 0, cannibals = 0, target_missionaries = 0,
-        target_cannibals = 0;
+
+    // counts of missionaries and cannibals on left bank and potential crossing
+    int missionaries = count_entity(left, 'M');
+    int cannibals = count_entity(left, 'C');
+    int target_missionaries = count_entity(targets, 'M');
+    int target_cannibals = count_entity(targets, 'C');
+
+    // ensure contains correct entity set
     while (*targets != '\0') {
-        // ensure contains correct entity set
         if (*targets != 'M' && *targets != 'C') {
             return false;
         }
-        if (*targets == 'M') {
-            target_missionaries++;
-        } else {
-            target_cannibals++;
-        }
         targets++;
     }
-    while (*left != '\0') {
-        if (*left == 'M') {
-            missionaries++;
-        } else if (*left == 'C') {
-            cannibals++;
-        }
-        left++;
-    }
+
     // ensure entities in target <= entities on left bank
     if (target_missionaries > missionaries || target_cannibals > cannibals) {
         return false;
@@ -286,6 +279,8 @@ int count_entity(const char *str, const char entity) {
     return count;
 }
 
+/* String is reconstructed based on counts of missionaries and cannibals in
+ * targets */
 void update_left(char *left, const char *targets, bool add) {
     // nothing to do if targets is empty
     if (strlen(targets) == 0) {
@@ -298,56 +293,60 @@ void update_left(char *left, const char *targets, bool add) {
         return;
     }
 
+    // get counts of missionaries and cannibals
+    int missionaries = count_entity(targets, 'M');
+    int cannibals = count_entity(targets, 'C');
+    bool boat = count_entity(targets, 'B');
+
     // declare string to store output
     char output[strlen(left) + 1];
-    char *output_ptr = output, *left_ptr = left;
+    char *output_ptr = output;
 
     // copy chars from left that are not in targets
-    while (*left_ptr != '\0' || *targets != '\0') {
-        if (*left_ptr == *targets) {
-            targets++;
+    char *left_ptr = left;
+    while (*left_ptr != '\0') {
+        if (*left_ptr == 'M' && missionaries > 0) {
+            left_ptr++;
+            missionaries--;
+        } else if (*left_ptr == 'C' && cannibals > 0) {
+            left_ptr++;
+            cannibals--;
+        } else if (*left_ptr == 'B' && boat) {
+            left_ptr++;
+            boat = false;
         } else {
             *output_ptr = *left_ptr;
             output_ptr++;
+            left_ptr++;
         }
-        left_ptr++;
     }
+    *output_ptr = '\0';
 
     // update left string
     strcpy(left, output);
 }
 
-// TODO: currently works for left to right but not right to left
 int perform_crossing(char *left, const char *targets) {
     // case of an invalid targets string
     if (!is_valid_move(left, targets)) {
         return ERROR_INVALID_MOVE;
     }
 
-    // count missionaries and cannibals on the left bank
-    int missionaries = count_entity(left, 'M');
-    int cannibals = count_entity(left, 'C');
-
-    cout << "Missionaries on left: " << missionaries << endl;
-    cout << "Cannibals on left: " << cannibals << endl;
-
     // check if boat is on the left or right
     bool boat_on_left = count_entity(left, 'B');
 
-    cout << "Is the boat on the left? " << (boat_on_left ? "True" : "False") << endl;
-
     // Scene: Loading the boat
-    update_left(left, targets);
-    cout << "Left is now: " << left << endl;
+    if (boat_on_left) {
+        update_left(left, targets, false);
+    }
 
-    char** scene = make_river_scene(left, targets);
+    char **scene = make_river_scene(left, targets);
     print_scene(scene);
 
     // if boat on left then remove it, otherwise add it
     if (boat_on_left) {
-        update_left(left, "B");
-    }
-    else {
+        update_left(left, "B", false);
+    } else {
         strcat(left, "B");
     }
 
@@ -356,15 +355,25 @@ int perform_crossing(char *left, const char *targets) {
     print_scene(scene);
 
     // Scene: Unloading the boat
+    if (!boat_on_left) {
+        update_left(left, targets, true);
+    }
     scene = make_river_scene(left, "");
     print_scene(scene);
+
+    // count missionaries and cannibals on the left bank
+    int missionaries = count_entity(left, 'M');
+    int cannibals = count_entity(left, 'C');
 
     // deallocate memory for scene
     destroy_scene(scene);
 
     // missionaries eaten if they're outnumbered on either bank
-    if (MAX_CHARACTERS - cannibals > MAX_CHARACTERS - missionaries ||
-        cannibals > missionaries) {
+    if (missionaries > 0 && cannibals > missionaries) {
+        return ERROR_MISSIONARIES_EATEN;
+    }
+    if (MAX_CHARACTERS - missionaries > 0 &&
+        MAX_CHARACTERS - cannibals > MAX_CHARACTERS - missionaries) {
         return ERROR_MISSIONARIES_EATEN;
     }
 

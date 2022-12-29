@@ -78,7 +78,7 @@ void destroy_scene(char **scene);
 const char *status_description(int code);
 
 char **make_river_scene(const char *left, const char *boat);
-int perform_crossing(char* left, const char* targets);
+int perform_crossing(char *left, const char *targets);
 int play_game();
 
 #endif
