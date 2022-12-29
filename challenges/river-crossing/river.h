@@ -2,6 +2,7 @@
 #define RIVER_H
 
 #include <map>
+#include <vector>
 
 enum Element {
     SUN,
@@ -10,6 +11,12 @@ enum Element {
     BOAT,
     MISSIONARY,
     CANNIBAL,
+};
+
+// L (Left) or R (Right) direction
+enum Direction {
+    L,
+    R,
 };
 
 enum Status {
@@ -25,20 +32,29 @@ enum Status {
 
 // Position (row and column) on scene array
 struct Position {
-    int row = -1, col = -1;
+    int row, col;
+    Position();
     Position(int _row, int _col);
 };
 
 // Class for position information and manipulation
 class ElementPositions {
-    public:
-        Position sun = {3, 30};
-        Position river = {19,19};
-        Position lbank = {0, 0};
-        Position rbank = {0, 53};
-        Position lboat = {17, 19};
-        Position lmissionary = {2, 1};
-        Position lcannibal = {11, 1};
+  public:
+    Position sun = {3, 30};
+    Position river = {19, 19};
+    std::vector<Position> bank = {{0, 0}, {0, 53}};
+    std::vector<Position> boat = {{17, 19}, {17, 36}};
+    std::vector<Position> missionary = {{2, 1}, {2, 54}};
+    std::vector<Position> cannibal = {{11, 1}, {11, 54}};
+    int offset = 6;   // general column offset between characters
+
+    /* Get coordinates (row, column) for a Missionary / Cannibal at 'index' at
+     * either the left or right bank based on Direction 'd' and 'index' */
+    Position get_bank_position(Element e, Direction d, int index);
+
+    /* Get coordinates (row, column) at 'index' either first or second position)
+     * on the boat at either the left or right bank based on Direction 'd' */
+    Position get_boat_position(Direction d, int index);
 };
 
 // File name mapping
@@ -51,9 +67,9 @@ const std::map<Element, const char *> filename = {
     {CANNIBAL, "cannibal.txt"},
 };
 
-const ElementPositions rs;
-
 const int SCENE_HEIGHT = 24, SCENE_WIDTH = 72;
+
+const int MAX_CHARACTERS = 3;
 
 char **create_scene();
 bool add_to_scene(char **scene, int row, int col, const char *filename);

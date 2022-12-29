@@ -7,18 +7,53 @@ using namespace std;
 
 #include "river.h"
 
+// Default constructor for position
+Position::Position() : row(-1), col(-1){};
+
 Position::Position(int _row, int _col) {
     if (_row < 0 || _row > SCENE_HEIGHT) {
-        throw invalid_argument(
-            "[Invalid Argument Error]: row is out of range");
+        throw invalid_argument("[Invalid Argument Error]: row is out of range");
     }
     if (_col < 0 || _col > SCENE_WIDTH) {
-        throw invalid_argument(
-            "[Invalid Argument Error]: col is out of range");
+        throw invalid_argument("[Invalid Argument Error]: col is out of range");
     }
     row = _row;
     col = _col;
 };
+
+Position ElementPositions::get_bank_position(Element e, Direction d,
+                                                  int index) {
+    if (index < 0 || index > 2) {
+        throw invalid_argument("[Invalid Argument Error]: index is out of "
+                               "range - must be 0, 1 or 2.");
+    }
+    Position pos;
+    switch (e) {
+    case MISSIONARY:
+        pos = missionary[d];
+        break;
+    case CANNIBAL:
+        pos = cannibal[d];
+        break;
+    default:
+        cerr << "Invalid element." << endl;
+        return pos;
+    }
+    // construct position (1, 2, 3) on bank using offset
+    pos.col += (index * offset);
+    return pos;
+}
+
+Position ElementPositions::get_boat_position(Direction d, int index) {
+    if (index < 0 || index > 1) {
+        throw invalid_argument("[Invalid Argument Error]: index is out of "
+                               "range - must be 0 or 1.");
+    }
+    Position pos = boat[d];
+    pos.row = cannibal[d].row;
+    pos.col += 3 + (index * offset);
+    return pos;
+}
 
 /* You are pre-supplied with the functions below. Add your own
    function definitions to the end of this file. */
@@ -136,45 +171,125 @@ char **make_river_scene(const char *left, const char *boat) {
             "maximum of 7 and 2 characters respectively");
     }
 
+    // get element positions
+    ElementPositions rs;
+    Position pos;
+
     // create 2-D array to represent scene
     char **scene = create_scene();
 
-    // declare variables for storing state
-    int missionary_count = 3, cannibal_count = 3;
-
     // initial state of scene with riverbanks, sun and river
-    add_to_scene(scene, rs.lbank.row, rs.lbank.col, filename.at(BANK));
-    add_to_scene(scene, rs.rbank.row, rs.rbank.col, filename.at(BANK));
+    add_to_scene(scene, rs.bank[L].row, rs.bank[L].col, filename.at(BANK));
+    add_to_scene(scene, rs.bank[R].row, rs.bank[R].col, filename.at(BANK));
     add_to_scene(scene, rs.sun.row, rs.sun.col, filename.at(SUN));
     add_to_scene(scene, rs.river.row, rs.river.col, filename.at(RIVER));
 
-    /* sequence for left river bank:
+    /* Sequence for left river bank:
     - M denoting the presence of a missionary
     - C denoting the presence of a cannibal
     - B denoting that the boat is at the left bank */
-    bool boat_on_left = false;
+    bool boat_on_right = true;
+    int missionaries = 0, cannibals = 0;
+
     while (*left != '\0') {
         if (*left == 'B') {
-            add_to_scene(scene, rs.lboat.row, rs.lboat.col, filename.at(BOAT));
-            boat_on_left = true;
-        } else if (*left == 'M') {
-            add_to_scene(scene, rs.lmissionary.row, rs.lmissionary.col,
-                         filename.at(MISSIONARY));
-            missionary_count -= 1;
-        } else if (*left == 'C') {
-            add_to_scene(scene, rs.lcannibal.row, rs.lcannibal.col,
-                         filename.at(CANNIBAL));
-            cannibal_count -= 1;
+            add_to_scene(scene, rs.boat[L].row, rs.boat[L].col, filename.at(BOAT));
+            boat_on_right = false;
+        }
+        else if (*left == 'M') {
+            pos = rs.get_bank_position(MISSIONARY, L, missionaries);
+            add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
+            missionaries += 1;
+        }
+        else if (*left == 'C') {
+            pos = rs.get_bank_position(CANNIBAL, L, cannibals);
+            add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
+            cannibals += 1;
         }
         left++;
     }
 
-    /* boat can contain only M or C characters */
+    // Add boat to right bank if not already on left bank
+    if (boat_on_right) {
+        add_to_scene(scene, rs.boat[R].row, rs.boat[R].col, filename.at(BOAT));
+    }
+
+    /* Sequence for boat:
+    - M denoting the presence of a missionary
+    - C denoting the presence of a cannibal */
+    int passengers = 0;
+    while (*boat != '\0') {
+        pos = rs.get_boat_position(static_cast<Direction>(boat_on_right), passengers);
+        if (*boat == 'M') {
+            add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
+            missionaries += 1;
+        }
+        else if (*boat == 'C') {
+            add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
+            cannibals += 1;
+        }
+        passengers += 1;
+        boat++;
+    }
+
+    /* Construct right river bank */
+    while (missionaries != MAX_CHARACTERS) {
+        pos = rs.get_bank_position(MISSIONARY, R, MAX_CHARACTERS - missionaries - 1);
+        add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
+        missionaries += 1;
+    }
+    while (cannibals != MAX_CHARACTERS) {
+        pos = rs.get_bank_position(CANNIBAL, R, MAX_CHARACTERS - cannibals - 1);
+        add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
+        cannibals += 1;
+    }
 
     return scene;
 }
 
-// functions for adding / removing cannibals and missionaries and you can enter input position 0,1,2
-// making sure we adjust positions accordingly
-// having a boat position 0 and 1 (for where missionaries / cannibals cross)
-// maybe array of positions in ElementPositions class
+/* Points to note:
+- 3 missionaries and 3 cannibals who must cross a river from the LEFT bank to
+the RIGHT bank
+- The boat cannot cross the river by itself with noone on board
+- There must not be more cannibals than missionaries on the bank if there are
+missionaries there
+
+
+*/
+
+// functions for adding / removing cannibals and missionaries and you can enter
+// input position 0,1,2 making sure we adjust positions accordingly having a
+// boat position 0 and 1 (for where missionaries / cannibals cross) maybe array
+// of positions in ElementPositions class - [[0,0,1], [0,1,0]]... index 0 miss
+// index 1 cannibals bstate = [M/C, M/C] and need to keep track of cannibals and
+// missionaries on each side... need fn for removing elements from scene
+// remove_missionary(missionary/cannibal, position, left/right) left / right is
+// same, except for an offset
+
+/* map out all positions
+LEFT
+boat = {17, 19}
+boat[0] = {11, 22}     (first spot on boat)
+boat[1] = {11, 28}
+
+m1 = {2, 1}     + 6
+m2 = {2, 7}     + 6
+m3 = {2, 13}    + 6
+
+c1 = {11, 1}    + 6
+c2 = {11, 7}    + 6
+c3 = {11, 13}   + 6
+
+RIGHT
+boat = {17, 36}
+boat[0] = {11, 39}     (first spot on boat)
+boat[1] = {11, 45}
+
+m1 = {2, 54}     + 41
+m2 = {2, 60}
+m3 = {2, 66}
+
+c1 = {11, 54}
+c2 = {11, 60}
+c3 = {11, 66}
+*/

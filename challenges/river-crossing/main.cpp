@@ -27,15 +27,15 @@ int main() {
 
     cout << "Recreating Figure 2: " << endl;
 
-    /* the scene shown in Figure 2 in the spec */
+    // /* the scene shown in Figure 2 in the spec */
     cout << "The scene shown in Figure 2:" << endl;
-    scene = make_river_scene("CMB", "MM");
+    scene = make_river_scene("CM", "MM");
     print_scene(scene);
 
     /* the initial state */
-//     cout << "The initial state: " << endl;
-//     scene = make_river_scene("BCCCMMM", "");
-//     print_scene(scene);
+    cout << "The initial state: " << endl;
+    scene = make_river_scene("BCCCMMM", "");
+    print_scene(scene);
 
 //     cout << "====================== Question 2 ======================" << endl
 //          << endl;
