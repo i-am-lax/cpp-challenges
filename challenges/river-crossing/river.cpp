@@ -171,6 +171,62 @@ const char *status_description(int code) {
     return "Unknown error";
 }
 
+/* Internal helper function to count the occurences of 'entity' in the input
+ * string 'str' */
+int count_entity(const char *str, const char entity) {
+    int count = 0;
+    while (*str != '\0') {
+        if (*str == entity) {
+            count++;
+        }
+        str++;
+    }
+    return count;
+}
+
+/* Internal helper function to populate the left or right bank (based on
+ * direction 'd') with the count of entities 'e' (M or C) in input 'str' */
+int populate_bank(char **scene, const char *str, const char e, Direction d) {
+    EntityPosition rs;
+    Position pos;
+    Entity entity = char_to_entity.at(e);
+
+    // count of entity
+    int count = count_entity(str, e);
+
+    // for the right bank we simply subtract the entity count from the maximum
+    if (d == R) {
+        count = MAX_CHARACTERS - count;
+    }
+
+    // add entity to the bank
+    for (int c = 0; c < count; c++) {
+        pos = rs.get_bank_position(entity, d, c);
+        add_to_scene(scene, pos.row, pos.col, filename.at(entity));
+    }
+    return count;
+}
+
+/* Internal helper function to add the boat and its passengers (based on
+ * direction 'd' and input 'boat') */
+void populate_boat(char **scene, const char *boat, Direction d) {
+    EntityPosition rs;
+    Position pos;
+    int passengers = 0;
+
+    // add boat to left or right bank depending on 'd'
+    add_to_scene(scene, rs.boat[d].row, rs.boat[d].col, filename.at(BOAT));
+
+    // add passengers
+    while (*boat != '\0') {
+        pos = rs.get_boat_position(d, passengers);
+        add_to_scene(scene, pos.row, pos.col,
+                     filename.at(char_to_entity.at(*boat)));
+        passengers++;
+        boat++;
+    }
+}
+
 /* Returns 2-D array containing the ASCII-art scene based on 'left' (up to 7
  * characters of M/C/B) which describes the contents of the left river bank, and
  * 'boat' (up to 2 characters with M and C only) which describes the contents of
@@ -185,7 +241,6 @@ char **make_river_scene(const char *left, const char *boat) {
 
     // get entity positions
     EntityPosition rs;
-    Position pos;
 
     // create 2-D array to represent scene
     char **scene = create_scene();
@@ -196,80 +251,25 @@ char **make_river_scene(const char *left, const char *boat) {
     add_to_scene(scene, rs.sun.row, rs.sun.col, filename.at(SUN));
     add_to_scene(scene, rs.river.row, rs.river.col, filename.at(RIVER));
 
-    /* Sequence for left river bank:
-    - M denoting the presence of a missionary
-    - C denoting the presence of a cannibal
-    - B denoting that the boat is at the left bank */
-    bool boat_on_right = true;
-    int missionaries = 0, cannibals = 0;
+    // current state of boat
+    bool boat_on_left = count_entity(left, 'B');
+    Direction boat_direction = static_cast<Direction>(!boat_on_left);
 
-    while (*left != '\0') {
-        if (*left == 'B') {
-            add_to_scene(scene, rs.boat[L].row, rs.boat[L].col,
-                         filename.at(BOAT));
-            boat_on_right = false;
-        } else if (*left == 'M') {
-            pos = rs.get_bank_position(MISSIONARY, L, missionaries);
-            add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
-            missionaries++;
-        } else if (*left == 'C') {
-            pos = rs.get_bank_position(CANNIBAL, L, cannibals);
-            add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
-            cannibals++;
-        }
-        left++;
-    }
+    // populate left river bank
+    int missionaries = populate_bank(scene, left, 'M', L);
+    int cannibals = populate_bank(scene, left, 'C', L);
 
-    // Add boat to right bank if not already on left bank
-    if (boat_on_right) {
-        add_to_scene(scene, rs.boat[R].row, rs.boat[R].col, filename.at(BOAT));
-    }
+    // add boat and passengers
+    populate_boat(scene, boat, boat_direction);
 
-    /* Sequence for boat:
-    - M denoting the presence of a missionary
-    - C denoting the presence of a cannibal */
-    int passengers = 0;
-    while (*boat != '\0') {
-        pos = rs.get_boat_position(static_cast<Direction>(boat_on_right),
-                                   passengers);
-        if (*boat == 'M') {
-            add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
-            missionaries++;
-        } else if (*boat == 'C') {
-            add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
-            cannibals++;
-        }
-        passengers++;
-        boat++;
-    }
-
-    /* Construct right river bank */
-    while (missionaries != MAX_CHARACTERS) {
-        pos = rs.get_bank_position(MISSIONARY, R,
-                                   MAX_CHARACTERS - missionaries - 1);
-        add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
-        missionaries++;
-    }
-    while (cannibals != MAX_CHARACTERS) {
-        pos = rs.get_bank_position(CANNIBAL, R, MAX_CHARACTERS - cannibals - 1);
-        add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
-        cannibals++;
-    }
+    // populate right river bank
+    char total[10];
+    strcpy(total, left);
+    strcat(total, boat);
+    populate_bank(scene, total, 'M', R);
+    populate_bank(scene, total, 'C', R);
 
     return scene;
-}
-
-/* Internal helper function to count the occurences of 'entity' in the input
- * string 'str' */
-int count_entity(const char *str, const char entity) {
-    int count = 0;
-    while (*str != '\0') {
-        if (*str == entity) {
-            count++;
-        }
-        str++;
-    }
-    return count;
 }
 
 /* Internal helper function to check that performing a crossing with 'left' and
@@ -294,14 +294,22 @@ bool is_valid_move(const char *left, const char *targets) {
     // counts of missionaries and cannibals on left bank and potential crossing
     int missionaries = count_entity(left, 'M');
     int cannibals = count_entity(left, 'C');
+    bool boat_on_left = count_entity(left, 'B');
     int target_missionaries = count_entity(targets, 'M');
     int target_cannibals = count_entity(targets, 'C');
 
-    // ensure total entities <= 3
-    if (target_missionaries + missionaries > MAX_CHARACTERS ||
-        target_cannibals + cannibals > MAX_CHARACTERS) {
+    // target entities cannot be greater than entities on...
+    // left bank
+    if (boat_on_left &&
+        (target_missionaries > missionaries || target_cannibals > cannibals)) {
         return false;
     }
+    // right bank
+    if (!boat_on_left && (target_missionaries > MAX_CHARACTERS - missionaries ||
+                          target_cannibals > MAX_CHARACTERS - cannibals)) {
+        return false;
+    }
+
     return true;
 }
 
@@ -310,7 +318,7 @@ bool is_valid_move(const char *left, const char *targets) {
  * targets is empty then we do nothing. If the parameter 'add' is set to true
  * then we simply concatenate 'targets' onto 'left. Otherwise, we perform the
  * subtraction. */
-void update_left(char *left, const char *targets, bool add) {
+void update_left(char *left, const char *targets, bool add = false) {
     // nothing to do if targets is empty
     if (strlen(targets) == 0) {
         return;
@@ -355,6 +363,23 @@ void update_left(char *left, const char *targets, bool add) {
     strcpy(left, output);
 }
 
+/* Internal helper function to compute from input 'left' describing the left
+ * bank as to whether missionaries are outnumbered and hence eaten */
+bool missionaries_eaten(const char *left) {
+    // count missionaries and cannibals on the left bank
+    int lm = count_entity(left, 'M');
+    int lc = count_entity(left, 'C');
+
+    // deduce counts on the right bank
+    int rm = MAX_CHARACTERS - lm, rc = MAX_CHARACTERS - lc;
+
+    // missionaries eaten if they're outnumbered on either bank
+    if ((lm > 0 && lc > lm) || (rm > 0 && rc > rm)) {
+        return true;
+    }
+    return false;
+}
+
 /* Performs a crossing of the river from one bank of the river to the other
  * using the boat. The parameter 'left' is an input and an output parameter: it
  * initially describes the contents of the left river bank, and is modified to
@@ -370,45 +395,30 @@ int perform_crossing(char *left, const char *targets) {
     // check if boat is on the left or right
     bool boat_on_left = count_entity(left, 'B');
 
-    // Scene: Loading the boat
+    // Phase 1: Loading the boat
     if (boat_on_left) {
-        update_left(left, targets, false);
+        update_left(left, targets);
     }
-
     char **scene = make_river_scene(left, targets);
     print_scene(scene);
 
-    // if boat on left then remove it, otherwise add it
-    if (boat_on_left) {
-        update_left(left, "B", false);
-    } else {
-        strcat(left, "B");
-    }
-
-    // Scene: Crossing the rivers
+    // Phase 2: Crossing the rivers
+    update_left(left, "B", !boat_on_left);
     scene = make_river_scene(left, targets);
     print_scene(scene);
 
-    // Scene: Unloading the boat
+    // Phase 3: Unloading the boat
     if (!boat_on_left) {
         update_left(left, targets, true);
     }
     scene = make_river_scene(left, "");
     print_scene(scene);
 
-    // count missionaries and cannibals on the left bank
-    int missionaries = count_entity(left, 'M');
-    int cannibals = count_entity(left, 'C');
-
-    // deallocate memory for scene
+    // free memory for scene
     destroy_scene(scene);
 
     // missionaries eaten if they're outnumbered on either bank
-    if (missionaries > 0 && cannibals > missionaries) {
-        return ERROR_MISSIONARIES_EATEN;
-    }
-    if (MAX_CHARACTERS - missionaries > 0 &&
-        MAX_CHARACTERS - cannibals > MAX_CHARACTERS - missionaries) {
+    if (missionaries_eaten(left)) {
         return ERROR_MISSIONARIES_EATEN;
     }
 
@@ -423,7 +433,11 @@ int perform_crossing(char *left, const char *targets) {
  * boat crossings via the keyboard. The return value is an appropriate status
  * code. The default starting position is "BCCCMMM". The user is prompted for
  * game continuation after each crossing provided that the game didn't end in a
- * win or an error. */
+ * win or an error.
+ * Scenarios:
+ * - MM (game ends with ERROR_MISSIONARIES_EATEN)
+ * - MC -> M -> CC -> C -> MM -> MC -> MM -> C -> CC -> C -> CC (game ends with
+ * VALID_GOAL_STATE) */
 int play_game() {
     cout << "Game begins!" << endl;
     // initial game state
@@ -442,6 +456,9 @@ int play_game() {
 
         // if crossing resulted in a win or error then game is terminated
         if (result != VALID_NONGOAL_STATE) {
+            if (result == VALID_GOAL_STATE) {
+                cout << "Congratulations! You win!" << endl;
+            }
             return result;
         }
 

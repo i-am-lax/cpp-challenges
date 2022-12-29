@@ -70,6 +70,13 @@ const std::map<Entity, const char *> filename = {
     {CANNIBAL, "cannibal.txt"},
 };
 
+// Character to Entity mapping
+const std::map<const char, Entity> char_to_entity = {
+    {'B', BOAT},
+    {'M', MISSIONARY},
+    {'C', CANNIBAL},
+};
+
 // Width and height of 2-D array storing scene
 const int SCENE_HEIGHT = 24, SCENE_WIDTH = 72;
 
