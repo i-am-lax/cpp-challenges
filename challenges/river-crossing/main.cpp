@@ -46,12 +46,11 @@ int main() {
     cout << status_description(result) << endl << endl;
     cout << "After crossing left = " << left << endl;
 
-//     cout << "====================== Question 3 ======================" << endl
-//          << endl;
+    // cout << "====================== Question 3 ======================" << endl
+    //      << endl;
+    // result = play_game();
 
-//     result = play_game();
-
-//     cout << "The game ended as follows: " << status_description(result) << endl;
+    // cout << "The game ended as follows: " << status_description(result) << endl;
 
 //     cout << "=================== Bonus Challenge ====================" << endl
 //          << endl;

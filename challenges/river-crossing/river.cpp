@@ -255,8 +255,7 @@ bool is_valid_move(const char *left, const char *targets) {
         }
         if (*targets == 'M') {
             target_missionaries++;
-        }
-        else {
+        } else {
             target_cannibals++;
         }
         targets++;
@@ -264,8 +263,7 @@ bool is_valid_move(const char *left, const char *targets) {
     while (*left != '\0') {
         if (*left == 'M') {
             missionaries++;
-        }
-        else if (*left == 'C') {
+        } else if (*left == 'C') {
             cannibals++;
         }
         left++;
@@ -277,96 +275,96 @@ bool is_valid_move(const char *left, const char *targets) {
     return true;
 }
 
+int count_entity(const char *str, const char entity) {
+    int count = 0;
+    while (*str != '\0') {
+        if (*str == entity) {
+            count++;
+        }
+        str++;
+    }
+    return count;
+}
+
+void update_left(char *left, const char *targets, bool add) {
+    // nothing to do if targets is empty
+    if (strlen(targets) == 0) {
+        return;
+    }
+
+    // if add = true then simply concatenate
+    if (add) {
+        strcat(left, targets);
+        return;
+    }
+
+    // declare string to store output
+    char output[strlen(left) + 1];
+    char *output_ptr = output, *left_ptr = left;
+
+    // copy chars from left that are not in targets
+    while (*left_ptr != '\0' || *targets != '\0') {
+        if (*left_ptr == *targets) {
+            targets++;
+        } else {
+            *output_ptr = *left_ptr;
+            output_ptr++;
+        }
+        left_ptr++;
+    }
+
+    // update left string
+    strcpy(left, output);
+}
+
+// TODO: currently works for left to right but not right to left
 int perform_crossing(char *left, const char *targets) {
     // case of an invalid targets string
     if (!is_valid_move(left, targets)) {
         return ERROR_INVALID_MOVE;
     }
 
-    int missionaries = 0, cannibals = 0, target_missionaries = 0, target_cannibals = 0;
-    bool boat_on_right = true;
+    // count missionaries and cannibals on the left bank
+    int missionaries = count_entity(left, 'M');
+    int cannibals = count_entity(left, 'C');
 
-    // get initial counts
-    int idx = 0;
-    while (left[idx] != '\0') {
-        if (left[idx] == 'B') {
-            boat_on_right = false;
-        } else if (left[idx] == 'M') {
-            missionaries++;
-        } else if (left[idx] == 'C') {
-            cannibals++;
-        }
-        idx++;
-    }
+    cout << "Missionaries on left: " << missionaries << endl;
+    cout << "Cannibals on left: " << cannibals << endl;
 
-    idx = 0;
-    while (targets[idx] != '\0') {
-        if (targets[idx] == 'M') {
-            target_missionaries++;
-        }
-        else {
-            target_cannibals++;
-        }
-        idx++;
-    }
+    // check if boat is on the left or right
+    bool boat_on_left = count_entity(left, 'B');
 
-    // initial scene
-    char **scene = make_river_scene(left, "");
+    cout << "Is the boat on the left? " << (boat_on_left ? "True" : "False") << endl;
+
+    // Scene: Loading the boat
+    update_left(left, targets);
+    cout << "Left is now: " << left << endl;
+
+    char** scene = make_river_scene(left, targets);
     print_scene(scene);
 
-    // update left string for next scene
-    missionaries -= target_missionaries;
-    cannibals -= target_cannibals;
-    char left_step_1[strlen(left) + 1];
-    char* left_step_1_ptr = left_step_1;
+    // if boat on left then remove it, otherwise add it
+    if (boat_on_left) {
+        update_left(left, "B");
+    }
+    else {
+        strcat(left, "B");
+    }
 
-    for (int m = 0; m < missionaries; m++) {
-        *left_step_1_ptr = 'M';
-        left_step_1_ptr++;
-    }
-    for (int c = 0; c < cannibals; c++) {
-        *left_step_1_ptr = 'C';
-        left_step_1_ptr++;
-    }
-    if (!boat_on_right) {
-        *left_step_1_ptr = 'B';
-        left_step_1_ptr++;
-    }
-    *left_step_1_ptr = '\0';
-
-    scene = make_river_scene(left_step_1, targets);
+    // Scene: Crossing the rivers
+    scene = make_river_scene(left, targets);
     print_scene(scene);
 
-    // next is perform crossing of boat
-    char left_step_2[strlen(left_step_1) + 1];
-    char* left_step_2_ptr = left_step_2;
-
-    left_step_1_ptr = left_step_1;
-    while (*left_step_1_ptr != '\0') {
-        if (*left_step_1_ptr != 'B') {
-            *left_step_2_ptr = *left_step_1_ptr;
-            left_step_2_ptr++;
-        }
-        left_step_1_ptr++;
-    }
-    if (boat_on_right) {
-        *left_step_2_ptr = 'B';
-        left_step_2_ptr++;
-    }
-    *left_step_2_ptr = '\0';
-
-    scene = make_river_scene(left_step_2, targets);
+    // Scene: Unloading the boat
+    scene = make_river_scene(left, "");
     print_scene(scene);
 
-    // final scene
-    scene = make_river_scene(left_step_2, "");
-    print_scene(scene);
+    // deallocate memory for scene
+    destroy_scene(scene);
 
-    // update left
-    strcpy(left, left_step_2);
-
-    // missionaries outnumbered on either bank
-    if (MAX_CHARACTERS - cannibals > MAX_CHARACTERS - missionaries || cannibals > missionaries) {
+    // missionaries eaten if they're outnumbered on either bank
+    if (MAX_CHARACTERS - cannibals > MAX_CHARACTERS - missionaries ||
+        cannibals > missionaries) {
         return ERROR_MISSIONARIES_EATEN;
     }
 
@@ -377,5 +375,27 @@ int perform_crossing(char *left, const char *targets) {
     return VALID_GOAL_STATE;
 }
 
-// TODO: function for counting entities from string
-// TODO: function for updating "left" string
+int play_game() {
+    cout << "Game begins!" << endl;
+    // initial state
+    char play, left[8] = "BCCCMMM", targets[3];
+    int result;
+    char **scene = make_river_scene(left, "");
+    print_scene(scene);
+    destroy_scene(scene);
+
+    do {
+        cout << "Suggest a crossing." << endl;
+        cin >> targets;
+
+        cout << "Left is: " << left << " and Targets is: " << targets << endl;
+        int result = perform_crossing(left, targets);
+
+        cout << "Press 'y' if you'd like to continue playing otherwise press "
+                "any key."
+             << endl;
+        cin >> play;
+    } while (tolower(play) == 'y' || result == VALID_NONGOAL_STATE);
+
+    return result;
+}
