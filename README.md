@@ -9,3 +9,4 @@ Series of C++ challenges typically involving recursion:
 6. [Error-Correcting Code](challenges/error-correcting-code/)
 7. [Playfair Cipher](challenges/playfair-cipher/)
 8. [Maze](challenges/maze/)
+9. [River-Crossing Puzzle](challenges/river-crossing/)
