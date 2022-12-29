@@ -75,7 +75,9 @@ char **create_scene();
 bool add_to_scene(char **scene, int row, int col, const char *filename);
 void print_scene(char **scene);
 void destroy_scene(char **scene);
+const char *status_description(int code);
 
 char **make_river_scene(const char *left, const char *boat);
+int perform_crossing(char* left, const char* targets);
 
 #endif

@@ -22,7 +22,7 @@ Position::Position(int _row, int _col) {
 };
 
 Position ElementPositions::get_bank_position(Element e, Direction d,
-                                                  int index) {
+                                             int index) {
     if (index < 0 || index > 2) {
         throw invalid_argument("[Invalid Argument Error]: index is out of "
                                "range - must be 0, 1 or 2.");
@@ -55,10 +55,7 @@ Position ElementPositions::get_boat_position(Direction d, int index) {
     return pos;
 }
 
-/* You are pre-supplied with the functions below. Add your own
-   function definitions to the end of this file. */
-
-/* internal helper function which allocates a dynamic 2D array */
+// Internal helper function which allocates a dynamic 2D array of rows x columns
 char **allocate_2D_array(int rows, int columns) {
     char **m = new (nothrow) char *[rows];
     assert(m);
@@ -69,14 +66,14 @@ char **allocate_2D_array(int rows, int columns) {
     return m;
 }
 
-/* internal helper function which deallocates a dynamic 2D array */
+// Internal helper function which deallocates a dynamic 2D array 'm'
 void deallocate_2D_array(char **m, int rows) {
     for (int r = 0; r < rows; r++)
         delete[] m[r];
     delete[] m;
 }
 
-/* pre-supplied function which creates an empty ASCII-art scene */
+// Pre-supplied function which creates an empty ASCII-art scene
 char **create_scene() {
     char **scene = allocate_2D_array(SCENE_HEIGHT, SCENE_WIDTH);
 
@@ -87,11 +84,10 @@ char **create_scene() {
     return scene;
 }
 
-/* pre-supplied function which frees up memory allocated for an ASCII-art scene
- */
+// Pre-supplied function which frees up memory allocated for an ASCII-art scene
 void destroy_scene(char **scene) { deallocate_2D_array(scene, SCENE_HEIGHT); }
 
-/* pre-supplied function which displays an ASCII-art scene */
+// Pre-supplied function which displays an ASCII-art scene
 void print_scene(char **scene) {
     for (int i = 0; i < SCENE_HEIGHT; i++) {
         for (int j = 0; j < SCENE_WIDTH; j++)
@@ -100,7 +96,7 @@ void print_scene(char **scene) {
     }
 }
 
-/* helper function which removes carriage returns and newlines from strings */
+// Helper function which removes carriage returns and newlines from strings
 void filter(char *line) {
     while (*line) {
         if (*line >= ' ')
@@ -110,8 +106,8 @@ void filter(char *line) {
     }
 }
 
-/* pre-supplied function which inserts an ASCII-art drawing stored in a file
-   into a given ASCII-art scene starting at coordinates (row,col)  */
+/* Pre-supplied function which inserts an ASCII-art drawing stored in a file
+   into a given ASCII-art scene starting at coordinates (row, col)  */
 bool add_to_scene(char **scene, int row, int col, const char *filename) {
 
     ifstream in(filename);
@@ -138,8 +134,7 @@ bool add_to_scene(char **scene, int row, int col, const char *filename) {
     return true;
 }
 
-/* pre-supplied helper function to report the status codes encountered in
- * Question 3 */
+// Pre-supplied helper function to report status codes encountered
 const char *status_description(int code) {
     switch (code) {
     case ERROR_INVALID_CANNIBAL_COUNT:
@@ -162,7 +157,6 @@ const char *status_description(int code) {
     return "Unknown error";
 }
 
-/* insert your functions here */
 char **make_river_scene(const char *left, const char *boat) {
     // ensure the inputs are of the correct length (length <= 7 and boat <= 2)
     if (strlen(left) > 7 || strlen(boat) > 2) {
@@ -193,18 +187,17 @@ char **make_river_scene(const char *left, const char *boat) {
 
     while (*left != '\0') {
         if (*left == 'B') {
-            add_to_scene(scene, rs.boat[L].row, rs.boat[L].col, filename.at(BOAT));
+            add_to_scene(scene, rs.boat[L].row, rs.boat[L].col,
+                         filename.at(BOAT));
             boat_on_right = false;
-        }
-        else if (*left == 'M') {
+        } else if (*left == 'M') {
             pos = rs.get_bank_position(MISSIONARY, L, missionaries);
             add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
-            missionaries += 1;
-        }
-        else if (*left == 'C') {
+            missionaries++;
+        } else if (*left == 'C') {
             pos = rs.get_bank_position(CANNIBAL, L, cannibals);
             add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
-            cannibals += 1;
+            cannibals++;
         }
         left++;
     }
@@ -219,77 +212,170 @@ char **make_river_scene(const char *left, const char *boat) {
     - C denoting the presence of a cannibal */
     int passengers = 0;
     while (*boat != '\0') {
-        pos = rs.get_boat_position(static_cast<Direction>(boat_on_right), passengers);
+        pos = rs.get_boat_position(static_cast<Direction>(boat_on_right),
+                                   passengers);
         if (*boat == 'M') {
             add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
-            missionaries += 1;
-        }
-        else if (*boat == 'C') {
+            missionaries++;
+        } else if (*boat == 'C') {
             add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
-            cannibals += 1;
+            cannibals++;
         }
-        passengers += 1;
+        passengers++;
         boat++;
     }
 
     /* Construct right river bank */
     while (missionaries != MAX_CHARACTERS) {
-        pos = rs.get_bank_position(MISSIONARY, R, MAX_CHARACTERS - missionaries - 1);
+        pos = rs.get_bank_position(MISSIONARY, R,
+                                   MAX_CHARACTERS - missionaries - 1);
         add_to_scene(scene, pos.row, pos.col, filename.at(MISSIONARY));
-        missionaries += 1;
+        missionaries++;
     }
     while (cannibals != MAX_CHARACTERS) {
         pos = rs.get_bank_position(CANNIBAL, R, MAX_CHARACTERS - cannibals - 1);
         add_to_scene(scene, pos.row, pos.col, filename.at(CANNIBAL));
-        cannibals += 1;
+        cannibals++;
     }
 
     return scene;
 }
 
-/* Points to note:
-- 3 missionaries and 3 cannibals who must cross a river from the LEFT bank to
-the RIGHT bank
-- The boat cannot cross the river by itself with noone on board
-- There must not be more cannibals than missionaries on the bank if there are
-missionaries there
+bool is_valid_move(const char *left, const char *targets) {
+    // ensure correct length and also cannot make empty crossing
+    if (strlen(targets) == 0 || strlen(targets) > 2) {
+        return false;
+    }
+    int missionaries = 0, cannibals = 0, target_missionaries = 0,
+        target_cannibals = 0;
+    while (*targets != '\0') {
+        // ensure contains correct entity set
+        if (*targets != 'M' && *targets != 'C') {
+            return false;
+        }
+        if (*targets == 'M') {
+            target_missionaries++;
+        }
+        else {
+            target_cannibals++;
+        }
+        targets++;
+    }
+    while (*left != '\0') {
+        if (*left == 'M') {
+            missionaries++;
+        }
+        else if (*left == 'C') {
+            cannibals++;
+        }
+        left++;
+    }
+    // ensure entities in target <= entities on left bank
+    if (target_missionaries > missionaries || target_cannibals > cannibals) {
+        return false;
+    }
+    return true;
+}
 
+int perform_crossing(char *left, const char *targets) {
+    // case of an invalid targets string
+    if (!is_valid_move(left, targets)) {
+        return ERROR_INVALID_MOVE;
+    }
 
-*/
+    int missionaries = 0, cannibals = 0, target_missionaries = 0, target_cannibals = 0;
+    bool boat_on_right = true;
 
-// functions for adding / removing cannibals and missionaries and you can enter
-// input position 0,1,2 making sure we adjust positions accordingly having a
-// boat position 0 and 1 (for where missionaries / cannibals cross) maybe array
-// of positions in ElementPositions class - [[0,0,1], [0,1,0]]... index 0 miss
-// index 1 cannibals bstate = [M/C, M/C] and need to keep track of cannibals and
-// missionaries on each side... need fn for removing elements from scene
-// remove_missionary(missionary/cannibal, position, left/right) left / right is
-// same, except for an offset
+    // get initial counts
+    int idx = 0;
+    while (left[idx] != '\0') {
+        if (left[idx] == 'B') {
+            boat_on_right = false;
+        } else if (left[idx] == 'M') {
+            missionaries++;
+        } else if (left[idx] == 'C') {
+            cannibals++;
+        }
+        idx++;
+    }
 
-/* map out all positions
-LEFT
-boat = {17, 19}
-boat[0] = {11, 22}     (first spot on boat)
-boat[1] = {11, 28}
+    idx = 0;
+    while (targets[idx] != '\0') {
+        if (targets[idx] == 'M') {
+            target_missionaries++;
+        }
+        else {
+            target_cannibals++;
+        }
+        idx++;
+    }
 
-m1 = {2, 1}     + 6
-m2 = {2, 7}     + 6
-m3 = {2, 13}    + 6
+    // initial scene
+    char **scene = make_river_scene(left, "");
+    print_scene(scene);
 
-c1 = {11, 1}    + 6
-c2 = {11, 7}    + 6
-c3 = {11, 13}   + 6
+    // update left string for next scene
+    missionaries -= target_missionaries;
+    cannibals -= target_cannibals;
+    char left_step_1[strlen(left) + 1];
+    char* left_step_1_ptr = left_step_1;
 
-RIGHT
-boat = {17, 36}
-boat[0] = {11, 39}     (first spot on boat)
-boat[1] = {11, 45}
+    for (int m = 0; m < missionaries; m++) {
+        *left_step_1_ptr = 'M';
+        left_step_1_ptr++;
+    }
+    for (int c = 0; c < cannibals; c++) {
+        *left_step_1_ptr = 'C';
+        left_step_1_ptr++;
+    }
+    if (!boat_on_right) {
+        *left_step_1_ptr = 'B';
+        left_step_1_ptr++;
+    }
+    *left_step_1_ptr = '\0';
 
-m1 = {2, 54}     + 41
-m2 = {2, 60}
-m3 = {2, 66}
+    scene = make_river_scene(left_step_1, targets);
+    print_scene(scene);
 
-c1 = {11, 54}
-c2 = {11, 60}
-c3 = {11, 66}
-*/
+    // next is perform crossing of boat
+    char left_step_2[strlen(left_step_1) + 1];
+    char* left_step_2_ptr = left_step_2;
+
+    left_step_1_ptr = left_step_1;
+    while (*left_step_1_ptr != '\0') {
+        if (*left_step_1_ptr != 'B') {
+            *left_step_2_ptr = *left_step_1_ptr;
+            left_step_2_ptr++;
+        }
+        left_step_1_ptr++;
+    }
+    if (boat_on_right) {
+        *left_step_2_ptr = 'B';
+        left_step_2_ptr++;
+    }
+    *left_step_2_ptr = '\0';
+
+    scene = make_river_scene(left_step_2, targets);
+    print_scene(scene);
+
+    // final scene
+    scene = make_river_scene(left_step_2, "");
+    print_scene(scene);
+
+    // update left
+    strcpy(left, left_step_2);
+
+    // missionaries outnumbered on either bank
+    if (MAX_CHARACTERS - cannibals > MAX_CHARACTERS - missionaries || cannibals > missionaries) {
+        return ERROR_MISSIONARIES_EATEN;
+    }
+
+    // valid non-goal state
+    if (strlen(left) > 0) {
+        return VALID_NONGOAL_STATE;
+    }
+    return VALID_GOAL_STATE;
+}
+
+// TODO: function for counting entities from string
+// TODO: function for updating "left" string
