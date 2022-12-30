@@ -6,9 +6,11 @@
 #include <fstream>
 #include <iostream>
 
+#include <vector>
+
 using namespace std;
 
-/* pre-supplied function to load mine positions from a file */
+// Pre-supplied function to load mine positions from a file into 'board'
 void load_board(const char *filename, char board[9][9]) {
 
     cout << "Loading board from file '" << filename << "'... ";
@@ -36,7 +38,7 @@ void load_board(const char *filename, char board[9][9]) {
     assert(row == 9);
 }
 
-/* internal helper function */
+// Internal helper function to print row of board */
 void print_row(const char *data, int row) {
     cout << (char) ('A' + row) << "|";
     for (int i = 0; i < 9; i++)
@@ -44,7 +46,7 @@ void print_row(const char *data, int row) {
     cout << "|" << endl;
 }
 
-/* pre-supplied function to display a minesweeper board */
+// Pre-supplied function to display a minesweeper board
 void display_board(const char board[9][9]) {
     cout << "  ";
     for (int r = 0; r < 9; r++)
@@ -56,17 +58,19 @@ void display_board(const char board[9][9]) {
     cout << " +---------+" << endl;
 }
 
-/* pre-supplied function to initialise playing board */
+// Pre-supplied function to initialise playing board
 void initialise_board(char board[9][9]) {
     for (int r = 0; r < 9; r++)
         for (int c = 0; c < 9; c++)
             board[r][c] = '?';
 }
 
+/* */
 bool is_complete(const char mines[9][9], const char revealed[9][9]) {
     for (int row = 0; row < 9; row++) {
         for (int col = 0; col < 9; col++) {
-            if (revealed[row][col] == '?' && mines[row][col] != '*') {
+            if ((revealed[row][col] == '?' || revealed[row][col] == '*') &&
+                mines[row][col] != '*') {
                 return false;
             }
         }
@@ -211,11 +215,13 @@ void copy_board(const char original[9][9], char copy[9][9]) {
     }
 }
 
-void update(char board[9][9], char* move, int row, int col) {
+void update(char board[9][9], char *move, int row, int col) {
     int mines = board[row][col] - '0';
     int unrevealed = 0;
     int flags = 0;
     char position[3];
+
+    vector<char *> positions;
 
     // check adjacent squares
     for (int r = row - 1; r <= row + 1; r++) {
@@ -236,25 +242,31 @@ void update(char board[9][9], char* move, int row, int col) {
                 unrevealed++;
                 position[0] = r + 'A';
                 position[1] = c + '1';
+                positions.push_back(position);
             }
-
         }
     }
-    // if the number of flags equals the count of mines then any question marks can be turned over
+    // if the number of flags equals the count of mines then any question marks
+    // can be turned over
     if ((mines == flags) && (unrevealed > 0)) {
-        strcat(move, position);
-        strcat(move, " ");
-        board[position[0] - 'A'][position[1] - '1'] = ' ';
-        cout << "COPY IS NOW...." << endl;
-        display_board(board);
+        for (auto const &p : positions) {
+            strcat(move, p);
+            strcat(move, " ");
+            board[p[0] - 'A'][p[1] - '1'] = ' ';
+            cout << "ADDING " << p << " TO LIST!" << endl;
+            cout << "COPY IS NOW...." << endl;
+            display_board(board);
+        }
         return;
     }
-    if (mines == unrevealed) {
-        strcat(move, position);
-        strcat(move, "* ");
-        board[position[0] - 'A'][position[1] - '1'] = '*';
-        cout << "COPY IS NOW...." << endl;
-        display_board(board);
+    if ((mines == unrevealed && unrevealed == 1)) {
+        for (auto const &p : positions) {
+            strcat(move, p);
+            strcat(move, "* ");
+            board[p[0] - 'A'][p[1] - '1'] = '*';
+            cout << "COPY IS NOW...." << endl;
+            display_board(board);
+        }
         return;
     }
 }
