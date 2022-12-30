@@ -8,9 +8,6 @@
 
 using namespace std;
 
-/* You are pre-supplied with the functions below. Add your own
-   function definitions to the end of this file. */
-
 /* pre-supplied function to load mine positions from a file */
 void load_board(const char *filename, char board[9][9]) {
 
@@ -66,4 +63,13 @@ void initialise_board(char board[9][9]) {
             board[r][c] = '?';
 }
 
-/* add your functions here */
+bool is_complete(const char mines[9][9], const char revealed[9][9]) {
+    for (int row = 0; row < 9; row++) {
+        for (int col = 0; col < 9; col++) {
+            if (revealed[row][col] == '?' && mines[row][col] != '*') {
+                return false;
+            }
+        }
+    }
+    return true;
+}
