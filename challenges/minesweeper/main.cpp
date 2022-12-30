@@ -67,67 +67,67 @@ int main() {
         cout << "NOT ";
     cout << "complete." << endl;
 
-    cout << "====================== Question 2 ======================" << endl
-         << endl;
+    // cout << "====================== Question 2 ======================" << endl
+    //      << endl;
 
-    load_board("mines.dat", mines);
+    // load_board("mines.dat", mines);
 
-    cout << "Found " << count_mines("A7", mines)
-         << " mine(s) around square 'A7'" << endl;
+    // cout << "Found " << count_mines("A7", mines)
+    //      << " mine(s) around square 'A7'" << endl;
 
-    cout << "Found " << count_mines("E5", mines)
-         << " mine(s) around square 'E5'" << endl;
+    // cout << "Found " << count_mines("E5", mines)
+    //      << " mine(s) around square 'E5'" << endl;
 
-    cout << "Found " << count_mines("H9", mines)
-         << " mine(s) around square 'H9'" << endl
-         << endl;
+    // cout << "Found " << count_mines("H9", mines)
+    //      << " mine(s) around square 'H9'" << endl
+    //      << endl;
 
-    cout << "====================== Question 3 ======================" << endl
-         << endl;
+    // cout << "====================== Question 3 ======================" << endl
+    //      << endl;
 
-    load_board("mines.dat", mines);
-    initialise_board(revealed);
-    display_board(revealed);
+    // load_board("mines.dat", mines);
+    // initialise_board(revealed);
+    // display_board(revealed);
 
-    /* valid move */
-    cout << "Making move 'B6' results in:" << endl;
-    MoveResult result = make_move("B6", mines, revealed);
-    print_move_result(result, revealed);
+    // /* valid move */
+    // cout << "Making move 'B6' results in:" << endl;
+    // MoveResult result = make_move("B6", mines, revealed);
+    // print_move_result(result, revealed);
 
-    /* valid move */
-    cout << "Making move 'E5' results in:" << endl;
-    result = make_move("E5", mines, revealed);
-    print_move_result(result, revealed);
+    // /* valid move */
+    // cout << "Making move 'E5' results in:" << endl;
+    // result = make_move("E5", mines, revealed);
+    // print_move_result(result, revealed);
 
-    /* valid move */
-    cout << "Making move 'H3*' results in:" << endl;
-    result = make_move("H3*", mines, revealed);
-    print_move_result(result, revealed);
+    // /* valid move */
+    // cout << "Making move 'H3*' results in:" << endl;
+    // result = make_move("H3*", mines, revealed);
+    // print_move_result(result, revealed);
 
-    /* invalid move */
-    cout << "Making move 'Z8' results in:" << endl;
-    result = make_move("Z8", mines, revealed);
-    print_move_result(result, revealed);
+    // /* invalid move */
+    // cout << "Making move 'Z8' results in:" << endl;
+    // result = make_move("Z8", mines, revealed);
+    // print_move_result(result, revealed);
 
-    /* blown up */
-    cout << "Making move 'A5' results in:" << endl;
-    result = make_move("A5", mines, revealed);
-    print_move_result(result, revealed);
+    // /* blown up */
+    // cout << "Making move 'A5' results in:" << endl;
+    // result = make_move("A5", mines, revealed);
+    // print_move_result(result, revealed);
 
-    cout << "====================== Question 4 ======================" << endl
-         << endl;
+    // cout << "====================== Question 4 ======================" << endl
+    //      << endl;
 
-    load_board("mines.dat", mines);
-    load_board("partial.dat", revealed);
-    display_board(revealed);
+    // load_board("mines.dat", mines);
+    // load_board("partial.dat", revealed);
+    // display_board(revealed);
 
-    cout << "Safe move sequence: " << endl;
-    char move[512];
-    while (find_safe_move(revealed, move)) {
-        cout << move << " ";
-        make_move(move, mines, revealed);
-    }
-    cout << endl;
+    // cout << "Safe move sequence: " << endl;
+    // char move[512];
+    // while (find_safe_move(revealed, move)) {
+    //     cout << move << " ";
+    //     make_move(move, mines, revealed);
+    // }
+    // cout << endl;
 
     /*
     cout << "=================== Bonus Question =====================" << endl
