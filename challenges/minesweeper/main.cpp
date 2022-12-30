@@ -121,6 +121,7 @@ int main() {
     load_board("partial.dat", revealed);
     display_board(revealed);
 
+    // TO DELETE
     char move[512];
     find_safe_move(revealed, move);
 
