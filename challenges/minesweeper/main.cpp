@@ -32,87 +32,87 @@ int main() {
     char mines[9][9], revealed[9][9];
 
     /* This section illustrates the use of the pre-supplied helper functions. */
-    cout << "============== Pre-supplied functions ==================" << endl
-         << endl;
+    // cout << "============== Pre-supplied functions ==================" << endl
+    //      << endl;
 
-    cout << "Calling load_board():" << endl;
-    load_board("mines.dat", mines);
+    // cout << "Calling load_board():" << endl;
+    // load_board("mines.dat", mines);
 
-    cout << endl << "Displaying mine positions with display_board():" << endl;
-    display_board(mines);
-    cout << "Done!" << endl << endl;
+    // cout << endl << "Displaying mine positions with display_board():" << endl;
+    // display_board(mines);
+    // cout << "Done!" << endl << endl;
 
-    cout << "Calling initialise_board()..." << endl;
-    initialise_board(revealed);
+    // cout << "Calling initialise_board()..." << endl;
+    // initialise_board(revealed);
 
-    cout << endl
-         << "Displaying initial playing board with display_board():" << endl;
-    display_board(revealed);
-    cout << "Done!" << endl << endl;
+    // cout << endl
+    //      << "Displaying initial playing board with display_board():" << endl;
+    // display_board(revealed);
+    // cout << "Done!" << endl << endl;
 
-    cout << "====================== Question 1 ======================" << endl
-         << endl;
+    // cout << "====================== Question 1 ======================" << endl
+    //      << endl;
 
-    load_board("partial.dat", revealed);
-    display_board(revealed);
-    cout << "Game is ";
-    if (!is_complete(mines, revealed))
-        cout << "NOT ";
-    cout << "complete." << endl << endl;
+    // load_board("partial.dat", revealed);
+    // display_board(revealed);
+    // cout << "Game is ";
+    // if (!is_complete(mines, revealed))
+    //     cout << "NOT ";
+    // cout << "complete." << endl << endl;
 
-    load_board("solution.dat", revealed);
-    display_board(revealed);
-    cout << "Game is ";
-    if (!is_complete(mines, revealed))
-        cout << "NOT ";
-    cout << "complete." << endl;
+    // load_board("solution.dat", revealed);
+    // display_board(revealed);
+    // cout << "Game is ";
+    // if (!is_complete(mines, revealed))
+    //     cout << "NOT ";
+    // cout << "complete." << endl;
 
-    cout << "====================== Question 2 ======================" << endl
-         << endl;
-
-    load_board("mines.dat", mines);
-
-    cout << "Found " << count_mines("A7", mines)
-         << " mine(s) around square 'A7'" << endl;
-
-    cout << "Found " << count_mines("E5", mines)
-         << " mine(s) around square 'E5'" << endl;
-
-    cout << "Found " << count_mines("H9", mines)
-         << " mine(s) around square 'H9'" << endl
-         << endl;
-
-    // cout << "====================== Question 3 ======================" << endl
+    // cout << "====================== Question 2 ======================" << endl
     //      << endl;
 
     // load_board("mines.dat", mines);
-    // initialise_board(revealed);
-    // display_board(revealed);
 
-    // /* valid move */
-    // cout << "Making move 'B6' results in:" << endl;
-    // MoveResult result = make_move("B6", mines, revealed);
-    // print_move_result(result, revealed);
+    // cout << "Found " << count_mines("A7", mines)
+    //      << " mine(s) around square 'A7'" << endl;
 
-    // /* valid move */
-    // cout << "Making move 'E5' results in:" << endl;
-    // result = make_move("E5", mines, revealed);
-    // print_move_result(result, revealed);
+    // cout << "Found " << count_mines("E5", mines)
+    //      << " mine(s) around square 'E5'" << endl;
 
-    // /* valid move */
-    // cout << "Making move 'H3*' results in:" << endl;
-    // result = make_move("H3*", mines, revealed);
-    // print_move_result(result, revealed);
+    // cout << "Found " << count_mines("H9", mines)
+    //      << " mine(s) around square 'H9'" << endl
+    //      << endl;
 
-    // /* invalid move */
-    // cout << "Making move 'Z8' results in:" << endl;
-    // result = make_move("Z8", mines, revealed);
-    // print_move_result(result, revealed);
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-    // /* blown up */
-    // cout << "Making move 'A5' results in:" << endl;
-    // result = make_move("A5", mines, revealed);
-    // print_move_result(result, revealed);
+    load_board("mines.dat", mines);
+    initialise_board(revealed);
+    display_board(revealed);
+
+    /* valid move */
+    cout << "Making move 'B6' results in:" << endl;
+    MoveResult result = make_move("B6", mines, revealed);
+    print_move_result(result, revealed);
+
+    /* valid move */
+    cout << "Making move 'E5' results in:" << endl;
+    result = make_move("E5", mines, revealed);
+    print_move_result(result, revealed);
+
+    /* valid move */
+    cout << "Making move 'H3*' results in:" << endl;
+    result = make_move("H3*", mines, revealed);
+    print_move_result(result, revealed);
+
+    /* invalid move */
+    cout << "Making move 'Z8' results in:" << endl;
+    result = make_move("Z8", mines, revealed);
+    print_move_result(result, revealed);
+
+    /* blown up */
+    cout << "Making move 'A5' results in:" << endl;
+    result = make_move("A5", mines, revealed);
+    print_move_result(result, revealed);
 
     // cout << "====================== Question 4 ======================" << endl
     //      << endl;
