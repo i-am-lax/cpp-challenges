@@ -67,20 +67,20 @@ int main() {
         cout << "NOT ";
     cout << "complete." << endl;
 
-    // cout << "====================== Question 2 ======================" << endl
-    //      << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-    // load_board("mines.dat", mines);
+    load_board("mines.dat", mines);
 
-    // cout << "Found " << count_mines("A7", mines)
-    //      << " mine(s) around square 'A7'" << endl;
+    cout << "Found " << count_mines("A7", mines)
+         << " mine(s) around square 'A7'" << endl;
 
-    // cout << "Found " << count_mines("E5", mines)
-    //      << " mine(s) around square 'E5'" << endl;
+    cout << "Found " << count_mines("E5", mines)
+         << " mine(s) around square 'E5'" << endl;
 
-    // cout << "Found " << count_mines("H9", mines)
-    //      << " mine(s) around square 'H9'" << endl
-    //      << endl;
+    cout << "Found " << count_mines("H9", mines)
+         << " mine(s) around square 'H9'" << endl
+         << endl;
 
     // cout << "====================== Question 3 ======================" << endl
     //      << endl;

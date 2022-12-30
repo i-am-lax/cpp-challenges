@@ -73,3 +73,32 @@ bool is_complete(const char mines[9][9], const char revealed[9][9]) {
     }
     return true;
 }
+
+int count_mines(const char *position, const char mines[9][9]) {
+    if (!position || strlen(position) != 2) {
+        throw invalid_argument("[Invalid Argument Error] Position must be a "
+                               "string of 2 characters.");
+    }
+    int row = position[0] - 'A', col = position[1] - '1';
+    cout << "Position: " << position << " is " << row << ", " << col << endl;
+
+    // there are a maximum of 8 checks
+    int count = 0;
+    for (int r = row - 1; r <= row + 1; r++) {
+        for (int c = col - 1; c <= col + 1; c++) {
+            if (r == row && c == col) {
+                continue;
+            }
+            if (r < 0 || r > 8) {
+                continue;
+            }
+            if (c < 0 || c > 8) {
+                continue;
+            }
+            if (mines[r][c] == '*') {
+                count += 1;
+            }
+        }
+    }
+    return count;
+}
