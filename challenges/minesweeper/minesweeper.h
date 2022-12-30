@@ -15,3 +15,5 @@ bool is_complete(const char mines[9][9], const char revealed[9][9]);
 int count_mines(const char* position, const char mines[9][9]);
 
 MoveResult make_move(const char* position, const char mines[9][9], char revealed[9][9]);
+
+bool find_safe_move(const char revealed[9][9], char *move);

@@ -179,7 +179,6 @@ MoveResult make_move(const char *position, const char mines[9][9],
     int count = count_mines(position, mines);
     if (count == 0) {
         // recursive uncovering
-        cout << "Begin recursion..." << endl;
         uncover(mines, revealed, row, col);
     } else {
         revealed[row][col] = static_cast<char>(count + '0');
@@ -190,4 +189,102 @@ MoveResult make_move(const char *position, const char mines[9][9],
     }
 
     return VALID_MOVE;
+}
+
+char get_maximum_mines(const char revealed[9][9]) {
+    char max;
+    for (int r = 0; r < 9; r++) {
+        for (int c = 0; c < 9; c++) {
+            if (isdigit(revealed[r][c]) && revealed[r][c] > max) {
+                max = revealed[r][c];
+            }
+        }
+    }
+    return max;
+}
+
+void copy_board(const char original[9][9], char copy[9][9]) {
+    for (int r = 0; r < 9; r++) {
+        for (int c = 0; c < 9; c++) {
+            copy[r][c] = original[r][c];
+        }
+    }
+}
+
+void update(char board[9][9], char* move, int row, int col) {
+    int mines = board[row][col] - '0';
+    int unrevealed = 0;
+    int flags = 0;
+    char position[3];
+
+    // check adjacent squares
+    for (int r = row - 1; r <= row + 1; r++) {
+        for (int c = col - 1; c <= col + 1; c++) {
+            if (r == row && c == col) {
+                continue;
+            }
+            if (r < 0 || r > 8) {
+                continue;
+            }
+            if (c < 0 || c > 8) {
+                continue;
+            }
+            if (board[r][c] == '*') {
+                flags++;
+            }
+            if (board[r][c] == '?') {
+                unrevealed++;
+                position[0] = r + 'A';
+                position[1] = c + '1';
+            }
+
+        }
+    }
+    // if the number of flags equals the count of mines then any question marks can be turned over
+    if ((mines == flags) && (unrevealed > 0)) {
+        strcat(move, position);
+        strcat(move, " ");
+        board[position[0] - 'A'][position[1] - '1'] = ' ';
+        cout << "COPY IS NOW...." << endl;
+        display_board(board);
+        return;
+    }
+    if (mines == unrevealed) {
+        strcat(move, position);
+        strcat(move, "* ");
+        board[position[0] - 'A'][position[1] - '1'] = '*';
+        cout << "COPY IS NOW...." << endl;
+        display_board(board);
+        return;
+    }
+}
+
+bool find_safe_move(const char revealed[9][9], char *move) {
+    // find maximum digit
+    char max_digit = get_maximum_mines(revealed);
+
+    // copy revealed array
+    char copy[9][9];
+    copy_board(revealed, copy);
+
+    move[0] = '\0';
+
+    // start from '1' and check adjacent squares
+    for (char d = '1'; d <= max_digit; d++) {
+        for (int r = 0; r < 9; r++) {
+            for (int c = 0; c < 9; c++) {
+                if (copy[r][c] == d) {
+                    update(copy, move, r, c);
+                }
+            }
+        }
+    }
+
+    cout << "MOVES: " << move << endl;
+
+    if (strlen(move) > 0) {
+        return true;
+    }
+
+    return false;
 }

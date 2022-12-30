@@ -114,12 +114,15 @@ int main() {
     result = make_move("A5", mines, revealed);
     print_move_result(result, revealed);
 
-    // cout << "====================== Question 4 ======================" << endl
-    //      << endl;
+    cout << "====================== Question 4 ======================" << endl
+         << endl;
 
-    // load_board("mines.dat", mines);
-    // load_board("partial.dat", revealed);
-    // display_board(revealed);
+    load_board("mines.dat", mines);
+    load_board("partial.dat", revealed);
+    display_board(revealed);
+
+    char move[512];
+    find_safe_move(revealed, move);
 
     // cout << "Safe move sequence: " << endl;
     // char move[512];
