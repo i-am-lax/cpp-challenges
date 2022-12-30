@@ -84,7 +84,7 @@ bool is_complete(const char mines[9][9], const char revealed[9][9]) {
 
 /* Internal helper function to check that the 'row' and 'column' values are
  * within range in relation to the 9x9 board */
-bool valid_indices(int row, int col) {
+bool valid_indices(const int &row, const int &col) {
     return row >= 0 && row < 9 && col >= 0 && col < 9;
 }
 
@@ -95,9 +95,8 @@ bool valid_indices(int row, int col) {
 int count_mines(const char *position, const char mines[9][9]) {
     // check validity of input position
     if (!position || strlen(position) < 2) {
-        throw invalid_argument(
-            "[Invalid Argument Error] Position must be a "
-            "string with structure [(A-I), (1-9)] e.g. 'I8'");
+        throw invalid_argument("[Invalid Argument Error] Position must be a "
+                               "string with structure [(A-I), (1-9)]");
     }
 
     // deduce row and columns from position string
@@ -126,10 +125,10 @@ int count_mines(const char *position, const char mines[9][9]) {
 
 /* Internal helper function to return the char equivalent of an input integer
  * 'i' between 0 to 9 e.g. 5 -> '5' */
-char int_to_char(int i) {
+char int_to_char(const int &i) {
     if (i < 0 || i > 9) {
         throw invalid_argument(
-            "[Invalid Argument Error] i must be between 0 to 9");
+            "[Invalid Argument Error] 'i' must be between 0 to 9");
     }
     return static_cast<char>(i + '0');
 }
@@ -140,7 +139,8 @@ char int_to_char(int i) {
  * - if the square has already been flagged or uncovered
  * - if a mine is present
  * - if the count of mines > 0 then we add the count to the board and stop */
-void uncover(const char mines[9][9], char revealed[9][9], int row, int col) {
+void uncover(const char mines[9][9], char revealed[9][9], const int row,
+             const int col) {
     // indices out of range - terminate
     if (!valid_indices(row, col)) {
         return;
@@ -158,7 +158,7 @@ void uncover(const char mines[9][9], char revealed[9][9], int row, int col) {
 
     // generate position string
     char position[] = {static_cast<char>(row + 'A'),
-                        static_cast<char>(col + '1'), '\0'};
+                       static_cast<char>(col + '1'), '\0'};
 
     // count number of mines in adjacent squares to position
     int count = count_mines(position, mines);
@@ -168,13 +168,12 @@ void uncover(const char mines[9][9], char revealed[9][9], int row, int col) {
     }
 
     /* if the count is zero then square is blank and make recursive call for
-     * adjacent squares */
+     * adjacent squares (flood-fill) */
     revealed[row][col] = ' ';
-    for (int r = row - 1; r <= row + 1; r++) {
-        for (int c = col - 1; c <= col + 1; c++) {
-            uncover(mines, revealed, r, c);
-        }
-    }
+    uncover(mines, revealed, row + 1, col);
+    uncover(mines, revealed, row - 1, col);
+    uncover(mines, revealed, row, col + 1);
+    uncover(mines, revealed, row, col - 1);
 }
 
 /* Uncovers or flags a square on the current board 'revealed' at the given
