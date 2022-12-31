@@ -326,7 +326,7 @@ bool create_route_vector(const char *route, vector<Direction> &route_vector) {
 int validate_route(char **map, const int &height, const int &width,
                    const char *start_station, const char *route,
                    char *destination) {
-    // line changes
+    // count line changes
     int changes = 0;
 
     // load station mapping
@@ -337,25 +337,23 @@ int validate_route(char **map, const int &height, const int &width,
         return ERROR_START_STATION_INVALID;
     }
 
-    // validate route
+    // get symbol and coordinates for start station
+    int row, col;
+    char symbol = get_symbol_for_station_or_line(start_station);
+    get_symbol_position(map, height, width, symbol, row, col);
+
+    // validate route sequence
     vector<Direction> route_vector;
     if (!create_route_vector(route, route_vector)) {
         return ERROR_INVALID_DIRECTION;
     }
 
-    // get symbol for start station
-    char symbol = get_symbol_for_station_or_line(start_station);
-
-    // get coordinates for start station
-    int row, col;
-    get_symbol_position(map, height, width, symbol, row, col);
-
     // traverse the route
-    char current_line = ' ', prev_position;
+    char current_line = '~', prev_position;
     Direction prev_direction = INVALID_DIRECTION;
     for (auto const &r : route_vector) {
 
-        // record previous position and direction
+        // record previous position
         prev_position = map[row][col];
 
         // check for backtracking
@@ -364,6 +362,7 @@ int validate_route(char **map, const int &height, const int &width,
             !isalnum(prev_position)) {
             return ERROR_BACKTRACKING_BETWEEN_STATIONS;
         }
+        // record previous direction
         prev_direction = r;
 
         // move to the next step
@@ -380,12 +379,15 @@ int validate_route(char **map, const int &height, const int &width,
         }
 
         // get the starting tube line
-        if (current_line == ' ') {
+        if (current_line == '~') {
             current_line = map[row][col];
         }
 
+        // check that there is no line hopping unless at a station
         if (!isalnum(map[row][col])) {
+            // if the current step does not match the current tube line
             if (current_line != map[row][col]) {
+                // if the previous step was a station then record the change
                 if (isalnum(prev_position)) {
                     changes += 1;
                     current_line = map[row][col];
@@ -395,15 +397,16 @@ int validate_route(char **map, const int &height, const int &width,
             }
         }
     }
+
     // check if final position is a station
     if (!isalnum(map[row][col])) {
         return ERROR_ROUTE_ENDPOINT_IS_NOT_STATION;
     }
 
+    // retrieve station name corresponding to endpoint
     for (std::map<const string, char>::iterator it = stations.begin();
          it != stations.end(); it++) {
         if (it->second == map[row][col]) {
-            // copy_string(it->first, destination);
             strcpy(destination, it->first.c_str());
         }
     }

@@ -92,6 +92,10 @@ int main() {
 
     char route[512], destination[512] = "nowhere";
 
+    /* Valid route with backtracking through station */
+    test_validate_route(map, height, width, "NE,NE,SW,SW", "Knightsbridge",
+                        destination);
+
     /* Invalid route where start station does not exist */
     test_validate_route(map, height, width, "S,SE,S,S,E,E,E",
                         "Cambridge Circus", destination);
