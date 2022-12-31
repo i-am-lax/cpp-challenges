@@ -260,6 +260,31 @@ void update_position(Direction d, int &row, int &col) {
     }
 }
 
+/* Internal helper function to return the opposite direction to the input 'd' */
+Direction opposite_direction(Direction &d) {
+    switch (d) {
+    case N:
+        return S;
+    case S:
+        return N;
+    case E:
+        return W;
+    case W:
+        return E;
+    case NE:
+        return SW;
+    case NW:
+        return SE;
+    case SE:
+        return NW;
+    case SW:
+        return NE;
+    case INVALID_DIRECTION:
+        cerr << error_description(INVALID_DIRECTION) << endl;
+        return INVALID_DIRECTION;
+    }
+}
+
 /* Internal helper function to update 'route_vector' which is a vector of type
  * Direction based on string 'route' which is a comma-separated string of
  * directions e.g. "S,SE,E,E,N". Return true if extraction successful. */
@@ -335,10 +360,20 @@ int validate_route(char **map, const int &height, const int &width,
     get_symbol_position(map, height, width, symbol, row, col);
 
     // traverse the route
-    char line = ' ', prev;
+    char current_line = ' ', prev_position;
+    Direction prev_direction = INVALID_DIRECTION;
     for (auto const &r : route_vector) {
-        // get previous position
-        prev = map[row][col];
+
+        // record previous position and direction
+        prev_position = map[row][col];
+
+        // check for backtracking
+        if (prev_direction != INVALID_DIRECTION &&
+            r == opposite_direction(prev_direction) &&
+            !isalnum(prev_position)) {
+            return ERROR_BACKTRACKING_BETWEEN_STATIONS;
+        }
+        prev_direction = r;
 
         // move to the next step
         update_position(r, row, col);
@@ -354,15 +389,15 @@ int validate_route(char **map, const int &height, const int &width,
         }
 
         // get the starting tube line
-        if (line == ' ') {
-            line = map[row][col];
+        if (current_line == ' ') {
+            current_line = map[row][col];
         }
 
         if (!isalnum(map[row][col])) {
-            if (line != map[row][col]) {
-                if (isalnum(prev)) {
+            if (current_line != map[row][col]) {
+                if (isalnum(prev_position)) {
                     changes += 1;
-                    line = map[row][col];
+                    current_line = map[row][col];
                 } else {
                     return ERROR_LINE_HOPPING_BETWEEN_STATIONS;
                 }
