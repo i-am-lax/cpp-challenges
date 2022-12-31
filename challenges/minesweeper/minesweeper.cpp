@@ -168,12 +168,15 @@ void uncover(const char mines[9][9], char revealed[9][9], const int row,
     }
 
     /* if the count is zero then square is blank and make recursive call for
-     * adjacent squares (flood-fill) */
+     * adjacent squares - note we cannot just do flood-fill because a square
+     * might be only reachable diagonally from a blank square (e.g. C8 can only
+     * be uncovered from D7) */
     revealed[row][col] = ' ';
-    uncover(mines, revealed, row + 1, col);
-    uncover(mines, revealed, row - 1, col);
-    uncover(mines, revealed, row, col + 1);
-    uncover(mines, revealed, row, col - 1);
+    for (int r = row - 1; r <= row + 1; r++) {
+        for (int c = col - 1; c <= col + 1; c++) {
+            uncover(mines, revealed, r, c);
+        }
+    }
 }
 
 /* Uncovers or flags a square on the current board 'revealed' at the given
