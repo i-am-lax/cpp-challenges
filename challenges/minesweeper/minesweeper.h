@@ -30,7 +30,7 @@ MoveResult make_move(const char *position, const char mines[9][9],
 
 /* Determines if a risk-free move (no guess-work) is available starting from the
  * current playing board 'revealed'. The return value of the function is true if
- * a risk-free move(s) is available, and the output string 'move' contains the
- * sequence. Otherwise the return value of the function is false and 'move' is
- * empty string */
+ * a risk-free move is available, and the output string 'move' contains the
+ * position. Otherwise the return value of the function is false and 'move' is
+ * an empty string */
 bool find_safe_move(const char revealed[9][9], char *move);

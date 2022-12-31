@@ -128,6 +128,7 @@ int main() {
         make_move(move, mines, revealed);
     }
     cout << endl;
+    display_board(revealed);
 
     /*
     cout << "=================== Bonus Question =====================" << endl

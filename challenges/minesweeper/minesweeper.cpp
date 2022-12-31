@@ -279,19 +279,11 @@ MoveResult make_move(const char *position, const char mines[9][9],
     return VALID_MOVE;
 }
 
-/* Internal helper function to copy the contents of 'board' into 'copy' */
-void copy_board(const char board[9][9], char copy[9][9]) {
-    for (int r = 0; r < 9; r++) {
-        for (int c = 0; c < 9; c++) {
-            copy[r][c] = board[r][c];
-        }
-    }
-}
-
 /* Internal helper function to observe squares on 'board' adjacent to position
- * 'row' and 'col' and append safe moves to 'move' based on the count of mines,
+ * 'row' and 'col' and append a safe move to 'move' based on the count of mines,
  * the number of flags, and the number of unrevealed squares */
-void update(char board[9][9], char *move, int row, int col) {
+bool get_move(const char board[9][9], char *move, const int &row,
+            const int &col) {
     // translate number of mines at [row, col] back to integer value
     int mines = board[row][col] - '0';
 
@@ -299,9 +291,8 @@ void update(char board[9][9], char *move, int row, int col) {
     int unrevealed = 0;
     int flags = 0;
 
-    // store positions of unrevealed squares
+    // store position of unrevealed square
     char position[3];
-    vector<char *> positions;
 
     // check all adjacent squares
     for (int r = row - 1; r <= row + 1; r++) {
@@ -321,76 +312,46 @@ void update(char board[9][9], char *move, int row, int col) {
             if (board[r][c] == '?') {
                 unrevealed++;
                 indices_to_str(r, c, position);
-                // TODO: figure out why duplicates are being pushed
-                if (find(positions.begin(), positions.end(), position) ==
-                    positions.end()) {
-                    positions.push_back(position);
-                }
             }
         }
     }
 
-    /* Print positions */
-    // issues from: [0, 6] A7 - positions vector = A8, A8
-    // issues from: [6, 0] - positions vector = H2, H2
-    // issues from [7, 0] - positions vector = I2, I2
-
-    /* if the number of flags equals the count of mines then any question
-     * marks can be turned over */
-    int r, c;
+    /* if the number of flags equals the count of mines then any unrevealed
+     * squares can be revealed */
     if ((mines - flags == 0) && unrevealed > 0) {
-        for (auto const &p : positions) {
-            strcat(move, p);
-            strcat(move, " ");
-            // count mines based on current board
-            int count = count_mines(p, board);
-            str_to_indices(p, r, c);
-            add_count_to_board(board[r][c], count);
-        }
+        strcat(move, position);
+        return true;
     }
     /* if the difference between mines and flags equals the number of unrevealed
      * squares then we flag them */
     else if ((mines - flags == unrevealed) && unrevealed > 0) {
-        for (auto const &p : positions) {
-            strcat(move, p);
-            strcat(move, "* ");
-            str_to_indices(p, r, c);
-            board[r][c] = '*';
-        }
+        strcat(move, position);
+        strcat(move, "*");
+        return true;
     }
+    return false;
 }
 
 /* Determines if a safe move (no guess-work) is available starting from the
  * current playing board 'revealed'. The return value of the function is
- * true if a safe move(s) is available, and the output string 'move'
- * contains the sequence. Otherwise the return value of the function is
- * false and 'move' is empty. Logic:
- * - create a copy of the board to mark moves as we iterate through
+ * true if a safe move is available, and the output string 'move' contains this.
+ * Otherwise the return value of the function is false and 'move' is empty.
+ * Logic:
  * - if number of flags equals count of mines then any '?' squares can be
  * revealed
  * - if (mines - flags) equals '?' squares then those squares can be
  * revealed */
 bool find_safe_move(const char revealed[9][9], char *move) {
-
-    // copy current playing board 'revealed'
-    char copy[9][9];
-    copy_board(revealed, copy);
-
-    // ensure move is empty to begin with
+    // ensure move is empty
     *move = '\0';
 
     // iterate through board and update as safe moves are found
     for (int r = 0; r < 9; r++) {
         for (int c = 0; c < 9; c++) {
-            update(copy, move, r, c);
+            if (get_move(revealed, move, r, c)) {
+                return true;
+            }
         }
-    }
-
-    cout << "Safe moves: " << move << endl;
-
-    // return true if safe moves are possible
-    if (strlen(move) > 0) {
-        return true;
     }
     return false;
 }
