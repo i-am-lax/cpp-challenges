@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <map>
 
 using namespace std;
 
@@ -150,4 +151,47 @@ bool get_symbol_position(char **map, const int height, const int width,
     r = -1;
     c = -1;
     return false;
+}
+
+map<const string, char> create_char_map(const char *filename) {
+    // declare variables for generating map
+    map<const string, char> mapping;
+    char value;
+    char str[MAX_LENGTH];
+
+    // instantiate input filestream
+    ifstream in;
+    in.open(filename);
+
+    // add values to mapping
+    while (!in.eof()) {
+        string key;
+        in.getline(str, MAX_LENGTH);
+        value = str[0];
+        for (int i = 2; i < strlen(str); i++) {
+            key += str[i];
+        }
+        mapping[key] = value;
+        str[0] = '\0';
+    }
+
+    return mapping;
+}
+
+char get_symbol_for_station_or_line(const char *name) {
+    // default is space character
+    char output = ' ';
+
+    // load in station and line data
+    map<const string, char> stations = create_char_map(STATIONS);
+    map<const string, char> lines = create_char_map(LINES);
+
+    // check if 'name' exists in either map and if so, return it
+    if (stations.count(name)) {
+        output = stations.at(name);
+    }
+    else if (lines.count(name)) {
+        output = lines.at(name);
+    }
+    return output;
 }

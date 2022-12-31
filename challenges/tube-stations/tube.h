@@ -1,3 +1,7 @@
+const int MAX_LENGTH = 100;
+const char LINES[] = "lines.txt";
+const char STATIONS[] = "stations.txt";
+
 enum Direction { N, S, W, E, NE, NW, SE, SW, INVALID_DIRECTION };
 
 /* error codes for Question 3 */
@@ -23,3 +27,5 @@ Direction string_to_direction(const char *token);
 
 bool get_symbol_position(char **map, const int height, const int width,
                          const char target, int &r, int &c);
+
+char get_symbol_for_station_or_line(const char *name);

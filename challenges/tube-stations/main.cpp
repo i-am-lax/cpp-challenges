@@ -58,26 +58,26 @@ int main() {
         cout << "not found.";
     cout << endl << endl;
 
-    // cout << "====================== Question 2 ======================" <<
-    // endl
-    //      << endl;
+    cout << "====================== Question 2 ======================" <<
+    endl
+         << endl;
 
-    // cout << "The symbol for Victoria station is '"
-    //      << get_symbol_for_station_or_line("Victoria") << "'" << endl
-    //      << endl;
+    cout << "The symbol for Victoria station is '"
+         << get_symbol_for_station_or_line("Victoria") << "'" << endl
+         << endl;
 
-    // cout << "The symbol for Oxford Circus station is '"
-    //      << get_symbol_for_station_or_line("Oxford Circus") << "'" << endl
-    //      << endl;
+    cout << "The symbol for Oxford Circus station is '"
+         << get_symbol_for_station_or_line("Oxford Circus") << "'" << endl
+         << endl;
 
-    // cout << "The symbol for the District Line is '"
-    //      << get_symbol_for_station_or_line("District Line") << "'" << endl
-    //      << endl;
+    cout << "The symbol for the District Line is '"
+         << get_symbol_for_station_or_line("District Line") << "'" << endl
+         << endl;
 
-    // /* Birmingham station is not on the Tube map, so this should return ' '
-    // */ cout << "The symbol for Birmingham station is '"
-    //      << get_symbol_for_station_or_line("Birmingham") << "'" << endl
-    //      << endl;
+    /* Birmingham station is not on the Tube map, so this should return ' '
+    */ cout << "The symbol for Birmingham station is '"
+         << get_symbol_for_station_or_line("Birmingham") << "'" << endl
+         << endl;
 
     // cout << "====================== Question 3 ======================" <<
     // endl
