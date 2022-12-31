@@ -88,19 +88,35 @@ bool valid_indices(const int &row, const int &col) {
     return row >= 0 && row < 9 && col >= 0 && col < 9;
 }
 
-/* Returns the number of mines around a particular square (8 adjacent squares
- * are checked). 'position' is a two-character string denoting row and column
- * board coordinates (e.g. "I8") and 'mines' is a 2D character array of mine
- * locations */
-int count_mines(const char *position, const char mines[9][9]) {
+/* Internal helper function to retrieve row and column indices from 'position'
+ * and store in input parameters 'row' and 'col' respectively. Throw error if
+ * 'position' is null or if length is not at least 2 */
+void str_to_indices(const char *position, int &row, int &col) {
     // check validity of input position
     if (!position || strlen(position) < 2) {
         throw invalid_argument("[Invalid Argument Error] Position must be a "
                                "string with structure [(A-I), (1-9)]");
     }
+    row = position[0] - 'A';
+    col = position[1] - '1';
+}
 
+/* Internal helper function to generate string of 2 characters [(A-I),
+ * (1-9)] from 'row' and 'col' inputs and store in 'position' */
+void indices_to_str(const int &row, const int &col, char *position) {
+    char output[] = {static_cast<char>(row + 'A'), static_cast<char>(col + '1'),
+                     '\0'};
+    strcpy(position, output);
+}
+
+/* Returns the number of mines around a particular square (8 adjacent squares
+ * are checked). 'position' is a two-character string denoting row and column
+ * board coordinates (e.g. "I8") and 'mines' is a 2D character array of mine
+ * locations */
+int count_mines(const char *position, const char mines[9][9]) {
     // deduce row and columns from position string
-    int row = position[0] - 'A', col = position[1] - '1';
+    int row, col;
+    str_to_indices(position, row, col);
 
     // there are a maximum of 8 possibilities for adjacent squares
     int count = 0;
@@ -157,8 +173,8 @@ void uncover(const char mines[9][9], char revealed[9][9], const int row,
     }
 
     // generate position string
-    char position[] = {static_cast<char>(row + 'A'),
-                       static_cast<char>(col + '1'), '\0'};
+    char position[3];
+    indices_to_str(row, col, position);
 
     // count number of mines in adjacent squares to position
     int count = count_mines(position, mines);
@@ -210,7 +226,8 @@ MoveResult make_move(const char *position, const char mines[9][9],
     }
 
     // get row and column indices
-    int row = position[0] - 'A', col = position[1] - '1';
+    int row, col;
+    str_to_indices(position, row, col);
 
     // check if row or column indices out of range
     if (!valid_indices(row, col)) {
