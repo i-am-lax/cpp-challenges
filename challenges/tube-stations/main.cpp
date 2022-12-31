@@ -79,28 +79,28 @@ int main() {
          << get_symbol_for_station_or_line("Birmingham") << "'" << endl
          << endl;
 
-    // cout << "====================== Question 3 ======================" <<
-    // endl
-    //      << endl;
+    cout << "====================== Question 3 ======================" <<
+    endl
+         << endl;
 
-    // char route[512], destination[512] = "nowhere";
+    char route[512], destination[512] = "nowhere";
 
-    // /* valid route to Leicester Square with 1 line change */
-    // strcpy(route, "S,SE,S,S,E,E,E,E,E,E,E,E,E,E,E");
-    // cout << "Starting at Oxford Circus and taking the steps:" << endl;
-    // cout << route << endl;
-    // int result =
-    //     validate_route(map, height, width, "Oxford Circus", route,
-    //     destination);
-    // if (result >= 0)
-    //     cout << "is a valid route with " << result
-    //          << " line change(s) ending at " << destination << "." << endl;
-    // else
-    //     cout << "is an invalid route (" << error_description(result) << ")"
-    //          << endl;
-    // cout << endl;
+    /* valid route to Leicester Square with 1 line change */
+    strcpy(route, "S,SE,S,S,E,E,E,E,E,E,E,E,E,E,E");
+    cout << "Starting at Oxford Circus and taking the steps:" << endl;
+    cout << route << endl;
+    int result =
+        validate_route(map, height, width, "Oxford Circus", route,
+        destination);
+    if (result >= 0)
+        cout << "is a valid route with " << result
+             << " line change(s) ending at " << destination << "." << endl;
+    else
+        cout << "is an invalid route (" << error_description(result) << ")"
+             << endl;
+    cout << endl;
 
-    // /* invalid route because of line hopping between stations */
+    /* invalid route because of line hopping between stations */
     // strcpy(route, "N,N,N,N,N,NE,W");
     // cout << "Starting at London Bridge and taking the steps:" << endl;
     // cout << route << endl;

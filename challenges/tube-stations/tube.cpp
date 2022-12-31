@@ -6,6 +6,7 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
+#include <vector>
 
 using namespace std;
 
@@ -189,9 +190,172 @@ char get_symbol_for_station_or_line(const char *name) {
     // check if 'name' exists in either map and if so, return it
     if (stations.count(name)) {
         output = stations.at(name);
-    }
-    else if (lines.count(name)) {
+    } else if (lines.count(name)) {
         output = lines.at(name);
     }
     return output;
+}
+
+bool create_route_vector(const char *route, vector<Direction> &route_vector) {
+    char token[3];
+    Direction d;
+
+    int idx = 0;
+    while (*route != '\0') {
+        if (*route == ',') {
+            token[idx] = '\0';
+            d = string_to_direction(token);
+            if (d == INVALID_DIRECTION) {
+                return false;
+            }
+            route_vector.push_back(d);
+            idx = 0;
+            token[idx] = '\0';
+        } else if (*route != ',') {
+            token[idx] = *route;
+            idx++;
+        }
+        route++;
+    }
+    return true;
+}
+
+void update_position(Direction d, int &row, int &col) {
+    switch (d) {
+    case N:
+        row++;
+        break;
+    case S:
+        row--;
+        break;
+    case W:
+        col--;
+        break;
+    case E:
+        col++;
+        break;
+    case NE:
+        row++;
+        col++;
+        break;
+    case NW:
+        row++;
+        col--;
+        break;
+    case SE:
+        row--;
+        col++;
+        break;
+    case SW:
+        row--;
+        col--;
+        break;
+    case INVALID_DIRECTION:
+        break;
+    default:
+        cerr << "Invalid." << endl;
+    }
+}
+
+bool is_valid_indices(const int &row, const int &col, const int &height, const int &width) {
+    if (row < 0 || row > height - 1) {
+        return false;
+    }
+    if (col < 0 || col > width - 1) {
+        return false;
+    }
+    return true;
+}
+
+void copy_string(string str, char* cstr) {
+    for (int i = 0; i < str.length(); i++) {
+        *cstr = str[i];
+        cstr++;
+    }
+    *cstr = '\0';
+}
+
+int validate_route(char **map, const int &height, const int &width,
+                   const char *start_station, const char *route,
+                   char *destination) {
+    // line changes
+    int changes = 0;
+
+    // load station mapping
+    std::map<const string, char> stations = create_char_map(STATIONS);
+
+    // validate start station
+    if (!stations.count(start_station)) {
+        cout << "ERROR_START_STATION_INVALID" << endl;
+        return ERROR_START_STATION_INVALID;
+    }
+
+    // validate route
+    vector<Direction> route_vector;
+    if (!create_route_vector(route, route_vector)) {
+        cout << "ERROR_INVALID_DIRECTION" << endl;
+        return ERROR_INVALID_DIRECTION;
+    }
+
+    // get symbol for start station
+    char symbol = get_symbol_for_station_or_line(start_station);
+
+    // get coordinates for start station
+    int row, col;
+    get_symbol_position(map, height, width, symbol, row, col);
+
+    cout << "start position: [" << row <<"," << col << "]" << endl;
+
+    // traverse the route
+    char line = ' ', prev;
+    for (auto const &r: route_vector) {
+        // get previous position
+        prev = map[row][col];
+
+        // move to the next step
+        update_position(r, row, col);
+        cout << "position is now [" << row<<"," << col <<  "]" << endl;
+
+        // check if row and column are valid positions on map
+        if (!is_valid_indices(row, col, height, width)) {
+            cout << "ERROR_OUT_OF_BOUNDS" << endl;
+            return ERROR_OUT_OF_BOUNDS;
+        }
+        
+        // check if at a station or on a track
+        if (map[row][col] == ' ') {
+            cout << "ERROR_OFF_TRACK" << endl;
+            return ERROR_OFF_TRACK;
+        }
+
+        // get the starting tube line
+        if (line == ' ') {
+            line = map[row][col];
+        }
+
+        if (!isalnum(map[row][col])) {
+            if (line != map[row][col]) {
+                if (isalnum(prev)) {
+                    changes += 1;
+                    line = map[row][col];
+                }
+                else {
+                    cout << "ERROR_LINE_HOPPING_BETWEEN_STATIONS" << endl;
+                    return ERROR_LINE_HOPPING_BETWEEN_STATIONS;
+                }
+            }
+        }
+    }
+    // check if final position is a station
+    if (!isalnum(map[row][col])) {
+        cout << "ERROR_ROUTE_ENDPOINT_IS_NOT_STATION" << endl;
+        return ERROR_ROUTE_ENDPOINT_IS_NOT_STATION;
+    }
+
+    for (std::map<const string, char>::iterator it = stations.begin(); it != stations.end(); it++) {
+        if (it->second == map[row][col]) {
+            copy_string(it->first, destination);
+        }
+    }
+    return changes;
 }
