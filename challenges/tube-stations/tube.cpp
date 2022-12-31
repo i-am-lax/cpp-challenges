@@ -133,3 +133,21 @@ Direction string_to_direction(const char *token) {
     }
     return INVALID_DIRECTION;
 }
+
+bool get_symbol_position(char **map, const int height, const int width,
+                         const char target, int &r, int &c) {
+    // iterate through map and identify the symbol 'target'
+    for (int row = 0; row < height; row++) {
+        for (int col = 0; col < width; col++) {
+            if (map[row][col] == target) {
+                r = row;
+                c = col;
+                return true;
+            }
+        }
+    }
+    // set to -1 if 'target' not found
+    r = -1;
+    c = -1;
+    return false;
+}
