@@ -308,6 +308,21 @@ bool create_route_vector(const char *route, vector<Direction> &route_vector) {
     return true;
 }
 
+/* Internal helper function to retrieve the station name corresponding to the
+ * symbol 'target' and write to 'output' */
+void get_station_name(const char target, char *output) {
+    // load station mapping
+    std::map<const string, char> stations = create_char_map(STATIONS);
+
+    // identify station and store in output
+    for (std::map<const string, char>::iterator it = stations.begin();
+         it != stations.end(); it++) {
+        if (it->second == target) {
+            strcpy(output, it->first.c_str());
+        }
+    }
+}
+
 /* Given the name of an origin station 'start_station' and string 'route'
  * describing a journey on 'map', at each journey step, determines if the route
  * is valid. If the route is invalid then an error code is returned, otherwise
@@ -404,11 +419,7 @@ int validate_route(char **map, const int &height, const int &width,
     }
 
     // retrieve station name corresponding to endpoint
-    for (std::map<const string, char>::iterator it = stations.begin();
-         it != stations.end(); it++) {
-        if (it->second == map[row][col]) {
-            strcpy(destination, it->first.c_str());
-        }
-    }
+    get_station_name(map[row][col], destination);
+    
     return changes;
 }
