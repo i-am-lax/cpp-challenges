@@ -149,6 +149,16 @@ char int_to_char(const int &i) {
     return static_cast<char>(i + '0');
 }
 
+/* Internal helper function to populate the 'square' with a blank if the count
+ * of mines 'count' is zero otherwise the count itself as a character */
+void add_count_to_board(char &square, const int &count) {
+    if (count > 0) {
+        square = int_to_char(count);
+        return;
+    }
+    square = ' ';
+}
+
 /* Internal helper function to recursively uncover adjacent squares if the
  * current square is revealed to be blank. Base cases are:
  * - if the indices are out of range
@@ -178,16 +188,18 @@ void uncover(const char mines[9][9], char revealed[9][9], const int row,
 
     // count number of mines in adjacent squares to position
     int count = count_mines(position, mines);
+
+    // add count to the board
+    add_count_to_board(revealed[row][col], count);
+
+    // count mines > 0 - terminate
     if (count > 0) {
-        revealed[row][col] = int_to_char(count);
         return;
     }
 
-    /* if the count is zero then square is blank and make recursive call for
-     * adjacent squares - note we cannot just do flood-fill because a square
-     * might be only reachable diagonally from a blank square (e.g. C8 can only
-     * be uncovered from D7) */
-    revealed[row][col] = ' ';
+    /* if the count is zero make recursive call for adjacent squares - note we
+     * cannot just do flood-fill because a square might be only reachable
+     * diagonally from a blank square (e.g. C8 can only be uncovered from D7) */
     for (int r = row - 1; r <= row + 1; r++) {
         for (int c = col - 1; c <= col + 1; c++) {
             uncover(mines, revealed, r, c);
@@ -196,13 +208,13 @@ void uncover(const char mines[9][9], char revealed[9][9], const int row,
 }
 
 /* Uncovers or flags a square on the current board 'revealed' at the given
- * 'position'. If the third character of 'position' is '*' the move is to flag
- * the square in 'revealed', otherwise we uncover the square. Various checks are
- * performed:
+ * 'position'. If the third character of 'position' is '*' the move is to
+ * flag the square in 'revealed', otherwise we uncover the square. Various
+ * checks are performed:
  * - ensure 'position' is of the correct length and if length is 3, then 3rd
  * character is '*' only
- * - validate row and column indices and make sure they're actual positions on
- * the board
+ * - validate row and column indices and make sure they're actual positions
+ * on the board
  * - ensure square has not already been uncovered / flagged */
 MoveResult make_move(const char *position, const char mines[9][9],
                      char revealed[9][9]) {
@@ -267,34 +279,25 @@ MoveResult make_move(const char *position, const char mines[9][9],
     return VALID_MOVE;
 }
 
-/* Question 4 */
-
-char get_maximum_mines(const char revealed[9][9]) {
-    char max;
+/* Internal helper function to copy the contents of 'board' into 'copy' */
+void copy_board(const char board[9][9], char copy[9][9]) {
     for (int r = 0; r < 9; r++) {
         for (int c = 0; c < 9; c++) {
-            if (isdigit(revealed[r][c]) && revealed[r][c] > max) {
-                max = revealed[r][c];
-            }
-        }
-    }
-    return max;
-}
-
-void copy_board(const char original[9][9], char copy[9][9]) {
-    for (int r = 0; r < 9; r++) {
-        for (int c = 0; c < 9; c++) {
-            copy[r][c] = original[r][c];
+            copy[r][c] = board[r][c];
         }
     }
 }
 
 void update(char board[9][9], char *move, int row, int col) {
+    // translate number of mines at [row, col] back to integer value
     int mines = board[row][col] - '0';
+
+    // counters to hold number of flags / unrevealed in adjacent squares
     int unrevealed = 0;
     int flags = 0;
-    char position[3];
 
+    // store positions
+    char position[3];
     vector<char *> positions;
 
     // check adjacent squares
@@ -303,10 +306,7 @@ void update(char board[9][9], char *move, int row, int col) {
             if (r == row && c == col) {
                 continue;
             }
-            if (r < 0 || r > 8) {
-                continue;
-            }
-            if (c < 0 || c > 8) {
+            if (!valid_indices(r, c)) {
                 continue;
             }
             if (board[r][c] == '*') {
@@ -314,63 +314,74 @@ void update(char board[9][9], char *move, int row, int col) {
             }
             if (board[r][c] == '?') {
                 unrevealed++;
-                position[0] = r + 'A';
-                position[1] = c + '1';
-                positions.push_back(position);
-            }
-        }
-    }
-    // if the number of flags equals the count of mines then any question marks
-    // can be turned over
-    if ((mines == flags) && (unrevealed > 0)) {
-        for (auto const &p : positions) {
-            strcat(move, p);
-            strcat(move, " ");
-            board[p[0] - 'A'][p[1] - '1'] = ' ';
-            cout << "ADDING " << p << " TO LIST!" << endl;
-            cout << "COPY IS NOW...." << endl;
-            display_board(board);
-        }
-        return;
-    }
-    if ((mines == unrevealed && unrevealed == 1)) {
-        for (auto const &p : positions) {
-            strcat(move, p);
-            strcat(move, "* ");
-            board[p[0] - 'A'][p[1] - '1'] = '*';
-            cout << "COPY IS NOW...." << endl;
-            display_board(board);
-        }
-        return;
-    }
-}
-
-bool find_safe_move(const char revealed[9][9], char *move) {
-    // find maximum digit
-    char max_digit = get_maximum_mines(revealed);
-
-    // copy revealed array
-    char copy[9][9];
-    copy_board(revealed, copy);
-
-    move[0] = '\0';
-
-    // start from '1' and check adjacent squares
-    for (char d = '1'; d <= max_digit; d++) {
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                if (copy[r][c] == d) {
-                    update(copy, move, r, c);
+                indices_to_str(r, c, position);
+                // TODO: figure out why duplicates are being pushed
+                if (find(positions.begin(), positions.end(), position) ==
+                    positions.end()) {
+                    positions.push_back(position);
                 }
             }
         }
     }
 
-    cout << "MOVES: " << move << endl;
+    /* Print positions */
+    // issues from: [0, 6] A7 - positions vector = A8, A8
+    // issues from: [6, 0] - positions vector = H2, H2
+    // issues from [7, 0] - positions vector = I2, I2
+
+    /* if the number of flags equals the count of mines then any question
+     * marks can be turned over */
+    if ((mines - flags == 0) && unrevealed > 0) {
+        for (auto const &p : positions) {
+            strcat(move, p);
+            strcat(move, " ");
+            // only use information we know
+            int m = count_mines(p, board);
+            int r, c;
+            str_to_indices(p, r, c);
+            board[r][c] = int_to_char(m);
+        }
+    } else if ((mines - flags == unrevealed) && unrevealed > 0) {
+        for (auto const &p : positions) {
+            strcat(move, p);
+            strcat(move, "* ");
+            int r, c;
+            str_to_indices(p, r, c);
+            board[r][c] = '*';
+        }
+    }
+}
+
+/* Determines if a safe move (no guess-work) is available starting from the
+ * current playing board 'revealed'. The return value of the function is
+ * true if a safe move(s) is available, and the output string 'move'
+ * contains the sequence. Otherwise the return value of the function is
+ * false and 'move' is empty. Logic:
+ * - create a copy of the board to mark moves as we iterate through
+ * - if number of flags equals count of mines then any '?' squares can be
+ * revealed
+ * - if (mines - flags) equals '?' squares then those squares can be
+ * revealed */
+bool find_safe_move(const char revealed[9][9], char *move) {
+
+    // copy current playing board 'revealed'
+    char copy[9][9];
+    copy_board(revealed, copy);
+
+    // ensure move is empty to begin with
+    *move = '\0';
+
+    // iterate through board and update as safe moves are found
+    for (int r = 0; r < 9; r++) {
+        for (int c = 0; c < 9; c++) {
+            update(copy, move, r, c);
+        }
+    }
+
+    cout << "Safe moves: " << move << endl;
 
     if (strlen(move) > 0) {
         return true;
     }
-
     return false;
 }
