@@ -12,10 +12,7 @@ using namespace std;
 
 #include "tube.h"
 
-/* You are pre-supplied with the functions below. Add your own
-   function definitions to the end of this file. */
-
-/* internal helper function which allocates a dynamic 2D array */
+// Internal helper function which allocates a dynamic 2D array
 char **allocate_2D_array(int rows, int columns) {
     char **m = new char *[rows];
     assert(m);
@@ -26,14 +23,15 @@ char **allocate_2D_array(int rows, int columns) {
     return m;
 }
 
-/* internal helper function which deallocates a dynamic 2D array */
+// Internal helper function which deallocates a dynamic 2D array */
 void deallocate_2D_array(char **m, int rows) {
     for (int r = 0; r < rows; r++)
         delete[] m[r];
     delete[] m;
 }
 
-/* internal helper function which gets the dimensions of a map */
+/* Internal helper function which gets the dimensions of a map from 'filename'
+ * and stores in 'height' and 'width' */
 bool get_map_dimensions(const char *filename, int &height, int &width) {
     char line[512];
 
@@ -54,7 +52,8 @@ bool get_map_dimensions(const char *filename, int &height, int &width) {
     return false;
 }
 
-/* pre-supplied function to load a tube map from a file*/
+/* Pre-supplied function to load an ASCII tube map from a file ('filename') and
+ * add dimensions to 'height' and 'width' */
 char **load_map(const char *filename, int &height, int &width) {
 
     bool success = get_map_dimensions(filename, height, width);
@@ -79,7 +78,8 @@ char **load_map(const char *filename, int &height, int &width) {
     return m;
 }
 
-/* pre-supplied function to print the tube map */
+/* Pre-supplied function to print the ASCII map ('height' × 'width') stored in
+ * 'm' */
 void print_map(char **m, int height, int width) {
     cout << setw(2) << " "
          << " ";
@@ -104,8 +104,8 @@ void print_map(char **m, int height, int width) {
     }
 }
 
-/* pre-supplied helper function to report the errors encountered in Question 3
- */
+/* Pre-supplied helper function to provide human readable strings describing the
+ * (negative integer) error 'code' */
 const char *error_description(int code) {
     switch (code) {
     case ERROR_START_STATION_INVALID:
@@ -126,7 +126,8 @@ const char *error_description(int code) {
     return "Unknown error";
 }
 
-/* presupplied helper function for converting string to direction enum */
+/* Pre-supplied helper function for converting string 'token' ("N", "S", "W",
+ * "E", "NE", "NW", "SE", "SW") to Direction enum */
 Direction string_to_direction(const char *token) {
     const char *strings[] = {"N", "S", "W", "E", "NE", "NW", "SE", "SW"};
     for (int n = 0; n < 8; n++) {
@@ -136,6 +137,9 @@ Direction string_to_direction(const char *token) {
     return INVALID_DIRECTION;
 }
 
+/* Returns true and sets the coordinates ('r', 'c') if the character 'target' is
+ * found in the input 'map' with 'height' rows and 'width' columns. Otherwise
+ * returns false and sets 'r' = -1 and 'c' = -1  */
 bool get_symbol_position(char **map, const int height, const int width,
                          const char target, int &r, int &c) {
     // iterate through map and identify the symbol 'target'
@@ -154,11 +158,13 @@ bool get_symbol_position(char **map, const int height, const int width,
     return false;
 }
 
+/* Internal helper function to generate a mapping from 'filename' whereby the
+ * key is a string and the value is a character. This function applies to the
+ * structure of the files given by STATIONS and LINES constants */
 map<const string, char> create_char_map(const char *filename) {
     // declare variables for generating map
+    char value, str[MAX_LENGTH];
     map<const string, char> mapping;
-    char value;
-    char str[MAX_LENGTH];
 
     // instantiate input filestream
     ifstream in;
@@ -167,27 +173,34 @@ map<const string, char> create_char_map(const char *filename) {
     // add values to mapping
     while (!in.eof()) {
         string key;
+        // read line and set first character to 'value'
         in.getline(str, MAX_LENGTH);
         value = str[0];
+        // append the remaining characters to 'key'
         for (int i = 2; i < strlen(str); i++) {
             key += str[i];
         }
+        // insert into map
         mapping[key] = value;
-        str[0] = '\0';
     }
+    in.close();
 
     return mapping;
 }
 
+/* Returns the symbol character corresponding to the input station or line
+ * ('name') if it exists otherwise returns the space character. The station and
+ * line information is loaded from text files whose names are given by STATIONS
+ * and LINES */
 char get_symbol_for_station_or_line(const char *name) {
     // default is space character
     char output = ' ';
 
-    // load in station and line data
-    map<const string, char> stations = create_char_map(STATIONS);
-    map<const string, char> lines = create_char_map(LINES);
+    // generate station and line maps
+    map<const string, char> stations = create_char_map(STATIONS),
+                            lines = create_char_map(LINES);
 
-    // check if 'name' exists in either map and if so, return it
+    // check if 'name' exists in either map and if so, set output character
     if (stations.count(name)) {
         output = stations.at(name);
     } else if (lines.count(name)) {
@@ -196,6 +209,60 @@ char get_symbol_for_station_or_line(const char *name) {
     return output;
 }
 
+/* Internal helper function to check whether or not 'row' and 'col' are within
+ * range in terms of 'height' and 'width' */
+bool is_valid_indices(const int &row, const int &col, const int &height,
+                      const int &width) {
+    if (row < 0 || row > height - 1) {
+        return false;
+    }
+    if (col < 0 || col > width - 1) {
+        return false;
+    }
+    return true;
+}
+
+/* Internal helper function to increment / decrement the input 'row' and 'col'
+ * values (representing a position on the map) based on the Direction 'd' */
+void update_position(Direction d, int &row, int &col) {
+    switch (d) {
+    case N:
+        row--;
+        break;
+    case S:
+        row++;
+        break;
+    case W:
+        col--;
+        break;
+    case E:
+        col++;
+        break;
+    case NE:
+        row--;
+        col++;
+        break;
+    case NW:
+        row--;
+        col--;
+        break;
+    case SE:
+        row++;
+        col++;
+        break;
+    case SW:
+        row++;
+        col--;
+        break;
+    case INVALID_DIRECTION:
+        cerr << error_description(INVALID_DIRECTION) << endl;
+        break;
+    }
+}
+
+/* Internal helper function to update 'route_vector' which is a vector of type
+ * Direction based on string 'route' which is a comma-separated string of
+ * directions e.g. "S,SE,E,E,N". Return true if extraction successful. */
 bool create_route_vector(const char *route, vector<Direction> &route_vector) {
     char token[3];
     Direction d;
@@ -217,64 +284,29 @@ bool create_route_vector(const char *route, vector<Direction> &route_vector) {
         }
         route++;
     }
+    d = string_to_direction(token);
+    if (d == INVALID_DIRECTION) {
+        return false;
+    }
+    route_vector.push_back(d);
     return true;
 }
 
-void update_position(Direction d, int &row, int &col) {
-    switch (d) {
-    case N:
-        row++;
-        break;
-    case S:
-        row--;
-        break;
-    case W:
-        col--;
-        break;
-    case E:
-        col++;
-        break;
-    case NE:
-        row++;
-        col++;
-        break;
-    case NW:
-        row++;
-        col--;
-        break;
-    case SE:
-        row--;
-        col++;
-        break;
-    case SW:
-        row--;
-        col--;
-        break;
-    case INVALID_DIRECTION:
-        break;
-    default:
-        cerr << "Invalid." << endl;
-    }
-}
-
-bool is_valid_indices(const int &row, const int &col, const int &height, const int &width) {
-    if (row < 0 || row > height - 1) {
-        return false;
-    }
-    if (col < 0 || col > width - 1) {
-        return false;
-    }
-    return true;
-}
-
-void copy_string(string str, char* cstr) {
-    for (int i = 0; i < str.length(); i++) {
-        *cstr = str[i];
-        cstr++;
-    }
-    *cstr = '\0';
-}
-
+/* Given the name of an origin station 'start_station' and string 'route'
+ * describing a journey on 'map', at each journey step, determines if the route
+ * is valid. If the route is invalid then an error code is returned, otherwise
+ * the number of line changes required to complete the journey is returned along
+ * with the final station in 'destination'. Logic:
+ * - if 'start_station' does not exist then return ERROR_START_STATION_INVALID
+ * - if a given direction in 'route' is invalid then return
+ * ERROR_INVALID_DIRECTION
+ * - if route strays outside bounds of the map return ERROR_OUT_OF_BOUNDS
+ * - if route strays off a station or line/track, return ERROR_OFF_TRACK
+ * - if attempt made to change lines outside of a station, return
+ * ERROR_LINE_HOPPING_BETWEEN_STATIONS
+ * - if attempt to retrace a journey step outside of a station, return
+ * ERROR_BACKTRACKING_BETWEEN_STATIONS
+ * - if endpoint is not a station return ERROR_ROUTE_ENDPOINT_IS_NOT_STATION */
 int validate_route(char **map, const int &height, const int &width,
                    const char *start_station, const char *route,
                    char *destination) {
@@ -286,14 +318,12 @@ int validate_route(char **map, const int &height, const int &width,
 
     // validate start station
     if (!stations.count(start_station)) {
-        cout << "ERROR_START_STATION_INVALID" << endl;
         return ERROR_START_STATION_INVALID;
     }
 
     // validate route
     vector<Direction> route_vector;
     if (!create_route_vector(route, route_vector)) {
-        cout << "ERROR_INVALID_DIRECTION" << endl;
         return ERROR_INVALID_DIRECTION;
     }
 
@@ -304,27 +334,22 @@ int validate_route(char **map, const int &height, const int &width,
     int row, col;
     get_symbol_position(map, height, width, symbol, row, col);
 
-    cout << "start position: [" << row <<"," << col << "]" << endl;
-
     // traverse the route
     char line = ' ', prev;
-    for (auto const &r: route_vector) {
+    for (auto const &r : route_vector) {
         // get previous position
         prev = map[row][col];
 
         // move to the next step
         update_position(r, row, col);
-        cout << "position is now [" << row<<"," << col <<  "]" << endl;
 
         // check if row and column are valid positions on map
         if (!is_valid_indices(row, col, height, width)) {
-            cout << "ERROR_OUT_OF_BOUNDS" << endl;
             return ERROR_OUT_OF_BOUNDS;
         }
-        
+
         // check if at a station or on a track
         if (map[row][col] == ' ') {
-            cout << "ERROR_OFF_TRACK" << endl;
             return ERROR_OFF_TRACK;
         }
 
@@ -338,9 +363,7 @@ int validate_route(char **map, const int &height, const int &width,
                 if (isalnum(prev)) {
                     changes += 1;
                     line = map[row][col];
-                }
-                else {
-                    cout << "ERROR_LINE_HOPPING_BETWEEN_STATIONS" << endl;
+                } else {
                     return ERROR_LINE_HOPPING_BETWEEN_STATIONS;
                 }
             }
@@ -348,13 +371,14 @@ int validate_route(char **map, const int &height, const int &width,
     }
     // check if final position is a station
     if (!isalnum(map[row][col])) {
-        cout << "ERROR_ROUTE_ENDPOINT_IS_NOT_STATION" << endl;
         return ERROR_ROUTE_ENDPOINT_IS_NOT_STATION;
     }
 
-    for (std::map<const string, char>::iterator it = stations.begin(); it != stations.end(); it++) {
+    for (std::map<const string, char>::iterator it = stations.begin();
+         it != stations.end(); it++) {
         if (it->second == map[row][col]) {
-            copy_string(it->first, destination);
+            // copy_string(it->first, destination);
+            strcpy(destination, it->first.c_str());
         }
     }
     return changes;
