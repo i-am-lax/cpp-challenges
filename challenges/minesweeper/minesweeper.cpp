@@ -288,6 +288,9 @@ void copy_board(const char board[9][9], char copy[9][9]) {
     }
 }
 
+/* Internal helper function to observe squares on 'board' adjacent to position
+ * 'row' and 'col' and append safe moves to 'move' based on the count of mines,
+ * the number of flags, and the number of unrevealed squares */
 void update(char board[9][9], char *move, int row, int col) {
     // translate number of mines at [row, col] back to integer value
     int mines = board[row][col] - '0';
@@ -296,22 +299,25 @@ void update(char board[9][9], char *move, int row, int col) {
     int unrevealed = 0;
     int flags = 0;
 
-    // store positions
+    // store positions of unrevealed squares
     char position[3];
     vector<char *> positions;
 
-    // check adjacent squares
+    // check all adjacent squares
     for (int r = row - 1; r <= row + 1; r++) {
         for (int c = col - 1; c <= col + 1; c++) {
+            // row and column checks
             if (r == row && c == col) {
                 continue;
             }
             if (!valid_indices(r, c)) {
                 continue;
             }
+            // increment counter for flags if mine present in adjacent square
             if (board[r][c] == '*') {
                 flags++;
             }
+            // increment counter for unrevealed squares and store position
             if (board[r][c] == '?') {
                 unrevealed++;
                 indices_to_str(r, c, position);
@@ -331,21 +337,23 @@ void update(char board[9][9], char *move, int row, int col) {
 
     /* if the number of flags equals the count of mines then any question
      * marks can be turned over */
+    int r, c;
     if ((mines - flags == 0) && unrevealed > 0) {
         for (auto const &p : positions) {
             strcat(move, p);
             strcat(move, " ");
-            // only use information we know
-            int m = count_mines(p, board);
-            int r, c;
+            // count mines based on current board
+            int count = count_mines(p, board);
             str_to_indices(p, r, c);
-            board[r][c] = int_to_char(m);
+            add_count_to_board(board[r][c], count);
         }
-    } else if ((mines - flags == unrevealed) && unrevealed > 0) {
+    }
+    /* if the difference between mines and flags equals the number of unrevealed
+     * squares then we flag them */
+    else if ((mines - flags == unrevealed) && unrevealed > 0) {
         for (auto const &p : positions) {
             strcat(move, p);
             strcat(move, "* ");
-            int r, c;
             str_to_indices(p, r, c);
             board[r][c] = '*';
         }
@@ -380,6 +388,7 @@ bool find_safe_move(const char revealed[9][9], char *move) {
 
     cout << "Safe moves: " << move << endl;
 
+    // return true if safe moves are possible
     if (strlen(move) > 0) {
         return true;
     }

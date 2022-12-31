@@ -121,17 +121,13 @@ int main() {
     load_board("partial.dat", revealed);
     display_board(revealed);
 
-    // TO DELETE
+    cout << "Safe move sequence: " << endl;
     char move[512];
-    find_safe_move(revealed, move);
-
-    // cout << "Safe move sequence: " << endl;
-    // char move[512];
-    // while (find_safe_move(revealed, move)) {
-    //     cout << move << " ";
-    //     make_move(move, mines, revealed);
-    // }
-    // cout << endl;
+    while (find_safe_move(revealed, move)) {
+        cout << move << " ";
+        make_move(move, mines, revealed);
+    }
+    cout << endl;
 
     /*
     cout << "=================== Bonus Question =====================" << endl
