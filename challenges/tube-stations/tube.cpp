@@ -286,34 +286,25 @@ Direction opposite_direction(Direction &d) {
 }
 
 /* Internal helper function to update 'route_vector' which is a vector of type
- * Direction based on string 'route' which is a comma-separated string of
- * directions e.g. "S,SE,E,E,N". Return true if extraction successful. */
+ * Direction by extracting tokens from 'route' which is a comma-separated string
+ * of directions e.g. "S,SE,E,N". Return true if extraction successful */
 bool create_route_vector(const char *route, vector<Direction> &route_vector) {
-    char token[3];
-    Direction d;
 
-    int idx = 0;
-    while (*route != '\0') {
-        if (*route == ',') {
-            token[idx] = '\0';
-            d = string_to_direction(token);
-            if (d == INVALID_DIRECTION) {
-                return false;
-            }
-            route_vector.push_back(d);
-            idx = 0;
-            token[idx] = '\0';
-        } else if (*route != ',') {
-            token[idx] = *route;
-            idx++;
+    // create copy so we don't modify route
+    char copy[MAX_LENGTH];
+    strcpy(copy, route);
+
+    // tokenise on comma and push to vector
+    Direction d;
+    char *r = strtok(copy, ",");
+    while (r) {
+        d = string_to_direction(r);
+        if (d == INVALID_DIRECTION) {
+            return false;
         }
-        route++;
+        route_vector.push_back(d);
+        r = strtok(NULL, ",");
     }
-    d = string_to_direction(token);
-    if (d == INVALID_DIRECTION) {
-        return false;
-    }
-    route_vector.push_back(d);
     return true;
 }
 

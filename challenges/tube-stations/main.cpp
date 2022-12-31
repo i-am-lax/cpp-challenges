@@ -110,6 +110,10 @@ int main() {
     test_validate_route(map, height, width, "S,SE,S,S,E,E,E,E,E,E,E,E,E,E,E",
                         "Oxford Circus", destination);
 
+    /* Valid route from Goodge Street to Covent Garden with 2 line changes */
+    test_validate_route(map, height, width, "S,S,S,E,E,E,E,E,E,SW,SW,SW",
+                        "Goodge Street", destination);
+
     /* Invalid route because of line hopping between stations */
     test_validate_route(map, height, width, "N,N,N,N,N,NE,W", "London Bridge",
                         destination);
