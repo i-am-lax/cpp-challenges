@@ -158,7 +158,7 @@ bool get_position(char **board, const char ch, int &row, int &column) {
     return false;
 }
 
-int count_character(char** board, const char ch) {
+int count_character(char **board, const char ch) {
     int count = 0;
     for (int r = 0; r < HEIGHT; r++) {
         for (int c = 0; c < WIDTH; c++) {
@@ -192,33 +192,58 @@ bool is_valid_indices(int row, int col) {
     return true;
 }
 
-bool adjacent_letter(char** board, int row, int col, char* word) {
-    if (*word == '\0') {
-        return true;
-    }
-    if (!is_valid_indices(row, col)) {
-        return false;
-    }
-    if (board[row][col] != *word) {
-        return false;
-    }
+// bool adjacent_letter(char **board, int row, int col, char *word) {
+//     if (*word == '\0') {
+//         return true;
+//     }
+//     if (board[row][col] != *word) {
+//         return false;
+//     }
 
-    adjacent_letter(board, row+1, col, word+1);
-    adjacent_letter(board, row-1, col, word+1);
-    adjacent_letter(board, row, col+1, word+1);
-    adjacent_letter(board, row+1, col-1, word+1);
-    adjacent_letter(board, row+1, col+1, word+1);
-    adjacent_letter(board, row+1, col-1, word+1);
-    adjacent_letter(board, row-1, col+1, word+1);
-    adjacent_letter(board, row-1, col-1, word+1);
+//     for (int r = row - 1; r <= row + 1; r++) {
+//         for (int c = col - 1; col <= col + 1; c++) {
+//             if (r == row && c == col) {
+//                 continue;
+//             }
+//             if (!is_valid_indices(r, c)) {
+//                 continue;
+//             }
+//             if (adjacent_letter(board, r, c, word + 1)) {
+//                 cout << "Letter " << *(word+1) << "found at [" << r << ", "
+//                 << c << endl; return true;
+//             }
+//         }
+//     }
+//     return false;
+// }
+
+bool is_adjacent(int r1, int c1, int r2, int c2) {
+    int rdiff = abs(r1 - r2);
+    int cdiff = abs(c1 - c2);
+    if (rdiff == 0 && cdiff == 0) {
+        return false;
+    }
+    if (rdiff > 1 || cdiff > 1) {
+        return false;
+    }
+    return true;
 }
 
-bool word_on_board(char** board, char* word) {
+bool word_on_board(char **board, char *word) {
     // get position of the first letter
-    int row, col;
+    int row, col, next_row, next_col;
     get_position(board, *word, row, col);
-    cout << "Position of letter: " << *word << " is " << row << ", " << col << endl;
-    return adjacent_letter(board, row, col, word);
+
+    while (*(word + 1) != '\0') {
+        get_position(board, *(word + 1), next_row, next_col);
+        if (!is_adjacent(row, col, next_row, next_col)) {
+            return false;
+        }
+        word++;
+        row = next_row;
+        col = next_col;
+    }
+    return true;
 }
 
 bool valid_solution(char **board, char **words) {
@@ -227,13 +252,10 @@ bool valid_solution(char **board, char **words) {
         return false;
     }
     // need to check the words themselves
-    cout << "Checking for: " << words[0] << endl;
-    word_on_board(board, words[0]);
-    // for (int n = 0; words[n]; n++) {
-    //     if (!word_on_board(board, words[n])) {
-    //         return false;
-    //     }
-    // }
-    
+    for (int n = 0; words[n]; n++) {
+        if (!word_on_board(board, words[n])) {
+            return false;
+        }
+    }
     return true;
 }
