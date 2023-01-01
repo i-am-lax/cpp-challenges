@@ -4,8 +4,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
-
-#include <vector>
+#include <map>
 
 #include "common.h"
 #include "gogen.h"
@@ -177,12 +176,8 @@ int count_character(char **board, const char ch) {
  * see if the count of occurrences of each letter is anything other than 1 in
  * which case we return false */
 bool is_complete(char **board) {
-    // set of letters A-Y for Gogen board
-    vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-                            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-                            'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
     // if the count is not 1 then board is not complete
-    for (auto const &l : letters) {
+    for (auto const &l : LETTERS) {
         if (count_character(board, l) != 1) {
             return false;
         }
@@ -349,27 +344,56 @@ void neighbourhood_intersect(Mask &one, Mask &two) {
     two.intersect_with(onbr);
 }
 
-/* Question 4 */
+/* Internal helper function to update masks for each letter A-Y based on board
+ * state */
+void update_masks(char **board, map<char, Mask> &masks) {
+    for (map<char, Mask>::iterator it = masks.begin(); it != masks.end();
+         it++) {
+        update(board, it->first, it->second);
+    }
+}
 
-// bool aux(char **board, char **words) {
-//     // board is complete - terminate
-//     if (valid_solution(board, words)) {
-//         return true;
-//     }
-// }
+/* Auxiliary recursive function which for a given letter in a word, performs a
+ * neighbourhood interset with the letter superceding it, and then updates the
+ * board */
+void recursive_update(char **board, char *word, int idx,
+                      map<char, Mask> &masks) {
+    // reached final letter in word - terminate
+    if (idx == strlen(word) - 1) {
+        return;
+    }
+    neighbourhood_intersect(masks.at(word[idx]), masks.at(word[idx + 1]));
+    update_masks(board, masks);
+    recursive_update(board, word, idx + 1, masks);
+}
 
-// /* Attempts to find a solution to a given Gogen puzzle. If a solution can be
-//  * found, the function returns true and the parameter 'board' should contain
-//  the
-//  * completed board. Otherwise the function returns false */
-// bool solve_board(char **board, char **words) {
-//     vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-//                             'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-//                             'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
-//     vector<Mask> masks;
-//     for (auto const &l : letters) {
-//         Mask m;
-//         update(board, l, m);
-//         masks.push_back(m);
-//     }
-// }
+/* Attempts to find a solution to a given Gogen puzzle. If a solution can be
+ * found, the function returns true and the parameter 'board' should contain the
+ * completed board. Otherwise the function returns false */
+bool solve_board(char **board, char **words) {
+    // create mapping of letter to mask and initialise mask
+    map<char, Mask> masks;
+    for (auto const &l : LETTERS) {
+        Mask m;
+        update(board, l, m);
+        masks[l] = m;
+    }
+
+    // constrain maximum iterations
+    int iterations = 0;
+    while (iterations < 3) {
+        // update board and masks for each word
+        for (int n = 0; words[n]; n++) {
+            recursive_update(board, words[n], 0, masks);
+        }
+        iterations++;
+
+        // board complete - terminate
+        if (valid_solution(board, words)) {
+            print_board(board);
+            return true;
+        }
+    }
+    print_board(board);
+    return false;
+}

@@ -1,4 +1,10 @@
 #include "mask.h"
+#include <vector>
+
+// Set of letters on Gogen board
+const std::vector<char> LETTERS = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                                   'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                                   'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
 
 /* Reads a Gogen board from a file ('filename') and returns a 2D array of
  * characters. Memory for board is allocated on the heap */
