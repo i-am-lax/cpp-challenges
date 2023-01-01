@@ -65,29 +65,29 @@ int main() {
 
     cout << endl;
 
-//     cout << "====================== Question 2 ======================" << endl
-//          << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-//     char **solution = load_board("solution-easy.txt");
-//     cout << "Solution in 'solution-easy.txt' is "
-//          << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
-//          << endl
-//          << endl;
-//     delete_board(solution);
+    char **solution = load_board("solution-easy.txt");
+    cout << "Solution in 'solution-easy.txt' is "
+         << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
+         << endl
+         << endl;
+    delete_board(solution);
 
-//     solution = load_board("solution-wrong1.txt");
-//     cout << "Solution in 'solution-wrong1.txt' is "
-//          << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
-//          << endl
-//          << endl;
-//     delete_board(solution);
+    // solution = load_board("solution-wrong1.txt");
+    // cout << "Solution in 'solution-wrong1.txt' is "
+    //      << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
+    //      << endl
+    //      << endl;
+    // delete_board(solution);
 
-//     solution = load_board("solution-wrong2.txt");
-//     cout << "Solution in 'solution-wrong2.txt' is "
-//          << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
-//          << endl
-//          << endl;
-//     delete_board(solution);
+    // solution = load_board("solution-wrong2.txt");
+    // cout << "Solution in 'solution-wrong2.txt' is "
+    //      << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
+    //      << endl
+    //      << endl;
+    // delete_board(solution);
 
 //     cout << "====================== Question 3a ======================" << endl
 //          << endl;

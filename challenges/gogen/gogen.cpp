@@ -5,6 +5,8 @@
 #include <fstream>
 #include <iostream>
 
+#include <vector>
+
 #include "common.h"
 #include "gogen.h"
 #include "mask.h"
@@ -154,4 +156,84 @@ bool get_position(char **board, const char ch, int &row, int &column) {
     row = -1;
     column = -1;
     return false;
+}
+
+int count_character(char** board, const char ch) {
+    int count = 0;
+    for (int r = 0; r < HEIGHT; r++) {
+        for (int c = 0; c < WIDTH; c++) {
+            if (board[r][c] == ch) {
+                count += 1;
+            }
+        }
+    }
+    return count;
+}
+
+bool is_complete(char **board) {
+    vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                            'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
+    for (auto const &l : letters) {
+        if (count_character(board, l) != 1) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool is_valid_indices(int row, int col) {
+    if (row < 0 || row > HEIGHT - 1) {
+        return false;
+    }
+    if (col < 0 || col > WIDTH - 1) {
+        return false;
+    }
+    return true;
+}
+
+bool adjacent_letter(char** board, int row, int col, char* word) {
+    if (*word == '\0') {
+        return true;
+    }
+    if (!is_valid_indices(row, col)) {
+        return false;
+    }
+    if (board[row][col] != *word) {
+        return false;
+    }
+
+    adjacent_letter(board, row+1, col, word+1);
+    adjacent_letter(board, row-1, col, word+1);
+    adjacent_letter(board, row, col+1, word+1);
+    adjacent_letter(board, row+1, col-1, word+1);
+    adjacent_letter(board, row+1, col+1, word+1);
+    adjacent_letter(board, row+1, col-1, word+1);
+    adjacent_letter(board, row-1, col+1, word+1);
+    adjacent_letter(board, row-1, col-1, word+1);
+}
+
+bool word_on_board(char** board, char* word) {
+    // get position of the first letter
+    int row, col;
+    get_position(board, *word, row, col);
+    cout << "Position of letter: " << *word << " is " << row << ", " << col << endl;
+    return adjacent_letter(board, row, col, word);
+}
+
+bool valid_solution(char **board, char **words) {
+    // need to make sure that all letters of alphabet (except Z) are in there
+    if (!is_complete(board)) {
+        return false;
+    }
+    // need to check the words themselves
+    cout << "Checking for: " << words[0] << endl;
+    word_on_board(board, words[0]);
+    // for (int n = 0; words[n]; n++) {
+    //     if (!word_on_board(board, words[n])) {
+    //         return false;
+    //     }
+    // }
+    
+    return true;
 }

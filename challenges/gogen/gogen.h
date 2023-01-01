@@ -14,3 +14,4 @@ void delete_words(char **words);
 
 /* add your function prototypes here */
 bool get_position(char **board, const char ch, int &row, int &column);
+bool valid_solution(char **board, char **words);
