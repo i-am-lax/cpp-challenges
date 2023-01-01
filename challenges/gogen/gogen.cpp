@@ -353,6 +353,17 @@ void update_masks(char **board, map<char, Mask> &masks) {
     }
 }
 
+/* Internal helper function to identify letters that are yet to be placed on the
+ * board by observing the count of true values in the mask array */
+void get_remaining_letters(map<char, Mask> &masks, vector<char> &letters) {
+    for (map<char, Mask>::iterator it = masks.begin(); it != masks.end();
+         it++) {
+        if (it->second.count() > 1) {
+            letters.push_back(it->first);
+        }
+    }
+}
+
 /* Auxiliary recursive function which for a given letter in a word, performs a
  * neighbourhood interset with the letter superceding it, and then updates the
  * board */
@@ -365,6 +376,40 @@ void recursive_update(char **board, char *word, int idx,
     neighbourhood_intersect(masks.at(word[idx]), masks.at(word[idx + 1]));
     update_masks(board, masks);
     recursive_update(board, word, idx + 1, masks);
+}
+
+/* Recursive backtracking function to brute force a solution with the smaller
+ * set of remaining letters which could not be placed from recursive_update() */
+bool brute_force(char **board, char **words, vector<char> &letters) {
+    // counter to keep track of recursive calls
+    static int calls = 0;
+    calls++;
+
+    // board complete - terminate
+    if (valid_solution(board, words)) {
+        calls = 0;
+        return true;
+    }
+
+    // call constraint reached then no solution - terminate
+    if (calls > 1000) {
+        return false;
+    }
+
+    // identify empty slot on board
+    int row, col;
+    if (get_position(board, '.', row, col)) {
+        for (auto const &l : letters) {
+            // add letter to board
+            board[row][col] = l;
+            if (brute_force(board, words, letters)) {
+                return true;
+            }
+            // backtrack and try next letter
+            board[row][col] = '.';
+        }
+    }
+    return false;
 }
 
 /* Attempts to find a solution to a given Gogen puzzle. If a solution can be
@@ -393,6 +438,16 @@ bool solve_board(char **board, char **words) {
             print_board(board);
             return true;
         }
+    }
+
+    // get letters that are yet to be placed on board
+    vector<char> remaining;
+    get_remaining_letters(masks, remaining);
+
+    /* identify solution by trying combination of remaining letters through
+     * backtracking */
+    if (brute_force(board, words, remaining)) {
+        return true;
     }
     print_board(board);
     return false;
