@@ -1,3 +1,5 @@
+#include "mask.h"
+
 /*  Pre-supplied functions for loading and printing board and word list */
 
 char **load_board(const char *filename);
@@ -15,3 +17,5 @@ void delete_words(char **words);
 /* add your function prototypes here */
 bool get_position(char **board, const char ch, int &row, int &column);
 bool valid_solution(char **board, char **words);
+
+void update(char** board, const char ch, Mask &mask);

@@ -89,24 +89,24 @@ int main() {
          << endl;
     delete_board(solution);
 
-//     cout << "====================== Question 3a ======================" << endl
-//          << endl;
+    cout << "====================== Question 3a ======================" << endl
+         << endl;
 
-//     Mask x, e, r;
-//     update(board, 'X', x);
-//     cout << "Mask for 'X'" << endl;
-//     x.print();
-//     cout << endl;
+    Mask x, e, r;
+    update(board, 'X', x);
+    cout << "Mask for 'X'" << endl;
+    x.print();
+    cout << endl;
 
-//     update(board, 'E', e);
-//     cout << "Mask for 'E'" << endl;
-//     e.print();
-//     cout << endl;
+    update(board, 'E', e);
+    cout << "Mask for 'E'" << endl;
+    e.print();
+    cout << endl;
 
-//     update(board, 'R', r);
-//     cout << "Mask for 'R'" << endl;
-//     r.print();
-//     cout << endl;
+    update(board, 'R', r);
+    cout << "Mask for 'R'" << endl;
+    r.print();
+    cout << endl;
 
 //     cout << "====================== Question 3b ======================" << endl
 //          << endl;

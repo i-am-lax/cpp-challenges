@@ -1,3 +1,6 @@
+#ifndef MASK_H
+#define MASK_H
+
 // This header contains a Mask class which can help to answer
 // Questions 3 and 4 efficiently. It is not necessary to understand
 // its detailed operation. It is better to understand how to use
@@ -146,3 +149,5 @@ class Mask {
         return answer;
     }
 };
+
+#endif

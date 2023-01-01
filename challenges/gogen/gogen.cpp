@@ -9,7 +9,6 @@
 
 #include "common.h"
 #include "gogen.h"
-#include "mask.h"
 
 using namespace std;
 
@@ -258,4 +257,24 @@ bool valid_solution(char **board, char **words) {
         }
     }
     return true;
+}
+
+void update(char** board, const char ch, Mask &mask) {
+    int row, col;
+    if (get_position(board, ch, row, col)) {
+        mask.set_all(false);
+        mask.set_element(row, col, true);
+        return;
+    }
+    for (int r = 0; r < HEIGHT; r++) {
+        for (int c = 0; c < WIDTH; c++) {
+            if (isalpha(board[r][c])) {
+                mask.set_element(r, c, false);
+            }
+        }
+    }
+    if (mask.count() == 1) {
+        mask.get_position(true, row, col);
+        board[row][col] = ch;
+    }
 }
