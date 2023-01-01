@@ -1,3 +1,6 @@
+#ifndef STAMP_H
+#define STAMP_H
+
 enum MessageStatus {
     INVALID_HEADER = -1,
     WRONG_RECIPIENT = -2,
@@ -9,3 +12,5 @@ enum MessageStatus {
 /* pre-supplied helper function */
 /* generates the SHA1 hash of input string text into output parameter digest */
 void text_to_SHA1_digest(const char *text, char *digest);
+
+#endif

@@ -5,7 +5,7 @@ main.o: main.cpp stamp.h
 	g++ -std=c++11 main.cpp -c
 
 stamp.o: stamp.cpp stamp.h
-	g++ -std=c++11 stamp.cpp -c
+	g++ -std=c++11 stamp.cpp -I /opt/homebrew/opt/openssl/include -c
 
 clean:
 	rm -f *.o execute
