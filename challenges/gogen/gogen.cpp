@@ -12,10 +12,7 @@
 
 using namespace std;
 
-/* You are pre-supplied with the functions below. Add your own
-   function definitions to the end of this file. */
-
-/* internal helper function which allocates a dynamic 2D array */
+// Internal helper function which allocates a dynamic 2D array
 char **allocate_2D_array(int rows, int columns) {
     char **m = new char *[rows];
     assert(m);
@@ -26,14 +23,14 @@ char **allocate_2D_array(int rows, int columns) {
     return m;
 }
 
-/* internal helper function which deallocates a dynamic 2D array */
+// Internal helper function which deallocates a dynamic 2D array
 void deallocate_2D_array(char **m, int rows) {
     for (int r = 0; r < rows; r++)
         delete[] m[r];
     delete[] m;
 }
 
-/* internal helper function which removes unprintable characters like carriage
+/* Internal helper function which removes unprintable characters like carriage
  * returns and newlines from strings */
 void filter(char *line) {
     while (*line) {
@@ -217,8 +214,7 @@ bool is_valid_indices(int row, int col) {
 // }
 
 bool is_adjacent(int r1, int c1, int r2, int c2) {
-    int rdiff = abs(r1 - r2);
-    int cdiff = abs(c1 - c2);
+    int rdiff = abs(r1 - r2), cdiff = abs(c1 - c2);
     if (rdiff == 0 && cdiff == 0) {
         return false;
     }
@@ -245,12 +241,17 @@ bool word_on_board(char **board, char *word) {
     return true;
 }
 
+/* Returns true if the given 'board' represents a solution to the Gogen puzzle
+ * with the given list of 'words'. The first check performed is to ensure that
+ * all letters from A-Y are present (and only once). Next each word in 'words'
+ * is checked to see if it is represented on the board with letters in any of
+ * the adjacent positions  */
 bool valid_solution(char **board, char **words) {
-    // need to make sure that all letters of alphabet (except Z) are in there
+    // need to make sure that all letters of alphabet (except Z) are present
     if (!is_complete(board)) {
         return false;
     }
-    // need to check the words themselves
+    // need to check if the words themselves are present on the board
     for (int n = 0; words[n]; n++) {
         if (!word_on_board(board, words[n])) {
             return false;
@@ -259,13 +260,15 @@ bool valid_solution(char **board, char **words) {
     return true;
 }
 
-void update(char** board, const char ch, Mask &mask) {
+void update(char **board, const char ch, Mask &mask) {
     int row, col;
+    // location is fixed on the board
     if (get_position(board, ch, row, col)) {
         mask.set_all(false);
         mask.set_element(row, col, true);
         return;
     }
+    // free positions on the board
     for (int r = 0; r < HEIGHT; r++) {
         for (int c = 0; c < WIDTH; c++) {
             if (isalpha(board[r][c])) {
@@ -273,6 +276,7 @@ void update(char** board, const char ch, Mask &mask) {
             }
         }
     }
+    // confirmed letter position - add to board
     if (mask.count() == 1) {
         mask.get_position(true, row, col);
         board[row][col] = ch;
@@ -282,7 +286,26 @@ void update(char** board, const char ch, Mask &mask) {
 void neighbourhood_intersect(Mask &one, Mask &two) {
     Mask onbr = one.neighbourhood();
     Mask tnbr = two.neighbourhood();
-    
+
     one.intersect_with(tnbr);
     two.intersect_with(onbr);
+}
+
+bool aux(char **board, char **words) {
+    // board is complete - terminate
+    if (valid_solution(board, words)) {
+        return true;
+    }
+}
+
+bool solve_board(char **board, char **words) {
+    vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+                            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+                            'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
+    vector<Mask> masks;
+    for (auto const &l : letters) {
+        Mask m;
+        update(board, l, m);
+        masks.push_back(m);
+    }
 }
