@@ -435,7 +435,6 @@ bool solve_board(char **board, char **words) {
 
         // board complete - terminate
         if (valid_solution(board, words)) {
-            print_board(board);
             return true;
         }
     }
