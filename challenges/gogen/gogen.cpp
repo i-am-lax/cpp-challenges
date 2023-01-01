@@ -202,27 +202,44 @@ bool is_valid_indices(int row, int col) {
     return true;
 }
 
-// bool adjacent_letter(char **board, int row, int col, char *word) {
+/* Alternative recursive solution to checking if a word exists on the board */
+// bool is_adjacent(char **board, int row, int col, char *word) {
+//     // reached end of word - terminate
 //     if (*word == '\0') {
 //         return true;
 //     }
+//     // position is invalid - terminate
+//     if (!is_valid_indices(row, col)) {
+//         return false;
+//     }
+//     // position does not equal letter of interest - terminate
 //     if (board[row][col] != *word) {
 //         return false;
 //     }
-
-//     for (int r = row - 1; r <= row + 1; r++) {
-//         for (int c = col - 1; col <= col + 1; c++) {
-//             if (r == row && c == col) {
-//                 continue;
-//             }
-//             if (!is_valid_indices(r, c)) {
-//                 continue;
-//             }
-//             if (adjacent_letter(board, r, c, word + 1)) {
-//                 cout << "Letter " << *(word+1) << "found at [" << r << ", "
-//                 << c << endl; return true;
-//             }
-//         }
+//     // check all 8 possible adjacent positions
+//     if (is_adjacent(board, row + 1, col, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row - 1, col, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row + 1, col + 1, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row + 1, col - 1, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row, col + 1, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row, col - 1, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row - 1, col - 1, word + 1)) {
+//         return true;
+//     }
+//     if (is_adjacent(board, row - 1, col + 1, word + 1)) {
+//         return true;
 //     }
 //     return false;
 // }
@@ -237,7 +254,7 @@ bool is_adjacent(int r1, int c1, int r2, int c2) {
     if (rdiff == 0 && cdiff == 0) {
         return false;
     }
-    // if either of the differences are greater than 1 then they're not adjacent
+    // if either of the differences are > 1 then they're not adjacent
     if (rdiff > 1 || cdiff > 1) {
         return false;
     }
@@ -334,24 +351,25 @@ void neighbourhood_intersect(Mask &one, Mask &two) {
 
 /* Question 4 */
 
-bool aux(char **board, char **words) {
-    // board is complete - terminate
-    if (valid_solution(board, words)) {
-        return true;
-    }
-}
+// bool aux(char **board, char **words) {
+//     // board is complete - terminate
+//     if (valid_solution(board, words)) {
+//         return true;
+//     }
+// }
 
-/* Attempts to find a solution to a given Gogen puzzle. If a solution can be
- * found, the function returns true and the parameter 'board' should contain the
- * completed board. Otherwise the function returns false */
-bool solve_board(char **board, char **words) {
-    vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
-                            'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
-                            'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
-    vector<Mask> masks;
-    for (auto const &l : letters) {
-        Mask m;
-        update(board, l, m);
-        masks.push_back(m);
-    }
-}
+// /* Attempts to find a solution to a given Gogen puzzle. If a solution can be
+//  * found, the function returns true and the parameter 'board' should contain
+//  the
+//  * completed board. Otherwise the function returns false */
+// bool solve_board(char **board, char **words) {
+//     vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
+//                             'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
+//                             'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
+//     vector<Mask> masks;
+//     for (auto const &l : letters) {
+//         Mask m;
+//         update(board, l, m);
+//         masks.push_back(m);
+//     }
+// }
