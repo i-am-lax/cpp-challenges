@@ -65,100 +65,100 @@ int main() {
 
     cout << endl;
 
-    cout << "====================== Question 2 ======================" << endl
-         << endl;
+//     cout << "====================== Question 2 ======================" << endl
+//          << endl;
 
-    char **solution = load_board("solution-easy.txt");
-    cout << "Solution in 'solution-easy.txt' is "
-         << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
-         << endl
-         << endl;
-    delete_board(solution);
+//     char **solution = load_board("solution-easy.txt");
+//     cout << "Solution in 'solution-easy.txt' is "
+//          << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
+//          << endl
+//          << endl;
+//     delete_board(solution);
 
-    solution = load_board("solution-wrong1.txt");
-    cout << "Solution in 'solution-wrong1.txt' is "
-         << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
-         << endl
-         << endl;
-    delete_board(solution);
+//     solution = load_board("solution-wrong1.txt");
+//     cout << "Solution in 'solution-wrong1.txt' is "
+//          << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
+//          << endl
+//          << endl;
+//     delete_board(solution);
 
-    solution = load_board("solution-wrong2.txt");
-    cout << "Solution in 'solution-wrong2.txt' is "
-         << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
-         << endl
-         << endl;
-    delete_board(solution);
+//     solution = load_board("solution-wrong2.txt");
+//     cout << "Solution in 'solution-wrong2.txt' is "
+//          << (valid_solution(solution, words) ? "valid" : "invalid") << "!"
+//          << endl
+//          << endl;
+//     delete_board(solution);
 
-    cout << "====================== Question 3a ======================" << endl
-         << endl;
+//     cout << "====================== Question 3a ======================" << endl
+//          << endl;
 
-    Mask x, e, r;
-    update(board, 'X', x);
-    cout << "Mask for 'X'" << endl;
-    x.print();
-    cout << endl;
+//     Mask x, e, r;
+//     update(board, 'X', x);
+//     cout << "Mask for 'X'" << endl;
+//     x.print();
+//     cout << endl;
 
-    update(board, 'E', e);
-    cout << "Mask for 'E'" << endl;
-    e.print();
-    cout << endl;
+//     update(board, 'E', e);
+//     cout << "Mask for 'E'" << endl;
+//     e.print();
+//     cout << endl;
 
-    update(board, 'R', r);
-    cout << "Mask for 'R'" << endl;
-    r.print();
-    cout << endl;
+//     update(board, 'R', r);
+//     cout << "Mask for 'R'" << endl;
+//     r.print();
+//     cout << endl;
 
-    cout << "====================== Question 3b ======================" << endl
-         << endl;
+//     cout << "====================== Question 3b ======================" << endl
+//          << endl;
 
-    neighbourhood_intersect(x, e);   // from BOXED
-                                     //        ^^
-    cout << "After neighbourhood intersection, mask for 'E' is " << endl;
-    e.print();
-    cout << endl;
+//     neighbourhood_intersect(x, e);   // from BOXED
+//                                      //        ^^
+//     cout << "After neighbourhood intersection, mask for 'E' is " << endl;
+//     e.print();
+//     cout << endl;
 
-    neighbourhood_intersect(e, r);   // from QUAVER
-                                     //          ^^
-    cout << "After further neighbourhood intersection, mask for 'E' is "
-         << endl;
-    e.print();
-    cout << endl;
+//     neighbourhood_intersect(e, r);   // from QUAVER
+//                                      //          ^^
+//     cout << "After further neighbourhood intersection, mask for 'E' is "
+//          << endl;
+//     e.print();
+//     cout << endl;
 
-    update(board, 'E', e);
-    cout << "Board is now " << endl;
-    print_board(board);
-    cout << endl;
-    // if you did this right, your board should now have 'E'
-    // in the correct position
+//     update(board, 'E', e);
+//     cout << "Board is now " << endl;
+//     print_board(board);
+//     cout << endl;
+//     // if you did this right, your board should now have 'E'
+//     // in the correct position
 
-    delete_board(board);
-    delete_words(words);
+//     delete_board(board);
+//     delete_words(words);
 
-    cout << "====================== Question 4 ======================" << endl
-         << endl;
+//     cout << "====================== Question 4 ======================" << endl
+//          << endl;
 
-    const char *puzzle[] = {"easy", "medium", "hard", NULL};
+//     const char *puzzle[] = {"easy", "medium", "hard", NULL};
 
-    for (int n = 0; puzzle[n]; n++) {
-        cout << "Trying to solve '" << puzzle[n] << "' puzzle:" << endl;
-        char board_filename[512], words_filename[512], solution_filename[512];
-        sprintf(board_filename, "board-%s.txt", puzzle[n]);
-        sprintf(words_filename, "words-%s.txt", puzzle[n]);
-        sprintf(solution_filename, "mysolution-%s.txt", puzzle[n]);
+//     for (int n = 0; puzzle[n]; n++) {
+//         cout << "Trying to solve '" << puzzle[n] << "' puzzle:" << endl;
+//         char board_filename[512], words_filename[512], solution_filename[512];
+//         sprintf(board_filename, "board-%s.txt", puzzle[n]);
+//         sprintf(words_filename, "words-%s.txt", puzzle[n]);
+//         sprintf(solution_filename, "mysolution-%s.txt", puzzle[n]);
 
-        board = load_board(board_filename);
-        words = load_words(words_filename);
+//         board = load_board(board_filename);
+//         words = load_words(words_filename);
 
-        if (solve_board(board, words)) {
-            cout << "Board solved! Solution: " << endl;
-            print_board(board);
-            save_board(board, solution_filename);
-        } else
-            cout << "Board could not be solved" << endl;
-        delete_board(board);
-        delete_words(words);
-        cout << endl;
-    }
+//         if (solve_board(board, words)) {
+//             cout << "Board solved! Solution: " << endl;
+//             print_board(board);
+//             save_board(board, solution_filename);
+//         } else
+//             cout << "Board could not be solved" << endl;
+//         delete_board(board);
+//         delete_words(words);
+//         cout << endl;
+//     }
 
     return 0;
 }

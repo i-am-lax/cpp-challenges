@@ -13,3 +13,4 @@ void delete_words(char **words);
 /* -----------8<-------------8<------------8<--------------8<------------ */
 
 /* add your function prototypes here */
+bool get_position(char **board, const char ch, int &row, int &column);

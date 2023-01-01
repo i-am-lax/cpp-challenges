@@ -141,3 +141,17 @@ void delete_words(char **words) {
 }
 
 /* add your own function definitions here */
+bool get_position(char **board, const char ch, int &row, int &column) {
+    for (int r = 0; r < HEIGHT; r++) {
+        for (int c = 0; c < WIDTH; c++) {
+            if (board[r][c] == ch) {
+                row = r;
+                column = c;
+                return true;
+            }
+        }
+    }
+    row = -1;
+    column = -1;
+    return false;
+}
