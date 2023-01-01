@@ -9,7 +9,6 @@
 using namespace std;
 
 int main() {
-    /* this section illustrates the use of the pre-supplied helper functions */
     cout << "============== Pre-supplied functions ==================" << endl
          << endl;
 

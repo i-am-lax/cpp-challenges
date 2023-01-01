@@ -40,7 +40,7 @@ void filter(char *line) {
     }
 }
 
-/* loads a Gogen board from a file */
+// Loads a Gogen board from a file 'filename' into a 2D array of characters
 char **load_board(const char *filename) {
     char **board = allocate_2D_array(5, 6);
     ifstream input(filename);
@@ -61,7 +61,8 @@ char **load_board(const char *filename) {
     return board;
 }
 
-/* saves a Gogen board to a file */
+/* Saves a Gogen board ('board') to a file ('filename') and returns true if
+ * successful */
 bool save_board(char **board, const char *filename) {
     ofstream out(filename);
     if (!out)
@@ -77,7 +78,7 @@ bool save_board(char **board, const char *filename) {
     return result;
 }
 
-/* internal helper function for counting number of words in a file */
+// Internal helper function for counting number of words in a file ('filename')
 int count_words(const char *filename) {
     char word[512];
     int count = 0;
@@ -88,7 +89,8 @@ int count_words(const char *filename) {
     return count;
 }
 
-/* loads a word list from a file into a NULL-terminated array of char *'s */
+/* Loads a word list from a file ('filename') into a NULL-terminated array of
+ * char *'s */
 char **load_words(const char *filename) {
     int count = count_words(filename);
     ifstream in(filename);
@@ -105,7 +107,7 @@ char **load_words(const char *filename) {
     return buffer;
 }
 
-/* prints a Gogen board in appropriate format */
+// Prints a Gogen 'board' in appropriate format
 void print_board(char **board) {
     for (int r = 0; r < HEIGHT; r++) {
         for (int c = 0; c < WIDTH; c++) {
@@ -121,16 +123,16 @@ void print_board(char **board) {
     }
 }
 
-/* prints a NULL-terminated list of words */
+// Prints a NULL-terminated list of 'words'
 void print_words(char **words) {
     for (int n = 0; words[n]; n++)
         cout << words[n] << endl;
 }
 
-/* frees up the memory allocated in load_board(...) */
+// Frees up the memory allocated in load_board()
 void delete_board(char **board) { deallocate_2D_array(board, HEIGHT); }
 
-/* frees up the memory allocated in load_words(...) */
+// Frees up the memory allocated in load_words()
 void delete_words(char **words) {
     int count = 0;
     for (; words[count]; count++)
@@ -138,7 +140,9 @@ void delete_words(char **words) {
     deallocate_2D_array(words, count);
 }
 
-/* add your own function definitions here */
+/* Returns true if the character 'ch' exists in the array 'board' and 'row' and
+ * 'column' are updated with the position, otherwise they are set to -1 and the
+ * function returns false */
 bool get_position(char **board, const char ch, int &row, int &column) {
     for (int r = 0; r < HEIGHT; r++) {
         for (int c = 0; c < WIDTH; c++) {
@@ -154,6 +158,8 @@ bool get_position(char **board, const char ch, int &row, int &column) {
     return false;
 }
 
+/* Internal helper function to count the number of occurrences of character 'ch'
+ * in 'board' */
 int count_character(char **board, const char ch) {
     int count = 0;
     for (int r = 0; r < HEIGHT; r++) {
@@ -166,10 +172,16 @@ int count_character(char **board, const char ch) {
     return count;
 }
 
+/* Internal helper function to check if the Gogen 'board' is complete. The
+ * 'board' should have all 25 spaces occupied by the letters A-Y. We check to
+ * see if the count of occurrences of each letter is anything other than 1 in
+ * which case we return false */
 bool is_complete(char **board) {
+    // set of letters A-Y for Gogen board
     vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
                             'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
                             'S', 'T', 'U', 'V', 'W', 'X', 'Y'};
+    // if the count is not 1 then board is not complete
     for (auto const &l : letters) {
         if (count_character(board, l) != 1) {
             return false;
@@ -178,6 +190,8 @@ bool is_complete(char **board) {
     return true;
 }
 
+/* Internal helper function to check that the 'row' and 'col' are valid
+ * positions on the Gogen board */
 bool is_valid_indices(int row, int col) {
     if (row < 0 || row > HEIGHT - 1) {
         return false;
@@ -213,30 +227,44 @@ bool is_valid_indices(int row, int col) {
 //     return false;
 // }
 
+/* Internal helper function to check if positions ['r1', 'c1'] and ['r2', 'c2']
+ * are adjacent. There are 8 possible adjacent positions */
 bool is_adjacent(int r1, int c1, int r2, int c2) {
+    // calculate absolute difference in row and column values
     int rdiff = abs(r1 - r2), cdiff = abs(c1 - c2);
+
+    // if the differences are both zero then the positions are the same
     if (rdiff == 0 && cdiff == 0) {
         return false;
     }
+    // if either of the differences are greater than 1 then they're not adjacent
     if (rdiff > 1 || cdiff > 1) {
         return false;
     }
     return true;
 }
 
+/* Internal helper function which returns true if the 'word' is present on the
+ * 'board' via stepping through adjacent squares */
 bool word_on_board(char **board, char *word) {
-    // get position of the first letter
-    int row, col, next_row, next_col;
-    get_position(board, *word, row, col);
+    // declare variables to store prev and current positions
+    int prev_row, prev_col, row, col;
 
+    // get position of the first letter
+    get_position(board, *word, prev_row, prev_col);
+
+    /* iterate through word and check if consecutive letters are adjacent on
+     * board */
     while (*(word + 1) != '\0') {
-        get_position(board, *(word + 1), next_row, next_col);
-        if (!is_adjacent(row, col, next_row, next_col)) {
+        // get position of the next letter
+        get_position(board, *(word + 1), row, col);
+        // if letters are adjacent then continue to next letter
+        if (!is_adjacent(prev_row, prev_col, row, col)) {
             return false;
         }
         word++;
-        row = next_row;
-        col = next_col;
+        prev_row = row;
+        prev_col = col;
     }
     return true;
 }
@@ -260,6 +288,15 @@ bool valid_solution(char **board, char **words) {
     return true;
 }
 
+/* Mutually updates the 'board' and a 'mask' for letter 'ch' according to the
+ * following rules:
+ * - if 'ch' is found in the 'board' at position (r, c), then set every entry in
+ * mask to be false with the exception of element (r, c), which is set to true,
+ * and return
+ * - for every cell in the 'board' that is marked with a letter (that is not
+ * 'ch'), set the corresponding element in 'mask' to false
+ * - if there is one (and only one) cell with the value true in 'mask' then set
+ * the corresponding cell in the board to 'ch' */
 void update(char **board, const char ch, Mask &mask) {
     int row, col;
     // location is fixed on the board
@@ -283,13 +320,19 @@ void update(char **board, const char ch, Mask &mask) {
     }
 }
 
+/* Modifies masks 'one' and 'two' by intersecting each with the 1-neighbourhood
+ * of the other */
 void neighbourhood_intersect(Mask &one, Mask &two) {
+    // generate masks representing 1-neighbourhood
     Mask onbr = one.neighbourhood();
     Mask tnbr = two.neighbourhood();
 
+    // perform intersection
     one.intersect_with(tnbr);
     two.intersect_with(onbr);
 }
+
+/* Question 4 */
 
 bool aux(char **board, char **words) {
     // board is complete - terminate
@@ -298,6 +341,9 @@ bool aux(char **board, char **words) {
     }
 }
 
+/* Attempts to find a solution to a given Gogen puzzle. If a solution can be
+ * found, the function returns true and the parameter 'board' should contain the
+ * completed board. Otherwise the function returns false */
 bool solve_board(char **board, char **words) {
     vector<char> letters = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I',
                             'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R',
