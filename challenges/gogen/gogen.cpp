@@ -278,3 +278,11 @@ void update(char** board, const char ch, Mask &mask) {
         board[row][col] = ch;
     }
 }
+
+void neighbourhood_intersect(Mask &one, Mask &two) {
+    Mask onbr = one.neighbourhood();
+    Mask tnbr = two.neighbourhood();
+    
+    one.intersect_with(tnbr);
+    two.intersect_with(onbr);
+}

@@ -19,3 +19,5 @@ bool get_position(char **board, const char ch, int &row, int &column);
 bool valid_solution(char **board, char **words);
 
 void update(char** board, const char ch, Mask &mask);
+
+void neighbourhood_intersect(Mask &one, Mask &two);

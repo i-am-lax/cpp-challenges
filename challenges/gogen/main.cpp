@@ -108,31 +108,31 @@ int main() {
     r.print();
     cout << endl;
 
-//     cout << "====================== Question 3b ======================" << endl
-//          << endl;
+    cout << "====================== Question 3b ======================" << endl
+         << endl;
 
-//     neighbourhood_intersect(x, e);   // from BOXED
-//                                      //        ^^
-//     cout << "After neighbourhood intersection, mask for 'E' is " << endl;
-//     e.print();
-//     cout << endl;
+    neighbourhood_intersect(x, e);   // from BOXED
+                                     //        ^^
+    cout << "After neighbourhood intersection, mask for 'E' is " << endl;
+    e.print();
+    cout << endl;
 
-//     neighbourhood_intersect(e, r);   // from QUAVER
-//                                      //          ^^
-//     cout << "After further neighbourhood intersection, mask for 'E' is "
-//          << endl;
-//     e.print();
-//     cout << endl;
+    neighbourhood_intersect(e, r);   // from QUAVER
+                                     //          ^^
+    cout << "After further neighbourhood intersection, mask for 'E' is "
+         << endl;
+    e.print();
+    cout << endl;
 
-//     update(board, 'E', e);
-//     cout << "Board is now " << endl;
-//     print_board(board);
-//     cout << endl;
-//     // if you did this right, your board should now have 'E'
-//     // in the correct position
+    update(board, 'E', e);
+    cout << "Board is now " << endl;
+    print_board(board);
+    cout << endl;
+    // if you did this right, your board should now have 'E'
+    // in the correct position
 
-//     delete_board(board);
-//     delete_words(words);
+    delete_board(board);
+    delete_words(words);
 
 //     cout << "====================== Question 4 ======================" << endl
 //          << endl;
