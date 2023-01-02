@@ -39,32 +39,30 @@ bool can_form_word_from_tiles(const char *word, string tiles,
         *played_tiles = '\0';
         return true;
     }
-    // if the letter exists in the tile set then we play it and remove from
-    // tiles
+    // if the letter exists in the tile set then we play it
+    int position;
     if (letter_in_tiles(*word, tiles)) {
-        int position = tiles.find_first_of(*word);
+        position = tiles.find_first_of(*word);
         *played_tiles = *word;
-        played_tiles++;
-        tiles.erase(position, 1);
-        return can_form_word_from_tiles(word + 1, tiles, played_tiles);
-        // if the letter does not exist we see if a blank tile exists instead
-    } else if (letter_in_tiles(' ', tiles)) {
-        int position = tiles.find_first_of(' ');
+    }
+    // if the letter does not exist we see if a blank tile exists instead
+    else if (letter_in_tiles(' ', tiles)) {
+        position = tiles.find_first_of(' ');
         *played_tiles = ' ';
-        played_tiles++;
-        tiles.erase(position, 1);
-        return can_form_word_from_tiles(word + 1, tiles, played_tiles);
     } else if (letter_in_tiles('?', tiles)) {
-        int position = tiles.find_first_of('?');
+        position = tiles.find_first_of('?');
         *played_tiles = '?';
-        played_tiles++;
-        tiles.erase(position, 1);
-        return can_form_word_from_tiles(word + 1, tiles, played_tiles);
-        // otherwise the word cannot be constructed and we return false
-    } else {
+    }
+    // otherwise the word cannot be constructed and we return false
+    else {
         played_tiles[0] = '\0';
         return false;
     }
+    /* remove the played tile from the set and make recursive call to check next
+     * letter */
+    played_tiles++;
+    tiles.erase(position, 1);
+    return can_form_word_from_tiles(word + 1, tiles, played_tiles);
 }
 
 /* Internal helper function which applies a given ScoreModifier 'sm' and updates
