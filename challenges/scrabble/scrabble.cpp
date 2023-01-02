@@ -154,17 +154,21 @@ int highest_scoring_word_from_tiles(const string tiles,
     ifstream in;
     in.open(WORDS);
 
+    /* for each word in WORDS file check if it is a possibility and compare
+     * scores */
     while (!in.eof()) {
-        // read in word
-        in >> word_to_check;
-
         string local_tiles = tiles;
         int score = 0;
 
+        // read in word
+        in >> word_to_check;
+
+        // calculate score if word can be formed from tiles
         if (can_form_word_from_tiles(word_to_check, local_tiles, word)) {
             score = compute_score(word, score_modifiers);
         }
 
+        // overwrite current maximum score if the new score exceeds it
         if (score > max_score) {
             max_score = score;
             strcpy(max_score_word, word);
