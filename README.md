@@ -13,3 +13,4 @@ Series of C++ challenges typically involving recursion:
 10. [Minesweeper](challenges/minesweeper/)
 11. [Tube Stations](challenges/tube-stations/)
 12. [Gogen Puzzle](challenges/gogen/)
+13. [Scrabblegram](challenges/scrabble/)
