@@ -24,4 +24,6 @@ int tile_score(const char tile);
 
 bool can_form_word_from_tiles(const char *word, std::string tiles, char* played_tiles);
 
+int compute_score(const char* played_tiles, ScoreModifier score_modifiers[]);
+
 #endif

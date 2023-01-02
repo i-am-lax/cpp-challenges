@@ -51,25 +51,25 @@ int main() {
         cout << "Played tiles: " << played_tiles << endl;
     cout << endl;
 
-    // cout << "====================== Question 3 ======================" << endl
-    //      << endl;
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-    // ScoreModifier sm0[] = {
-    //     NONE, TRIPLE_LETTER_SCORE, NONE, NONE, DOUBLE_WORD_SCORE, NONE, NONE};
+    ScoreModifier sm0[] = {
+        NONE, TRIPLE_LETTER_SCORE, NONE, NONE, DOUBLE_WORD_SCORE, NONE, NONE};
 
-    // int score = compute_score("LEAP", sm0);
-    // cout << "LEAP scores " << score << endl;
+    int score = compute_score("LEAP", sm0);
+    cout << "LEAP scores " << score << endl;
 
-    // score = compute_score("LEAPS", sm0);
-    // cout << "LEAPS scores " << score << endl;
+    score = compute_score("LEAPS", sm0);
+    cout << "LEAPS scores " << score << endl;
 
-    // score = compute_score("AP?LES", sm0);
-    // cout << "AP?LES scores " << score << endl;
+    score = compute_score("AP?LES", sm0);
+    cout << "AP?LES scores " << score << endl;
 
-    // score = compute_score("SPA?ZLE", sm0);
-    // cout << "SPA?ZLE scores " << score << endl;
+    score = compute_score("SPA?ZLE", sm0);
+    cout << "SPA?ZLE scores " << score << endl;
 
-    // cout << endl;
+    cout << endl;
 
     // cout << "====================== Question 4 ======================" << endl
     //      << endl;
