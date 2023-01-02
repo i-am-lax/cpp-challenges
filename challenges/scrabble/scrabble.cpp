@@ -9,8 +9,8 @@
 using namespace std;
 
 int tile_score(const char tile) {
-    if (TILE_SCORES.count(tile)) {
-        return TILE_SCORES.at(tile);
+    if (TILE_SCORES.count(toupper(tile))) {
+        return TILE_SCORES.at(toupper(tile));
     }
     return -1;
 }
@@ -49,6 +49,7 @@ bool can_form_word_from_tiles(const char *word, string tiles,
         tiles.erase(position, 1);
         return can_form_word_from_tiles(word + 1, tiles, played_tiles);
     } else {
+        played_tiles[0] = '\0';
         return false;
     }
 }
@@ -81,13 +82,13 @@ int compute_score(const char *played_tiles, ScoreModifier score_modifiers[]) {
     // gather scores for individual tiles and see if double or triple word hit
     for (int idx = 0; idx < strlen(played_tiles); idx++) {
         // get score of individual tile
-        int tile_score = TILE_SCORES.at(played_tiles[idx]);
+        int ts = tile_score(played_tiles[idx]);
 
         //  apply modifier
-        apply_modifier(score_modifiers[idx], tile_score, dw, tw);
+        apply_modifier(score_modifiers[idx], ts, dw, tw);
 
         // add tile score to overall score
-        score += tile_score;
+        score += ts;
     }
 
     // apply double or triple word
