@@ -105,3 +105,41 @@ int compute_score(const char *played_tiles, ScoreModifier score_modifiers[]) {
 
     return score;
 }
+
+int highest_scoring_word_from_tiles(string tiles, ScoreModifier score_modifiers[], char* word) {
+    // for each word in 'words.txt' we want to see if we can form the word
+    // if so, we want to copy the word into "word" and compute score
+    // and then compare to maximum
+
+    // create input filestream
+    ifstream in;
+    in.open("words.txt");
+
+    char word_to_check[MAX_LENGTH];
+    char max_score_word[MAX_LENGTH];
+
+    int max_score = 0;
+
+    while(!in.eof()) {
+        // read in word
+        in >> word_to_check;
+
+        string local_tiles = tiles;
+        int score = 0;
+
+        if (can_form_word_from_tiles(word_to_check, local_tiles, word)) {
+            score = compute_score(word, score_modifiers);
+        }
+
+        if (score > max_score) {
+            max_score = score;
+            strcpy(max_score_word, word);
+        }
+    }
+
+    if (max_score > 0) {
+        strcpy(word, max_score_word);
+        return max_score;
+    }
+    return -1;
+}

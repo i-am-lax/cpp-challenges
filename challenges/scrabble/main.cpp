@@ -71,51 +71,51 @@ int main() {
 
     cout << endl;
 
-    // cout << "====================== Question 4 ======================" << endl
-    //      << endl;
+    cout << "====================== Question 4 ======================" << endl
+         << endl;
 
-    // ScoreModifier sm1[] = {NONE, NONE, DOUBLE_LETTER_SCORE, NONE, NONE,
-    //                        NONE, NONE};
+    ScoreModifier sm1[] = {NONE, NONE, DOUBLE_LETTER_SCORE, NONE, NONE,
+                           NONE, NONE};
 
-    // char word[512];
-    // score = highest_scoring_word_from_tiles("WBNNOER", sm1, word);
-    // cout << "The highest scoring word that can be made from the tiles 'WBNNOER'"
-    //      << endl;
-    // cout << "  with a double letter score on the third letter is:" << endl;
-    // if (score < 0)
-    //     cout << "(no word found)" << endl;
-    // else
-    //     cout << "'" << word << "' (" << score << " points)" << endl;
-    // cout << endl;
+    char word[512];
+    score = highest_scoring_word_from_tiles("WBNNOER", sm1, word);
+    cout << "The highest scoring word that can be made from the tiles 'WBNNOER'"
+         << endl;
+    cout << "  with a double letter score on the third letter is:" << endl;
+    if (score < 0)
+        cout << "(no word found)" << endl;
+    else
+        cout << "'" << word << "' (" << score << " points)" << endl;
+    cout << endl;
 
-    // ScoreModifier sm2[] = {DOUBLE_LETTER_SCORE, NONE, NONE, NONE, NONE,
-    //                        TRIPLE_WORD_SCORE,   NONE};
-    // score = highest_scoring_word_from_tiles("N?ESHRH", sm2, word);
-    // cout << "The highest scoring word that can be made from the tiles 'N?ESHRH'"
-    //      << endl;
-    // cout << "  with a double letter score on the 1st position" << endl;
-    // cout << "  and a triple word score on the 6th position is:" << endl;
-    // if (score < 0)
-    //     cout << "(no word found)" << endl;
-    // else
-    //     cout << "'" << word << "' (" << score << " points)" << endl;
-    // cout << endl;
+    ScoreModifier sm2[] = {DOUBLE_LETTER_SCORE, NONE, NONE, NONE, NONE,
+                           TRIPLE_WORD_SCORE,   NONE};
+    score = highest_scoring_word_from_tiles("N?ESHRH", sm2, word);
+    cout << "The highest scoring word that can be made from the tiles 'N?ESHRH'"
+         << endl;
+    cout << "  with a double letter score on the 1st position" << endl;
+    cout << "  and a triple word score on the 6th position is:" << endl;
+    if (score < 0)
+        cout << "(no word found)" << endl;
+    else
+        cout << "'" << word << "' (" << score << " points)" << endl;
+    cout << endl;
 
-    // ScoreModifier sm3[] = {
-    //     NONE, NONE, NONE, NONE, TRIPLE_LETTER_SCORE, NONE, DOUBLE_WORD_SCORE};
-    // score = highest_scoring_word_from_tiles("L?IEY?A", sm3, word);
-    // cout << "The highest scoring word that can be made from the tiles 'L?IEY?A'"
-    //      << endl;
-    // cout << "  with a triple letter score on the 5th position" << endl;
-    // cout << "  and a double word score on the 7th position is:" << endl;
-    // if (score < 0)
-    //     cout << "(no word found)" << endl;
-    // else
-    //     cout << "'" << word << "' (" << score << " points)" << endl;
-    // cout << endl;
+    ScoreModifier sm3[] = {
+        NONE, NONE, NONE, NONE, TRIPLE_LETTER_SCORE, NONE, DOUBLE_WORD_SCORE};
+    score = highest_scoring_word_from_tiles("L?IEY?A", sm3, word);
+    cout << "The highest scoring word that can be made from the tiles 'L?IEY?A'"
+         << endl;
+    cout << "  with a triple letter score on the 5th position" << endl;
+    cout << "  and a double word score on the 7th position is:" << endl;
+    if (score < 0)
+        cout << "(no word found)" << endl;
+    else
+        cout << "'" << word << "' (" << score << " points)" << endl;
+    cout << endl;
 
-    // cout << "========================= Fin ==========================" << endl
-    //      << endl;
+    cout << "========================= Fin ==========================" << endl
+         << endl;
 
     return 0;
 }

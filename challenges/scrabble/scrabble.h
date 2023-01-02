@@ -3,6 +3,8 @@
 
 #include <map>
 
+const int MAX_LENGTH = 30;
+
 enum ScoreModifier {
     NONE,
     DOUBLE_LETTER_SCORE,
@@ -25,5 +27,7 @@ int tile_score(const char tile);
 bool can_form_word_from_tiles(const char *word, std::string tiles, char* played_tiles);
 
 int compute_score(const char* played_tiles, ScoreModifier score_modifiers[]);
+
+int highest_scoring_word_from_tiles(std::string tiles, ScoreModifier score_modifiers[], char* word);
 
 #endif
