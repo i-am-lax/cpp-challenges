@@ -147,8 +147,8 @@ int highest_scoring_word_from_tiles(const string tiles,
                                     char *word) {
     /* variables to hold results and the word we are currently checking from
      * dictionary */
-    int max_score = 0;
-    char word_to_check[MAX_LENGTH], max_score_word[MAX_LENGTH];
+    int score, max_score = 0;
+    char word_to_check[MAX_LENGTH], current_word[MAX_LENGTH];
 
     // create input filestream
     ifstream in;
@@ -157,27 +157,26 @@ int highest_scoring_word_from_tiles(const string tiles,
     /* for each word in WORDS file check if it is a possibility and compare
      * scores */
     while (!in.eof()) {
-        string local_tiles = tiles;
-        int score = 0;
+        // reset score
+        score = 0;
 
         // read in word
         in >> word_to_check;
 
         // calculate score if word can be formed from tiles
-        if (can_form_word_from_tiles(word_to_check, local_tiles, word)) {
-            score = compute_score(word, score_modifiers);
+        if (can_form_word_from_tiles(word_to_check, tiles, current_word)) {
+            score = compute_score(current_word, score_modifiers);
         }
 
         // overwrite current maximum score if the new score exceeds it
         if (score > max_score) {
             max_score = score;
-            strcpy(max_score_word, word);
+            strcpy(word, current_word);
         }
     }
 
-    // if a word can be generated we return the highest score and copy the word
+    // if a word can be generated we return the highest score
     if (max_score > 0) {
-        strcpy(word, max_score_word);
         return max_score;
     }
     return -1;
