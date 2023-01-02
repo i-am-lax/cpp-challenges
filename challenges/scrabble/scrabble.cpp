@@ -7,4 +7,9 @@
 
 using namespace std;
 
-/* insert your function definitions here */
+int tile_score(const char tile) {
+    if (TILE_SCORES.count(tile)) {
+        return TILE_SCORES.at(tile);
+    }
+    return -1;
+}
