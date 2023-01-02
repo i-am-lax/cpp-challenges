@@ -18,38 +18,38 @@ int main() {
     cout << "Tile score for '1' is " << tile_score('1') << endl;
     cout << endl;
 
-    // cout << "====================== Question 2 ======================" << endl
-    //      << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-    // char played_tiles[80];
+    char played_tiles[80];
 
-    // bool success = can_form_word_from_tiles("LEAP", "ZLEAP?S", played_tiles);
-    // cout << "The word 'LEAP' " << (success ? "can" : "cannot")
-    //      << " be made from the tiles 'ZLEAP?S'" << endl;
-    // if (success)
-    //     cout << "Played tiles: " << played_tiles << endl;
-    // cout << endl;
+    bool success = can_form_word_from_tiles("LEAP", "ZLEAP?S", played_tiles);
+    cout << "The word 'LEAP' " << (success ? "can" : "cannot")
+         << " be made from the tiles 'ZLEAP?S'" << endl;
+    if (success)
+        cout << "Played tiles: " << played_tiles << endl;
+    cout << endl;
 
-    // success = can_form_word_from_tiles("APPLES", "ZLEAP?S", played_tiles);
-    // cout << "The word 'APPLES' " << (success ? "can" : "cannot")
-    //      << " be made from the tiles 'ZLEAP?S'" << endl;
-    // if (success)
-    //     cout << "Played tiles: " << played_tiles << endl;
-    // cout << endl;
+    success = can_form_word_from_tiles("APPLES", "ZLEAP?S", played_tiles);
+    cout << "The word 'APPLES' " << (success ? "can" : "cannot")
+         << " be made from the tiles 'ZLEAP?S'" << endl;
+    if (success)
+        cout << "Played tiles: " << played_tiles << endl;
+    cout << endl;
 
-    // success = can_form_word_from_tiles("SPATZLE", "ZLEAP?S", played_tiles);
-    // cout << "The word 'SPATZLE' " << (success ? "can" : "cannot")
-    //      << " be made from the tiles 'ZLEAP?S'" << endl;
-    // if (success)
-    //     cout << "Played tiles: " << played_tiles << endl;
-    // cout << endl;
+    success = can_form_word_from_tiles("SPATZLE", "ZLEAP?S", played_tiles);
+    cout << "The word 'SPATZLE' " << (success ? "can" : "cannot")
+         << " be made from the tiles 'ZLEAP?S'" << endl;
+    if (success)
+        cout << "Played tiles: " << played_tiles << endl;
+    cout << endl;
 
-    // success = can_form_word_from_tiles("PIZZA", "ZLEAP?S", played_tiles);
-    // cout << "The word 'PIZZA' " << (success ? "can" : "cannot")
-    //      << " be made from the tiles 'ZLEAP?S'" << endl;
-    // if (success)
-    //     cout << "Played tiles: " << played_tiles << endl;
-    // cout << endl;
+    success = can_form_word_from_tiles("PIZZA", "ZLEAP?S", played_tiles);
+    cout << "The word 'PIZZA' " << (success ? "can" : "cannot")
+         << " be made from the tiles 'ZLEAP?S'" << endl;
+    if (success)
+        cout << "Played tiles: " << played_tiles << endl;
+    cout << endl;
 
     // cout << "====================== Question 3 ======================" << endl
     //      << endl;

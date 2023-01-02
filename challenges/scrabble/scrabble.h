@@ -22,4 +22,6 @@ const std::map<char, int> TILE_SCORES = {
 
 int tile_score(const char tile);
 
+bool can_form_word_from_tiles(const char *word, std::string tiles, char* played_tiles);
+
 #endif
