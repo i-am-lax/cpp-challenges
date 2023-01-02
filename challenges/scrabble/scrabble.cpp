@@ -8,34 +8,46 @@
 
 using namespace std;
 
-int tile_score(const char tile) {
+/* If 'tile' is a letter (upper or lowercase) then the function returns the tile
+ * score for that letter from TILE_SCORES mapping. If 'tile' is ' ' or '?'
+ * (a blank tile), the function returns 0. Otherwise it returns -1 */
+int tile_score(const char &tile) {
     if (TILE_SCORES.count(toupper(tile))) {
         return TILE_SCORES.at(toupper(tile));
     }
     return -1;
 }
 
-bool letter_in_tiles(const char ch, const string tiles) {
+/* Internal helper function which returns true if the input character 'ch' is
+ * present in the string 'tiles' and false otherwise */
+bool letter_in_tiles(const char &ch, const string &tiles) {
     for (int i = 0; i < tiles.length(); i++) {
-        if (tiles[i] == ch) {
+        if (tiles[i] == toupper(ch)) {
             return true;
         }
     }
     return false;
 }
 
+/* Recursive function which determines if the target 'word' can be constructed
+ * from the letters in 'tiles' and if so, the function returns true and the
+ * sequence is written to 'played_tiles'. Otherwise it returns false */
 bool can_form_word_from_tiles(const char *word, string tiles,
                               char *played_tiles) {
+    // reached end of the target word - terminate
     if (*word == '\0') {
         *played_tiles = '\0';
         return true;
     }
+    // if the letter exists in the tile set then we play it and remove from
+    // tiles
     if (letter_in_tiles(*word, tiles)) {
         int position = tiles.find_first_of(*word);
         *played_tiles = *word;
         played_tiles++;
         tiles.erase(position, 1);
         return can_form_word_from_tiles(word + 1, tiles, played_tiles);
+        // if the letter does not exist we see if a blank tile exists instead
     } else if (letter_in_tiles(' ', tiles)) {
         int position = tiles.find_first_of(' ');
         *played_tiles = ' ';
@@ -48,13 +60,18 @@ bool can_form_word_from_tiles(const char *word, string tiles,
         played_tiles++;
         tiles.erase(position, 1);
         return can_form_word_from_tiles(word + 1, tiles, played_tiles);
+        // otherwise the word cannot be constructed and we return false
     } else {
         played_tiles[0] = '\0';
         return false;
     }
 }
 
-void apply_modifier(ScoreModifier sm, int &tile_score, int &dw, int &tw) {
+/* Internal helper function which applies a given ScoreModifier 'sm' and updates
+ * the individual tile score 'tile_score' if modifier is DOUBLE_LETTER_SCORE
+ / TRIPLE_LETTER_SCORE, or increments the count of double word ('dw') and triple
+ word ('tw') modifiers if modifier is DOUBLE_WORD_SCORE / TRIPLE_WORD_SCORE */
+void apply_modifier(const ScoreModifier sm, int &tile_score, int &dw, int &tw) {
     switch (sm) {
     case NONE:
         break;
@@ -76,7 +93,17 @@ void apply_modifier(ScoreModifier sm, int &tile_score, int &dw, int &tw) {
     }
 }
 
-int compute_score(const char *played_tiles, ScoreModifier score_modifiers[]) {
+/* Returns the word score given a 'played_tiles' string and an array of
+ * 'score_modifiers'. The score for each individual tile is retrieved based on
+ * the tile score itself and the corresponding score modifier. If the double /
+ * triple word modifiers are present then these are applied after the tile
+ * scores are tallied up. If the final word has a length of 7 then a bonus of 50
+ * points is added. Note we assume that a score modifier array can comprise of
+ * both double and triple word modifiers which can also appear more than once */
+int compute_score(const char *played_tiles,
+                  const ScoreModifier score_modifiers[]) {
+    /* instantiate variables to hold overall score, and count of double/triple
+     * word modifiers */
     int score = 0, dw = 0, tw = 0;
 
     // gather scores for individual tiles and see if double or triple word hit
@@ -107,21 +134,27 @@ int compute_score(const char *played_tiles, ScoreModifier score_modifiers[]) {
     return score;
 }
 
-int highest_scoring_word_from_tiles(string tiles, ScoreModifier score_modifiers[], char* word) {
-    // for each word in 'words.txt' we want to see if we can form the word
-    // if so, we want to copy the word into "word" and compute score
-    // and then compare to maximum
+/* Returns the highest word score that can be achieved given a particular
+ * collection of 'tiles' and 'score_modifiers', using any of the words in the
+ * supplied dictionary. If it not possible to make any word from the 'tiles'
+ * then the function returns -1. Otherwise output parameter 'word' contains the
+ * word attaining the highest word score, and the function returns the score.
+ * The function iterates through the dictionary and checks if the word can be
+ * made from the 'tiles' and if so, computes the score and records it.
+ * Subsequent words are then compared to this score and updated accordingly */
+int highest_scoring_word_from_tiles(const string tiles,
+                                    const ScoreModifier score_modifiers[],
+                                    char *word) {
+    /* variables to hold results and the word we are currently checking from
+     * dictionary */
+    int max_score = 0;
+    char word_to_check[MAX_LENGTH], max_score_word[MAX_LENGTH];
 
     // create input filestream
     ifstream in;
-    in.open("words.txt");
+    in.open(WORDS);
 
-    char word_to_check[MAX_LENGTH];
-    char max_score_word[MAX_LENGTH];
-
-    int max_score = 0;
-
-    while(!in.eof()) {
+    while (!in.eof()) {
         // read in word
         in >> word_to_check;
 
@@ -138,6 +171,7 @@ int highest_scoring_word_from_tiles(string tiles, ScoreModifier score_modifiers[
         }
     }
 
+    // if a word can be generated we return the highest score and copy the word
     if (max_score > 0) {
         strcpy(word, max_score_word);
         return max_score;

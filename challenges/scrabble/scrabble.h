@@ -3,8 +3,13 @@
 
 #include <map>
 
+// Maximum length of a word
 const int MAX_LENGTH = 30;
 
+// File name containing dictionary of words
+const char WORDS[] = "words.txt";
+
+// Set of score modifiers
 enum ScoreModifier {
     NONE,
     DOUBLE_LETTER_SCORE,
@@ -22,12 +27,32 @@ const std::map<char, int> TILE_SCORES = {
     {'T', 1}, {'U', 1}, {'V', 4}, {'W', 4}, {'X', 8},  {'Y', 4}, {'Z', 10},
 };
 
-int tile_score(const char tile);
+/* Returns the tile score for a given input 'tile'. If 'tile' is a letter
+ * (whether uppercase or lowercase) then the function returns the tile score for
+ * that letter. If 'tile' is ' ' or '?' (both of which can be used to represent
+ * the blank tile), the function returns 0. Otherwise it returns -1 */
+int tile_score(const char &tile);
 
-bool can_form_word_from_tiles(const char *word, std::string tiles, char* played_tiles);
+/* Returns true if the target 'word' can be constructed from the letters in
+ * 'tiles' and the sequence written to 'played_tiles'. Otherwise the function
+ * returns false */
+bool can_form_word_from_tiles(const char *word, std::string tiles,
+                              char *played_tiles);
 
-int compute_score(const char* played_tiles, ScoreModifier score_modifiers[]);
+/* Returns the word score given a 'played_tiles' string and an array of
+ * 'score_modifiers' */
+int compute_score(const char *played_tiles,
+                  const ScoreModifier score_modifiers[]);
 
-int highest_scoring_word_from_tiles(std::string tiles, ScoreModifier score_modifiers[], char* word);
+/* Returns the highest word score that can be achieved given a particular
+ * collection of tiles and score modifiers, using any of the words in the
+ * supplied dictionary. 'tiles' and 'score_modifiers' are inputs of type string
+ * and ScoreModifier[] respectively. If it not possible to make any word in the
+ * supplied dictionary from the 'tiles' then the function returns -1. Otherwise
+ * output parameter 'word' contains the word attaining the highest word score,
+ * and the function returns the score */
+int highest_scoring_word_from_tiles(const std::string tiles,
+                                    const ScoreModifier score_modifiers[],
+                                    char *word);
 
 #endif
