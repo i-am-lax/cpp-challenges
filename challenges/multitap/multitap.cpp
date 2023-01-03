@@ -63,19 +63,25 @@ void encode(const char *plaintext, char *multitap) {
     // string to store individual character encoding
     char encoding[MAX_LENGTH];
 
-    //
-    bool prevcase = false, currentcase = false;
+    // keep track of case
+    bool upper = false;
 
     while (*plaintext != '\0') {
+        // letter is uppercase
         if (isupper(*plaintext)) {
-            currentcase = true;
-        } else {
-            currentcase = false;
+            // transition to uppercase with # key if upper is not set
+            if (!upper) {
+                upper = true;
+                strcat(multitap, "#");
+            }
         }
-
-        if (currentcase != prevcase) {
-            strcat(multitap, "#");
-            prevcase = currentcase;
+        // letter is lowercase
+        else {
+            // transition to lowercase with # key if upper is set
+            if (upper) {
+                upper = false;
+                strcat(multitap, "#");
+            }
         }
 
         // generate character encoding
