@@ -5,38 +5,51 @@
 
 using namespace std;
 
-// ignoring case
-int encode_character(const char ch, char *multitap) {
+/* Internal helper function to repeat a character ('ch') 'n' times and write to
+ * string 'out' */
+void repeat_char(int n, const char &ch, char *out) {
+    while (n >= 0) {
+        *out = ch;
+        out++;
+        n--;
+    }
+    *out = '\0';
+}
+
+/* Produces the multitap encoding of a single input character 'ch' (ignoring
+case) using the KEYS map and writes it to 'multitap'. The number of keystrokes
+required to encode 'ch' is returned which is the length of 'multitap' */
+int encode_character(const char &ch, char *multitap) {
     // output number of keystrokes
     int size = 0;
 
     // ensure multitap is clear
-    multitap[0] = '\0';
+    *multitap = '\0';
 
-    // add * before digit
+    // case when ch is a digit - add ch itself preceded with *
     if (isdigit(ch)) {
-        multitap[0] = '*';
-        multitap[1] = ch;
-        multitap[2] = '\0';
+        char digit[] = {'*', ch, '\0'};
+        strcpy(multitap, digit);
         size = strlen(multitap);
-        return size;
     }
 
-    // identify letters
-    for (char key = '0'; key <= '9'; key++) {
-        for (int idx = 0; idx < KEYS.at(key).size(); idx++) {
-            if (KEYS.at(key)[idx] == tolower(ch)) {
-                while (idx >= 0) {
-                    *multitap = key;
-                    multitap++;
-                    size++;
-                    idx--;
+    // otherwise identify letters
+    else {
+        char converted[5];
+        // iterate through digits in KEYS map
+        for (map<char, vector<char>>::const_iterator it = KEYS.begin();
+             it != KEYS.end(); it++) {
+            for (int idx = 0; idx < it->second.size(); idx++) {
+                if (it->second[idx] == tolower(ch)) {
+                    // repeat digit n times based on position in vector
+                    repeat_char(idx, it->first, converted);
+                    strcpy(multitap, converted);
+                    size += idx + 1;
+                    break;
                 }
-                break;
             }
         }
     }
-    *multitap = '\0';
     return size;
 }
 
@@ -50,11 +63,10 @@ void encode(const char *plaintext, char *multitap) {
 
     bool prevcase = false, currentcase = false;
 
-    while(*plaintext != '\0') {
+    while (*plaintext != '\0') {
         if (isupper(*plaintext)) {
             currentcase = true;
-        }
-        else {
+        } else {
             currentcase = false;
         }
 
@@ -84,15 +96,13 @@ void decode(istream &input, ostream &output) {
     char ch, outch;
 
     input.get(ch);
-    while(!input.eof()) {
+    while (!input.eof()) {
         if (ch == '#') {
             upper = !upper;
-        }
-        else if (ch == '*') {
+        } else if (ch == '*') {
             input.get(ch);
             output << ch;
-        }
-        else if (isdigit(ch)) {
+        } else if (isdigit(ch)) {
             str += ch;
         }
         if (str.length() > 0 && ch != input.peek()) {
