@@ -55,25 +55,25 @@ int main() {
          << "a valid step." << endl
          << endl;
 
-//     cout << "====================== Question 2 ======================" << endl
-//          << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-//     const char *wheat_chain[] = {"WHEAT", "CHEAT", "CHEAP", "CHEEP", "CREEP",
-//                                  "CREED", "BREED", "BREAD", NULL};
+    const char *wheat_chain[] = {"WHEAT", "CHEAT", "CHEAP", "CHEEP", "CREEP",
+                                 "CREED", "BREED", "BREAD", NULL};
 
-//     cout << "Displaying 7-step chain from 'WHEAT' to 'BREAD':" << endl;
-//     bool success = display_chain(wheat_chain, cout);
-//     cout << "Output " << (success ? "successful" : "failed") << "!" << endl;
-//     cout << endl;
+    cout << "Displaying 7-step chain from 'WHEAT' to 'BREAD':" << endl;
+    bool success = display_chain(wheat_chain, cout);
+    cout << "Output " << (success ? "successful" : "failed") << "!" << endl;
+    cout << endl;
 
-//     const char *tea_chain[] = {"TEA", "SEA", "SET", "SOT", "HOT", NULL};
+    const char *tea_chain[] = {"TEA", "SEA", "SET", "SOT", "HOT", NULL};
 
-//     cout << "Writing 4-step chain from 'TEA' to 'HOT' to file 'chain.txt'..."
-//          << endl;
-//     ofstream out("chain.txt");
-//     success = display_chain(tea_chain, out);
-//     cout << "Output " << (success ? "successful" : "failed") << "!" << endl;
-//     out.close();
+    cout << "Writing 4-step chain from 'TEA' to 'HOT' to file 'chain.txt'..."
+         << endl;
+    ofstream out("chain.txt");
+    success = display_chain(tea_chain, out);
+    cout << "Output " << (success ? "successful" : "failed") << "!" << endl;
+    out.close();
 
 //     cout << "====================== Question 3 ======================" << endl
 //          << endl;

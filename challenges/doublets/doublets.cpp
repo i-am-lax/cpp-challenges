@@ -38,3 +38,47 @@ bool valid_step(const char* current_word, const char* next_word) {
    }
    return steps == 1;
 }
+
+/* Internal helper function */
+void str_to_lower(const char* str, char* output) {
+   // ensure string is clear
+   output[0] = '\0';
+
+   // append lowercase characters from str to output
+   while (*str != '\0') {
+      *output = tolower(*str);
+      output++;
+      str++;
+   }
+
+   // terminate string
+   *output = '\0';
+}
+
+bool display_chain(const char* chain[], ostream &output_stream) {
+   // keep track of position in chain
+   int position = 0;
+
+   // string to store lowercase word
+   char lower[MAX_LENGTH];
+
+   // output each word in chain
+   while (chain[position]) {
+      // check health of output stream
+      if (output_stream.fail()) {
+         return false;
+      }
+      // keep uppercase if first or last position
+      if (position == 0 || !chain[position+1]) {
+         output_stream << chain[position];
+      }
+      // convert to lowercase
+      else {
+         str_to_lower(chain[position], lower);
+         output_stream << lower;
+      }
+      output_stream << endl;
+      position++;
+   }
+   return true;
+}
