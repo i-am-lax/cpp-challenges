@@ -159,39 +159,91 @@ int length_chain(const char *chain[]) {
  * 'target_word' in up to max_steps steps. If a valid chain can be found, output
  * parameter 'answer_chain' contains the found chain and the function returns
  * true. Otherwise the function returns false */
-bool find_chain(const char *start_word, const char *target_word,
-                const char *answer_chain[], int max_steps) {
-    if (valid_chain(answer_chain) &&
-        length_chain(answer_chain) - 1 <= max_steps) {
+// bool find_chain(const char *start_word, const char *target_word,
+//                 const char *answer_chain[], int max_steps) {
+//     if (valid_chain(answer_chain) &&
+//         length_chain(answer_chain) - 1 <= max_steps) {
+//         return true;
+//     }
+//     if (strlen(start_word) != strlen(target_word)) {
+//         return false;
+//     }
+//     if (!length_chain(answer_chain)) {
+//         const char *ptr = new char[MAX_LENGTH];
+//         ptr = start_word;
+//         *answer_chain = ptr;
+//         answer_chain++;
+//     }
+//     if (valid_step(start_word, target_word)) {
+//         const char *ptr = new char[MAX_LENGTH];
+//         ptr = target_word;
+//         *answer_chain = ptr;
+//         answer_chain++;
+//     } else {
+//         // see if I can change any of the letters directly
+//         for (int idx = 0; idx < strlen(start_word); idx++) {
+//             if (start_word[idx] != target_word[idx]) {
+//                 char word[MAX_LENGTH];
+//                 strcpy(word, start_word);
+//                 word[idx] = target_word[idx];
+//                 if (valid_step(start_word, word)) {
+//                     return find_chain(word, target_word, answer_chain,
+//                                       max_steps);
+//                 }
+//             }
+//         }
+//         return false;
+//     }
+// }
+
+/* Internal helper function to count how many characters are different between
+ * strings 'one' and 'two' */
+int char_difference(const char *one, const char *two) {
+    int count = 0;
+    while (*one != '\0' || *two != '\0') {
+        if (*one != *two) {
+            count += 1;
+        }
+        one++;
+        two++;
+    }
+    return count;
+}
+
+// valid_step(const char *current_word, const char *next_word)
+// valid_chain(const char *chain[])
+
+bool aux(const char *word, const char *target, const char *chain[],
+         int max_steps) {
+    if (valid_chain(chain) && length_chain(chain) <= max_steps) {
         return true;
     }
+    return false;
+}
+
+bool find_chain(const char *start_word, const char *target_word,
+                const char *answer_chain[], int max_steps) {
+    // ensure both words are valid words in the dictionary
+    if (!dictionary_search(start_word) || !dictionary_search(target_word)) {
+        return false;
+    }
+    // ensure both words are the same length
     if (strlen(start_word) != strlen(target_word)) {
         return false;
     }
-    if (!length_chain(answer_chain)) {
-        const char *ptr = new char[MAX_LENGTH];
-        ptr = start_word;
-        *answer_chain = ptr;
-        answer_chain++;
-    }
-    if (valid_step(start_word, target_word)) {
-        const char *ptr = new char[MAX_LENGTH];
-        ptr = target_word;
-        *answer_chain = ptr;
-        answer_chain++;
-    } else {
-        // see if I can change any of the letters directly
-        for (int idx = 0; idx < strlen(start_word); idx++) {
-            if (start_word[idx] != target_word[idx]) {
-                char word[MAX_LENGTH];
-                strcpy(word, start_word);
-                word[idx] = target_word[idx];
-                if (valid_step(start_word, word)) {
-                    return find_chain(word, target_word, answer_chain,
-                                      max_steps);
-                }
-            }
-        }
+    /* ensure count of different characters is <= 'max_steps' otherwise not
+     * possible */
+    if (char_difference(start_word, target_word) > max_steps) {
         return false;
     }
+    // initialise chain
+    *answer_chain = start_word;
+    *(answer_chain + 1) = target_word;
+    *(answer_chain + 2) = nullptr;
+
+   // run recursive search
+    if (aux(start_word, target_word, answer_chain, max_steps)) {
+        return true;
+    }
+    return false;
 }
