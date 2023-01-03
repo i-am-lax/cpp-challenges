@@ -99,33 +99,53 @@ void encode(const char *plaintext, char *multitap) {
     }
 }
 
+/* Takes a multitap-encoded 'input' stream (e.g. cin or a file input stream) and
+ * writes a decoded plaintext version to an 'output' stream (e.g. cout or a file
+ * output stream) */
 void decode(istream &input, ostream &output) {
     // keep track of case
     bool upper = false;
 
     // string to hold digit set for decoding
     string str;
-    char ch, outch;
 
-    input.get(ch);
+    // input / output characters
+    char ich, och;
+
+    // read in characters from input stream one at a time
+    input.get(ich);
     while (!input.eof()) {
-        if (ch == '#') {
+        // encounter '#' - set the case
+        if (ich == '#') {
             upper = !upper;
-        } else if (ch == '*') {
-            input.get(ch);
-            output << ch;
-        } else if (isdigit(ch)) {
-            str += ch;
         }
-        if (str.length() > 0 && ch != input.peek()) {
-            outch = KEYS.at(str[0])[str.length() - 1];
+        // encounter '*' - write out digit
+        else if (ich == '*') {
+            input.get(ich);
+            output << ich;
+        }
+        // encounter digit - append to string for decoding
+        else if (isdigit(ich)) {
+            str += ich;
+        }
+        /* peek at next character and if it is different to the current one then
+         * trigger decoding */
+        if (str.length() > 0 && ich != input.peek()) {
+
+            // retrieve letter from KEYS map
+            och = KEYS.at(str[0])[str.length() - 1];
+
+            // change case if necessary
             if (upper) {
-                outch = toupper(outch);
+                och = toupper(och);
             }
-            output << outch;
+
+            // write character to output stream
+            output << och;
+
             // reset string
             str = "";
         }
-        input.get(ch);
+        input.get(ich);
     }
 }

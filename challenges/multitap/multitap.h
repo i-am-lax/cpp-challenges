@@ -29,6 +29,10 @@ int encode_character(const char &ch, char *multitap);
  * string (taking letter case and pauses into account) */
 void encode(const char *plaintext, char *multitap);
 
+/* Takes a multitap-encoded input stream and writes a decoded plaintext version
+ * to an output stream. The first parameter ('input') is the input stream (e.g.
+ * cin or a file input stream) and the second parameter is the output stream
+ * (e.g. cout or a file output stream) */
 void decode(std::istream &input, std::ostream &output);
 
 #endif
