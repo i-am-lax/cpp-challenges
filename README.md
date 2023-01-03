@@ -15,3 +15,4 @@ Series of C++ challenges typically involving recursion:
 12. [Gogen Puzzle](challenges/gogen/)
 13. [Scrabblegram](challenges/scrabble/)
 14. [Multitap](challenges/multitap/)
+15. [Doublets](challenges/doublets/)
