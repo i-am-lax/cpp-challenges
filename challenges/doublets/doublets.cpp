@@ -22,4 +22,19 @@ bool dictionary_search(const char *word) {
     return dictionary.search(word);
 }
 
-/* add your function definitions here */
+bool valid_step(const char* current_word, const char* next_word) {
+   int steps = 0;
+   if (strlen(current_word) != strlen(next_word)) {
+      return false;
+   }
+   if (!dictionary_search(next_word)) {
+      return false;
+   }
+
+   for (int idx = 0; idx < strlen(current_word); idx++) {
+      if (current_word[idx] != next_word[idx]) {
+         steps++;
+      }
+   }
+   return steps == 1;
+}
