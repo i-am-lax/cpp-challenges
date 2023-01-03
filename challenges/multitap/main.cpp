@@ -38,22 +38,30 @@ int main() {
     cout << endl;
     multitap[0] = '\0';
 
-//     cout << "====================== Question 2 ======================" << endl
-//          << endl;
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
-//     encode("imperial", multitap);
-//     cout << "The string 'imperial' encoded in multitap is '" << multitap << "'"
-//          << endl;
+    encode("imperial", multitap);
+    cout << "The string 'imperial' encoded in multitap is '" << multitap << "'"
+         << endl;
 
-//     encode("cab", multitap);
-//     cout << "The string 'cab' encoded in multitap is '" << multitap << "'"
-//          << endl;
+    encode("cab", multitap);
+    cout << "The string 'cab' encoded in multitap is '" << multitap << "'"
+         << endl;
 
-//     encode("Meet Anna at 5pm", multitap);
-//     cout << "The string 'Meet Anna at 5pm' encoded in multitap is '" << multitap
-//          << "'" << endl;
+    encode("Meet Anna at 5pm", multitap);
+    cout << "The string 'Meet Anna at 5pm' encoded in multitap is '" << multitap
+         << "'" << endl;
 
-//     cout << endl;
+    encode("FOx", multitap);
+    cout << "The string 'FOx' encoded in multitap is '" << multitap
+         << "'" << endl;
+
+    encode("15", multitap);
+    cout << "The string '15' encoded in multitap is '" << multitap
+         << "'" << endl;
+
+    cout << endl;
 
 //     cout << "====================== Question 3 ======================" << endl
 //          << endl;
