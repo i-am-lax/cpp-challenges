@@ -169,64 +169,61 @@ int char_difference(const char *one, const char *two) {
     return count;
 }
 
-bool word_in_chain(const char *word, const char *chain[]) {
-    int position = 0;
-    while (chain[position]) {
-        // check if the words are equal
-        if (!strcmp(chain[position], word)) {
-            return true;
-        }
-        position++;
-    }
-    return false;
-}
-
+/* Auxiliary recursive function which implements backtracking for use in
+ * find_chain(). The function explores valid possibilities through letter
+ * changes within constraints of chain size and maximum iterations */
 bool aux(const char *word, const char *target, const char *chain[],
          int max_steps) {
 
+    // constraint on maximum iterations
     static int count = 0;
-    // chain length exceeds step constraint - terminate
-    if (length_chain(chain) - 1 > max_steps) {
+    if (count > 10000000) {
         return false;
     }
+
+    // retrieve length of chain
+    int length = length_chain(chain);
+
+    // chain length exceeds step constraint - terminate
+    if (length - 1 > max_steps) {
+        return false;
+    }
+
     // chain is valid - terminate
     if (valid_chain(chain)) {
         return true;
     }
+
+    // allocate memory on heap for word to test
     char *w = new char[MAX_LENGTH];
     strcpy(w, word);
+
+    // for each position, iterate through alphabet
     for (int idx = 0; idx < strlen(word); idx++) {
         for (char c = 'A'; c <= 'Z'; c++) {
             count++;
-            if (c != w[idx]) {
-                w[idx] = c;
-                if (valid_step(word, w) && !word_in_chain(w, chain)) {
-                    if (w[0] == 'B' && w[1] == 'A' && w[2] == 'R' &&
-                        w[3] == 'D') {
-                        cout << "w is now: " << w << endl;
-                    }
-                    // update
-                    int length = length_chain(chain);
-                    chain[length - 1] = w;
-                    chain[length] = target;
-                    chain[length + 1] = NULL;
-                    if (w[0] == 'B' && w[1] == 'A' && w[2] == 'R' &&
-                        w[3] == 'D' && length == 2) {
-                        display_chain(chain, cout);
-                    }
-                    if (aux(w, target, chain, max_steps)) {
-                        return true;
-                    }
-                    // backtrack
-                    chain[length - 1] = target;
-                    chain[length] = NULL;
-                    // display_chain(chain, cout);
+            // set letter
+            w[idx] = c;
+            /* if the updated word is a valid word in dictionary and the step is
+             * valid we update chain and make recursive call */
+            if (valid_step(word, w)) {
+                // update chain
+                chain[length - 1] = w;
+                chain[length] = target;
+                chain[length + 1] = NULL;
+                // explore next possibility
+                if (aux(w, target, chain, max_steps)) {
+                    return true;
                 }
+                // backtrack
+                chain[length - 1] = target;
+                chain[length] = NULL;
             }
         }
+        strcpy(w, word);
     }
+    // free up allocated memory
     delete[] w;
-    // cout << "Iterations: " << count << endl;
     return false;
 }
 
@@ -250,14 +247,9 @@ bool find_chain(const char *start_word, const char *target_word,
         return false;
     }
     // initialise chain
-    for (int i = 0; i <= max_steps + 1; i++) {
-        answer_chain[i] = new char[MAX_LENGTH];
-    }
     answer_chain[0] = start_word;
     answer_chain[1] = target_word;
     answer_chain[2] = NULL;
-
-    display_chain(answer_chain, cout);
 
     // run recursive search
     if (aux(start_word, target_word, answer_chain, max_steps)) {
