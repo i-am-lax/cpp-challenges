@@ -54,26 +54,26 @@ int main() {
          << "'" << endl;
 
     encode("FOx", multitap);
-    cout << "The string 'FOx' encoded in multitap is '" << multitap
-         << "'" << endl;
+    cout << "The string 'FOx' encoded in multitap is '" << multitap << "'"
+         << endl;
 
     encode("15", multitap);
-    cout << "The string '15' encoded in multitap is '" << multitap
-         << "'" << endl;
+    cout << "The string '15' encoded in multitap is '" << multitap << "'"
+         << endl;
 
     cout << endl;
 
-//     cout << "====================== Question 3 ======================" << endl
-//          << endl;
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-//     ifstream input("message.txt");
-//     cout << "The plaintext for the multitap encoded message in 'message.txt' "
-//             "is: "
-//          << endl;
-//     decode(input, cout);
-//     input.close();
+    ifstream input("message.txt");
+    cout << "The plaintext for the multitap encoded message in 'message.txt' "
+            "is: "
+         << endl;
+    decode(input, cout);
+    input.close();
 
-//     cout << endl;
+    cout << endl;
 
     return 0;
 }

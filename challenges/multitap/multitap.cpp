@@ -49,26 +49,6 @@ int encode_character(const char ch, char *multitap) {
     return size;
 }
 
-// void encode(const char *plaintext, char *multitap) {
-
-//     // reached end of string to encode - terminate
-//     if (*plaintext == '\0') {
-//         multitap[strlen(multitap)] = '\0';
-//         return;
-//     }
-//     char m[10];
-//     encode_character(*plaintext, m);
-
-//     // add a pause if digit for last encoded char matches digit for current char
-//     if (multitap[strlen(multitap) - 1] == m[0]) {
-//         strcat(multitap, "|");
-//     }
-
-    
-//     strcat(multitap, m);
-//     encode(plaintext + 1, multitap);
-// }
-
 // iterative
 void encode(const char *plaintext, char *multitap) {
     // clear string
@@ -101,5 +81,46 @@ void encode(const char *plaintext, char *multitap) {
 
         strcat(multitap, m);
         plaintext++;
+    }
+}
+
+char decode_char(string str) {
+    map<char, vector<char>> keys = {
+        {'0', {' '}},           {'1', {'.', ',', '!', '!'}},
+        {'2', {'a', 'b', 'c'}}, {'3', {'d', 'e', 'f'}},
+        {'4', {'g', 'h', 'i'}}, {'5', {'j', 'k', 'l'}},
+        {'6', {'m', 'n', 'o'}}, {'7', {'p', 'q', 'r', 's'}},
+        {'8', {'t', 'u', 'v'}}, {'9', {'w', 'x', 'y', 'z'}},
+    };
+    return keys.at(str[0])[str.length() - 1];
+}
+
+
+void decode(istream &input, ostream &output) {
+    bool upper = false;
+    string decoded;
+    char ch, outch;
+
+    input.get(ch);
+    while(!input.eof()) {
+        if (ch == '#') {
+            upper = !upper;
+        }
+        else if (ch == '*') {
+            input.get(ch);
+            output << ch;
+        }
+        else if (isdigit(ch)) {
+            decoded += ch;
+        }
+        if (decoded.length() > 0 && ch != input.peek()) {
+            outch = decode_char(decoded);
+            if (upper) {
+                outch = toupper(outch);
+            }
+            output << outch;
+            decoded = "";
+        }
+        input.get(ch);
     }
 }
