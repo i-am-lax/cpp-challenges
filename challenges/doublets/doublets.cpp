@@ -155,47 +155,6 @@ int length_chain(const char *chain[]) {
     return position;
 }
 
-/* Attempts to find a valid chain beginning with 'startword' and ending with
- * 'target_word' in up to max_steps steps. If a valid chain can be found, output
- * parameter 'answer_chain' contains the found chain and the function returns
- * true. Otherwise the function returns false */
-// bool find_chain(const char *start_word, const char *target_word,
-//                 const char *answer_chain[], int max_steps) {
-//     if (valid_chain(answer_chain) &&
-//         length_chain(answer_chain) - 1 <= max_steps) {
-//         return true;
-//     }
-//     if (strlen(start_word) != strlen(target_word)) {
-//         return false;
-//     }
-//     if (!length_chain(answer_chain)) {
-//         const char *ptr = new char[MAX_LENGTH];
-//         ptr = start_word;
-//         *answer_chain = ptr;
-//         answer_chain++;
-//     }
-//     if (valid_step(start_word, target_word)) {
-//         const char *ptr = new char[MAX_LENGTH];
-//         ptr = target_word;
-//         *answer_chain = ptr;
-//         answer_chain++;
-//     } else {
-//         // see if I can change any of the letters directly
-//         for (int idx = 0; idx < strlen(start_word); idx++) {
-//             if (start_word[idx] != target_word[idx]) {
-//                 char word[MAX_LENGTH];
-//                 strcpy(word, start_word);
-//                 word[idx] = target_word[idx];
-//                 if (valid_step(start_word, word)) {
-//                     return find_chain(word, target_word, answer_chain,
-//                                       max_steps);
-//                 }
-//             }
-//         }
-//         return false;
-//     }
-// }
-
 /* Internal helper function to count how many characters are different between
  * strings 'one' and 'two' */
 int char_difference(const char *one, const char *two) {
@@ -210,17 +169,57 @@ int char_difference(const char *one, const char *two) {
     return count;
 }
 
-// valid_step(const char *current_word, const char *next_word)
-// valid_chain(const char *chain[])
-
-bool aux(const char *word, const char *target, const char *chain[],
-         int max_steps) {
-    if (valid_chain(chain) && length_chain(chain) <= max_steps) {
-        return true;
+bool word_in_chain(const char *word, const char *chain[]) {
+    int position = 0;
+    while (chain[position]) {
+        // check if the words are equal
+        if (!strcmp(chain[position], word)) {
+            return true;
+        }
+        position++;
     }
     return false;
 }
 
+bool aux(const char *word, const char *target, const char *chain[],
+         int max_steps) {
+    // chain length exceeds step constraint - terminate
+    if (length_chain(chain) - 1 > max_steps) {
+        cout << "chain too long!" << endl;
+        display_chain(chain, cout);
+        return false;
+    }
+    // chain is valid - terminate
+    if (valid_chain(chain)) {
+        return true;
+    }
+    char w[MAX_LENGTH];
+    strcpy(w, word);
+    for (int idx = 0; idx < strlen(word); idx++) {
+        for (char c = 'A'; c <= 'Z'; c++) {
+            w[idx] = c;
+            if (valid_step(word, w) && !word_in_chain(w, chain)) {
+                // update
+                int length = length_chain(chain);
+                chain[length - 1] = w;
+                chain[length] = target;
+                chain[length + 1] = NULL;
+                if (aux(w, target, chain, max_steps)) {
+                    return true;
+                }
+                // backtrack
+                chain[length - 1] = target;
+                chain[length] = NULL;
+            }
+        }
+    }
+    return false;
+}
+
+/* Attempts to find a valid chain beginning with 'startword' and ending with
+ * 'target_word' in up to max_steps steps. If a valid chain can be found, output
+ * parameter 'answer_chain' contains the found chain and the function returns
+ * true. Otherwise the function returns false */
 bool find_chain(const char *start_word, const char *target_word,
                 const char *answer_chain[], int max_steps) {
     // ensure both words are valid words in the dictionary
@@ -237,11 +236,14 @@ bool find_chain(const char *start_word, const char *target_word,
         return false;
     }
     // initialise chain
-    *answer_chain = start_word;
-    *(answer_chain + 1) = target_word;
-    *(answer_chain + 2) = nullptr;
+    for (int i = 0; i <= max_steps + 1; i++) {
+        answer_chain[i] = new char[MAX_LENGTH];
+    }
+    answer_chain[0] = start_word;
+    answer_chain[1] = target_word;
+    answer_chain[2] = NULL;
 
-   // run recursive search
+    // run recursive search
     if (aux(start_word, target_word, answer_chain, max_steps)) {
         return true;
     }
