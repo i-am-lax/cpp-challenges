@@ -11,33 +11,44 @@ using namespace std;
 #include "dictionary.h"
 #include "doublets.h"
 
-/* Looks up a given word in the dictionary of approved words.
-   Returns true if the word is in the dictionary.
-   Otherwise returns false. */
-
+/* Looks up 'word' in the dictionary of approved words and returns true if
+ * it is in the dictionary. Otherwise returns false */
 bool dictionary_search(const char *word) {
     static Dictionary dictionary("words.txt");
     return dictionary.search(word);
 }
 
+/* Returns true if the step 'current_word' to 'next_word' represents a valid
+ * step in a Doublet chain based on rules:
+ * - only one letter change is allowed
+ * - 'next_word' has to be a word in the dictionary
+ * It is assumed that both inputs are in uppercase */
 bool valid_step(const char *current_word, const char *next_word) {
+    // counter for the number of changes from 'current_word' to 'next_word'
     int steps = 0;
+
+    // ensure both words have the same length
     if (strlen(current_word) != strlen(next_word)) {
         return false;
     }
+
+    // ensure 'next_word' is a valid word in the dictionary
     if (!dictionary_search(next_word)) {
         return false;
     }
 
+    // iterate through and increment steps if there is a difference in letters
     for (int idx = 0; idx < strlen(current_word); idx++) {
         if (current_word[idx] != next_word[idx]) {
             steps++;
         }
     }
+    // only 1 change is allowed
     return steps == 1;
 }
 
-/* Internal helper function */
+/* Internal helper function to convert input string 'str' to lowercase and store
+ * the result in 'output' */
 void str_to_lower(const char *str, char *output) {
     // ensure string is clear
     output[0] = '\0';
@@ -53,6 +64,12 @@ void str_to_lower(const char *str, char *output) {
     *output = '\0';
 }
 
+/* Writes input 'chain' (NULL-terminated array of uppercase C-style strings) to
+ * an output stream such that the first and last words (doublet) are uppercase
+ * and the remaining words (links) are lowercase. The input parameter
+ * 'output_stream' can be any valid output stream, including cout. The function
+ * returns true if the entire chain is successfully written to the output
+ * stream, and false otherwise */
 bool display_chain(const char *chain[], ostream &output_stream) {
     // keep track of position in chain
     int position = 0;
@@ -66,11 +83,11 @@ bool display_chain(const char *chain[], ostream &output_stream) {
         if (output_stream.fail()) {
             return false;
         }
-        // keep uppercase if first or last position
+        // keep as uppercase if doublet
         if (position == 0 || !chain[position + 1]) {
             output_stream << chain[position];
         }
-        // convert to lowercase
+        // convert links to lowercase
         else {
             str_to_lower(chain[position], lower);
             output_stream << lower;
@@ -81,9 +98,11 @@ bool display_chain(const char *chain[], ostream &output_stream) {
     return true;
 }
 
-/* Internal helper function */
+/* Internal helper function which returns true if the input 'word' is present in
+ * the vector 'words' otherwise returns false */
 bool word_exists(const char *word, vector<const char *> &words) {
     for (auto const &w : words) {
+        // check if the words are equal
         if (!strcmp(w, word)) {
             return true;
         }
@@ -91,19 +110,27 @@ bool word_exists(const char *word, vector<const char *> &words) {
     return false;
 }
 
+/* Returns true if and only if the given 'chain' (NULL-terminated array of
+ * uppercase C-style strings) is a valid Doublets chain according to all four
+ * rules:
+ * - there are at least 2 words which constitute the doublet
+ * - each word must be formed from the preceding word by changing one letter in
+ * it only
+ * - chain must not contain the same word twice
+ * - each word must be a word in the dictionary */
 bool valid_chain(const char *chain[]) {
-    // store words we have seen
+    // unique words we have seen
     vector<const char *> words;
 
     // store position in chain
     int position = 0;
 
     while (chain[position]) {
-        // duplicate word
+        // check if the word is already in the chain
         if (word_exists(chain[position], words)) {
             return false;
         }
-        // add word
+        // add word to set of unique words
         words.push_back(chain[position]);
 
         // check validity of transition from current word to the next
@@ -111,18 +138,15 @@ bool valid_chain(const char *chain[]) {
             !valid_step(chain[position], chain[position + 1])) {
             return false;
         }
-
         position++;
     }
 
     // ensure we have at least 2 words in the chain
-    if (position < 2) {
-        return false;
-    }
-
-    return true;
+    return position >= 2;
 }
 
+/* Internal helper function to calculate the length of the input 'chain' which
+ * is a NULL-terminated array of uppercase C-style strings */
 int length_chain(const char *chain[]) {
     int position = 0;
     while (chain[position]) {
@@ -131,6 +155,10 @@ int length_chain(const char *chain[]) {
     return position;
 }
 
+/* Attempts to find a valid chain beginning with 'startword' and ending with
+ * 'target_word' in up to max_steps steps. If a valid chain can be found, output
+ * parameter 'answer_chain' contains the found chain and the function returns
+ * true. Otherwise the function returns false */
 bool find_chain(const char *start_word, const char *target_word,
                 const char *answer_chain[], int max_steps) {
     if (valid_chain(answer_chain) &&
@@ -141,14 +169,14 @@ bool find_chain(const char *start_word, const char *target_word,
         return false;
     }
     if (!length_chain(answer_chain)) {
-         const char* ptr = new char[MAX_LENGTH];
-         ptr = start_word;
-         *answer_chain = ptr;
+        const char *ptr = new char[MAX_LENGTH];
+        ptr = start_word;
+        *answer_chain = ptr;
         answer_chain++;
     }
     if (valid_step(start_word, target_word)) {
-         const char* ptr = new char[MAX_LENGTH];
-         ptr = target_word;
+        const char *ptr = new char[MAX_LENGTH];
+        ptr = target_word;
         *answer_chain = ptr;
         answer_chain++;
     } else {
