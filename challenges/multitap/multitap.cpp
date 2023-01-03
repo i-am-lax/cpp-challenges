@@ -35,7 +35,7 @@ int encode_character(const char &ch, char *multitap) {
 
     // otherwise identify letters
     else {
-        char converted[5];
+        char converted[MAX_LENGTH];
         // iterate through digits in KEYS map
         for (map<char, vector<char>>::const_iterator it = KEYS.begin();
              it != KEYS.end(); it++) {
@@ -53,14 +53,17 @@ int encode_character(const char &ch, char *multitap) {
     return size;
 }
 
-// iterative
+/* Iteratively produces the multitap encoding of the input string 'plaintext'.
+ * The encoding is written to 'multitap' (taking letter case '#' and pauses '|'
+ * into account) */
 void encode(const char *plaintext, char *multitap) {
     // clear string
     multitap[0] = '\0';
 
     // string to store individual character encoding
-    char m[10];
+    char encoding[MAX_LENGTH];
 
+    //
     bool prevcase = false, currentcase = false;
 
     while (*plaintext != '\0') {
@@ -75,14 +78,17 @@ void encode(const char *plaintext, char *multitap) {
             prevcase = currentcase;
         }
 
-        encode_character(*plaintext, m);
+        // generate character encoding
+        encode_character(*plaintext, encoding);
 
-        // add pause
-        if (multitap[strlen(multitap) - 1] == m[0]) {
+        /* add pause if last digit of multitap and first digit of new encoding
+         * are equal */
+        if (multitap[strlen(multitap) - 1] == encoding[0]) {
             strcat(multitap, "|");
         }
 
-        strcat(multitap, m);
+        // append character encoding
+        strcat(multitap, encoding);
         plaintext++;
     }
 }

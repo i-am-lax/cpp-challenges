@@ -6,6 +6,9 @@
 #include <map>
 #include <vector>
 
+// Constraint on maximum string length
+const int MAX_LENGTH = 10;
+
 /* Mapping from digits to set of characters in their correct positions for
  * multitap encoding */
 const std::map<char, std::vector<char>> KEYS = {
@@ -21,6 +24,9 @@ case) and writes it to 'multitap'. The number of keystrokes required to
 encode 'ch' is returned which is the length of the multitap encoding */
 int encode_character(const char &ch, char *multitap);
 
+/* Produces the multitap encoding of the input string 'plaintext' to be encoded.
+ * The second parameter ('multitap') contains the corresponding multitap-encoded
+ * string (taking letter case and pauses into account) */
 void encode(const char *plaintext, char *multitap);
 
 void decode(std::istream &input, std::ostream &output);
