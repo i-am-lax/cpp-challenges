@@ -6,3 +6,4 @@
 bool dictionary_search(const char *word);
 
 /* add your function prototypes here */
+bool valid_step(const char* current_word, const char* next_word);
