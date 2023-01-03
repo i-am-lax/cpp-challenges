@@ -4,6 +4,7 @@
 #include <cstring>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 using namespace std;
 
@@ -80,5 +81,46 @@ bool display_chain(const char* chain[], ostream &output_stream) {
       output_stream << endl;
       position++;
    }
+   return true;
+}
+
+/* Internal helper function */
+bool word_exists(const char* word, vector<const char*> &words) {
+   for (auto const &w: words) {
+      if (!strcmp(w, word)) {
+         return true;
+      }
+   }
+   return false;
+}
+
+bool valid_chain(const char* chain[]) {
+   // store words we have seen
+   vector<const char*> words;
+
+   // store position in chain
+   int position = 0;
+
+   while (chain[position]) {
+      // duplicate word
+      if (word_exists(chain[position], words)) {
+         return false;
+      }
+      // add word
+      words.push_back(chain[position]);
+
+      // check validity of transition from current word to the next
+      if (chain[position+1] && !valid_step(chain[position], chain[position+1])) {
+         return false;
+      }
+
+      position++;
+   }
+
+   // ensure we have at least 2 words in the chain
+   if (position < 2) {
+      return false;
+   }
+
    return true;
 }

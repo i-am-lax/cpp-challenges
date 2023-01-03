@@ -75,26 +75,26 @@ int main() {
     cout << "Output " << (success ? "successful" : "failed") << "!" << endl;
     out.close();
 
-//     cout << "====================== Question 3 ======================" << endl
-//          << endl;
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-//     valid = valid_chain(wheat_chain);
-//     cout << "The chain from 'WHEAT' to 'BREAD' is " << (valid ? "" : "NOT ")
-//          << "a valid chain." << endl
-//          << endl;
+    valid = valid_chain(wheat_chain);
+    cout << "The chain from 'WHEAT' to 'BREAD' is " << (valid ? "" : "NOT ")
+         << "a valid chain." << endl
+         << endl;
 
-//     const char *repeat_chain[] = {"WHEAT", "CHEAP", "WHEAT", "CHEAP", NULL};
+    const char *repeat_chain[] = {"WHEAT", "CHEAP", "WHEAT", "CHEAP", NULL};
 
-//     valid = valid_chain(repeat_chain);
-//     cout << "The chain 'WHEAT->CHEAP->WHEAT->CHEAP' is "
-//          << (valid ? "" : "NOT ") << "a valid chain." << endl
-//          << endl;
+    valid = valid_chain(repeat_chain);
+    cout << "The chain 'WHEAT->CHEAP->WHEAT->CHEAP' is "
+         << (valid ? "" : "NOT ") << "a valid chain." << endl
+         << endl;
 
-//     const char *short_chain[] = {"WHEAT", NULL};
-//     valid = valid_chain(short_chain);
-//     cout << "The chain 'WHEAT' is " << (valid ? "" : "NOT ") << "a valid chain."
-//          << endl
-//          << endl;
+    const char *short_chain[] = {"WHEAT", NULL};
+    valid = valid_chain(short_chain);
+    cout << "The chain 'WHEAT' is " << (valid ? "" : "NOT ") << "a valid chain."
+         << endl
+         << endl;
 
 //     cout << "====================== Question 4 ======================" << endl
 //          << endl;
