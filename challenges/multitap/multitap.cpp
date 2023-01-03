@@ -22,21 +22,12 @@ int encode_character(const char ch, char *multitap) {
         return size;
     }
 
-    map<char, vector<char>> keys = {
-        {'0', {' '}},           {'1', {'.', ',', '!', '!'}},
-        {'2', {'a', 'b', 'c'}}, {'3', {'d', 'e', 'f'}},
-        {'4', {'g', 'h', 'i'}}, {'5', {'j', 'k', 'l'}},
-        {'6', {'m', 'n', 'o'}}, {'7', {'p', 'q', 'r', 's'}},
-        {'8', {'t', 'u', 'v'}}, {'9', {'w', 'x', 'y', 'z'}},
-    };
-
     // identify letters
-    for (map<char, vector<char>>::iterator it = keys.begin(); it != keys.end();
-         it++) {
-        for (int idx = 0; idx < it->second.size(); idx++) {
-            if (it->second[idx] == tolower(ch)) {
+    for (char key = '0'; key <= '9'; key++) {
+        for (int idx = 0; idx < KEYS.at(key).size(); idx++) {
+            if (KEYS.at(key)[idx] == tolower(ch)) {
                 while (idx >= 0) {
-                    *multitap = it->first;
+                    *multitap = key;
                     multitap++;
                     size++;
                     idx--;
@@ -84,21 +75,12 @@ void encode(const char *plaintext, char *multitap) {
     }
 }
 
-char decode_char(string str) {
-    map<char, vector<char>> keys = {
-        {'0', {' '}},           {'1', {'.', ',', '!', '!'}},
-        {'2', {'a', 'b', 'c'}}, {'3', {'d', 'e', 'f'}},
-        {'4', {'g', 'h', 'i'}}, {'5', {'j', 'k', 'l'}},
-        {'6', {'m', 'n', 'o'}}, {'7', {'p', 'q', 'r', 's'}},
-        {'8', {'t', 'u', 'v'}}, {'9', {'w', 'x', 'y', 'z'}},
-    };
-    return keys.at(str[0])[str.length() - 1];
-}
-
-
 void decode(istream &input, ostream &output) {
+    // keep track of case
     bool upper = false;
-    string decoded;
+
+    // string to hold digit set for decoding
+    string str;
     char ch, outch;
 
     input.get(ch);
@@ -111,15 +93,16 @@ void decode(istream &input, ostream &output) {
             output << ch;
         }
         else if (isdigit(ch)) {
-            decoded += ch;
+            str += ch;
         }
-        if (decoded.length() > 0 && ch != input.peek()) {
-            outch = decode_char(decoded);
+        if (str.length() > 0 && ch != input.peek()) {
+            outch = KEYS.at(str[0])[str.length() - 1];
             if (upper) {
                 outch = toupper(outch);
             }
             output << outch;
-            decoded = "";
+            // reset string
+            str = "";
         }
         input.get(ch);
     }
