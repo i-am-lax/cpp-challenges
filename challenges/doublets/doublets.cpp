@@ -183,36 +183,50 @@ bool word_in_chain(const char *word, const char *chain[]) {
 
 bool aux(const char *word, const char *target, const char *chain[],
          int max_steps) {
+
+    static int count = 0;
     // chain length exceeds step constraint - terminate
     if (length_chain(chain) - 1 > max_steps) {
-        cout << "chain too long!" << endl;
-        display_chain(chain, cout);
         return false;
     }
     // chain is valid - terminate
     if (valid_chain(chain)) {
         return true;
     }
-    char w[MAX_LENGTH];
+    char *w = new char[MAX_LENGTH];
     strcpy(w, word);
     for (int idx = 0; idx < strlen(word); idx++) {
         for (char c = 'A'; c <= 'Z'; c++) {
-            w[idx] = c;
-            if (valid_step(word, w) && !word_in_chain(w, chain)) {
-                // update
-                int length = length_chain(chain);
-                chain[length - 1] = w;
-                chain[length] = target;
-                chain[length + 1] = NULL;
-                if (aux(w, target, chain, max_steps)) {
-                    return true;
+            count++;
+            if (c != w[idx]) {
+                w[idx] = c;
+                if (valid_step(word, w) && !word_in_chain(w, chain)) {
+                    if (w[0] == 'B' && w[1] == 'A' && w[2] == 'R' &&
+                        w[3] == 'D') {
+                        cout << "w is now: " << w << endl;
+                    }
+                    // update
+                    int length = length_chain(chain);
+                    chain[length - 1] = w;
+                    chain[length] = target;
+                    chain[length + 1] = NULL;
+                    if (w[0] == 'B' && w[1] == 'A' && w[2] == 'R' &&
+                        w[3] == 'D' && length == 2) {
+                        display_chain(chain, cout);
+                    }
+                    if (aux(w, target, chain, max_steps)) {
+                        return true;
+                    }
+                    // backtrack
+                    chain[length - 1] = target;
+                    chain[length] = NULL;
+                    // display_chain(chain, cout);
                 }
-                // backtrack
-                chain[length - 1] = target;
-                chain[length] = NULL;
             }
         }
     }
+    delete[] w;
+    // cout << "Iterations: " << count << endl;
     return false;
 }
 
@@ -242,6 +256,8 @@ bool find_chain(const char *start_word, const char *target_word,
     answer_chain[0] = start_word;
     answer_chain[1] = target_word;
     answer_chain[2] = NULL;
+
+    display_chain(answer_chain, cout);
 
     // run recursive search
     if (aux(start_word, target_word, answer_chain, max_steps)) {
