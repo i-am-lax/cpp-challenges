@@ -15,6 +15,8 @@ bool valid_step(const char* current_word, const char* next_word);
 
 bool display_chain(const char* chain[], std::ostream &output_stream);
 
-bool valid_chain(const char* chain[]); 
+bool valid_chain(const char* chain[]);
+
+bool find_chain(const char *start_word, const char* target_word, const char* answer_chain[], int max_steps);
 
 #endif

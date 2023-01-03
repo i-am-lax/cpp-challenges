@@ -96,10 +96,30 @@ int main() {
          << endl
          << endl;
 
-//     cout << "====================== Question 4 ======================" << endl
-//          << endl;
+    cout << "====================== Question 4 ======================" << endl
+         << endl;
 
-//     const char *answer[100];
+    const char *answer[100];
+
+    /* can you go from WET to DRY in up to 4 steps */
+    success = find_chain("WHEAT", "CHEAT", answer, 4);
+    cout << (success ? "Found" : "Could not find")
+         << " a chain from 'WHEAT' to 'CHEAT' with up to 4 steps" << endl;
+
+    if (success)
+        //display_chain(answer, cout);
+    cout << endl;
+
+    /* can you go from WET to DRY in up to 4 steps */
+    success = find_chain("HOT", "LET", answer, 4);
+    cout << (success ? "Found" : "Could not find")
+         << " a chain from 'WHEAT' to 'CHEAT' with up to 4 steps" << endl;
+
+    if (success)
+        display_chain(answer, cout);
+    cout << endl;
+
+     // const char *answer[100];
 
 //     /* can you go from WET to DRY in up to 4 steps */
 //     success = find_chain("WET", "DRY", answer, 4);
