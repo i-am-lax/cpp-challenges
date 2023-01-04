@@ -60,36 +60,36 @@ int main() {
           << leading_zeros("000000not-actually-a-hash") << endl
           << endl;
 
-    // cout << "====================== Question 2 ======================" << endl
-    //      << endl;
+   cout << "====================== Question 2 ======================" << endl
+        << endl;
 
-    // strcpy(digest, "");
-    // bool success = file_to_SHA1_digest("message1.txt", digest);
-    // cout << "SHA1 digest of file 'message1.txt' is " << digest << endl;
-    // if (!success)
-    //     cout << "There was an error reading the file." << endl;
-    // cout << endl;
+   strcpy(digest, "");
+   bool success = file_to_SHA1_digest("message1.txt", digest);
+   cout << "SHA1 digest of file 'message1.txt' is " << digest << endl;
+   if (!success)
+       cout << "There was an error reading the file." << endl;
+   cout << endl;
 
-    // strcpy(digest, "");
-    // success = file_to_SHA1_digest("message2.txt", digest);
-    // cout << "SHA1 digest of file 'message2.txt' is " << digest << endl;
-    // if (!success)
-    //     cout << "There was an error reading the file." << endl;
-    // cout << endl;
+   strcpy(digest, "");
+   success = file_to_SHA1_digest("message2.txt", digest);
+   cout << "SHA1 digest of file 'message2.txt' is " << digest << endl;
+   if (!success)
+       cout << "There was an error reading the file." << endl;
+   cout << endl;
 
-    // strcpy(digest, "");
-    // success = file_to_SHA1_digest("message3.txt", digest);
-    // cout << "SHA1 digest of file 'message3.txt' is " << digest << endl;
-    // if (!success)
-    //     cout << "There was an error reading the file." << endl;
-    // cout << endl;
+   strcpy(digest, "");
+   success = file_to_SHA1_digest("message3.txt", digest);
+   cout << "SHA1 digest of file 'message3.txt' is " << digest << endl;
+   if (!success)
+       cout << "There was an error reading the file." << endl;
+   cout << endl;
 
-    // strcpy(digest, "");
-    // success = file_to_SHA1_digest("doesnotexist.txt", digest);
-    // cout << "SHA1 digest of file 'doesnotexist.txt' is " << digest << endl;
-    // if (!success)
-    //     cout << "There was an error reading the file." << endl;
-    // cout << endl;
+   strcpy(digest, "");
+   success = file_to_SHA1_digest("doesnotexist.txt", digest);
+   cout << "SHA1 digest of file 'doesnotexist.txt' is " << digest << endl;
+   if (!success)
+       cout << "There was an error reading the file." << endl;
+   cout << endl;
 
     // cout << "====================== Question 3 ======================" << endl
     //      << endl;

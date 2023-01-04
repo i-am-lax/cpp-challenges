@@ -1,6 +1,9 @@
 #ifndef STAMP_H
 #define STAMP_H
 
+// Constraint on maximum string length to be hashed
+const int MAX_LENGTH = 25000; 
+
 enum MessageStatus {
     INVALID_HEADER = -1,
     WRONG_RECIPIENT = -2,
@@ -14,5 +17,6 @@ enum MessageStatus {
 void text_to_SHA1_digest(const char *text, char *digest);
 
 int leading_zeros(const char* digest);
+bool file_to_SHA1_digest(const char* filename, char* digest);
 
 #endif

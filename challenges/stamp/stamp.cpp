@@ -53,4 +53,26 @@ int leading_zeros(const char* digest) {
 	}
 	return count;
 }
+
+bool file_to_SHA1_digest(const char* filename, char* digest) {
+	ifstream in(filename);
+	if (in.fail()) {
+		strcpy(digest, "error");
+		return false;
+	}
+	int idx = 0;
+	char ch, contents[MAX_LENGTH];
+	in.get(ch);
+	while (!in.eof()) {
+		contents[idx] = ch;
+		idx++;
+		cout << ch;
+		in.get(ch);
+	}
+	in.close();
+	contents[idx] = '\0';
+	text_to_SHA1_digest(contents, digest);
+	return true;
+}
+
 /* add your function definitions here */
