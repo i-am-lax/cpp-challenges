@@ -12,3 +12,7 @@ Series of C++ challenges typically involving recursion:
 9. [River-Crossing Puzzle](challenges/river-crossing/)
 10. [Minesweeper](challenges/minesweeper/)
 11. [Tube Stations](challenges/tube-stations/)
+12. [Gogen Puzzle](challenges/gogen/)
+13. [Scrabblegram](challenges/scrabble/)
+14. [Multitap](challenges/multitap/)
+15. [Doublets](challenges/doublets/)
