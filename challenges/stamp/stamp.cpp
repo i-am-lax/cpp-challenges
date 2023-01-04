@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <openssl/sha.h>
+#include <cctype>
 
 using namespace std;
 
@@ -66,13 +67,48 @@ bool file_to_SHA1_digest(const char* filename, char* digest) {
 	while (!in.eof()) {
 		contents[idx] = ch;
 		idx++;
-		cout << ch;
 		in.get(ch);
 	}
 	in.close();
 	contents[idx] = '\0';
 	text_to_SHA1_digest(contents, digest);
 	return true;
+}
+
+// Internal helper function
+void build_header(const char* recipient, const char* digest, int counter, char* header) {
+	// clear contents of header
+	strcpy(header, "");
+
+	// append contents in order
+	strcpy(header, recipient);
+    strcat(header, ":");
+    strcat(header, digest);
+    strcat(header, ":");
+
+	strcat(header, to_string(counter).c_str());
+}
+
+bool make_header(const char* recipient, const char* filename, char* header){
+	char digest[41], header_digest[41];
+	if (!file_to_SHA1_digest(filename, digest)) {
+		return false;
+	}
+	int max_counter = 10000000, counter = 0;
+	while (counter <=  max_counter) {
+		// construct header
+		build_header(recipient, digest, counter, header);
+				
+		// compute hash of header
+		text_to_SHA1_digest(header, header_digest);
+
+		// check leading zeros
+		if (leading_zeros(header_digest) == 5) {
+			return true;
+		}
+		counter++;
+	}
+	return false;
 }
 
 /* add your function definitions here */
