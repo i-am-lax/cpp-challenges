@@ -13,4 +13,6 @@ enum MessageStatus {
 /* generates the SHA1 hash of input string text into output parameter digest */
 void text_to_SHA1_digest(const char *text, char *digest);
 
+int leading_zeros(const char* digest);
+
 #endif

@@ -42,23 +42,23 @@ int main() {
          << digest << endl
          << endl;
 
-    // cout << "====================== Question 1 ======================" << endl
-    //      << endl;
+     cout << "====================== Question 1 ======================" << endl
+          << endl;
 
-    // cout << "The number of leading zeros in digest "
-    //         "'60eb8db1a3c0ea1ad3d5548f248b4a3e73711ee5' is "
-    //      << leading_zeros("60eb8db1a3c0ea1ad3d5548f248b4a3e73711ee5") << endl
-    //      << endl;
+     cout << "The number of leading zeros in digest "
+             "'60eb8db1a3c0ea1ad3d5548f248b4a3e73711ee5' is "
+          << leading_zeros("60eb8db1a3c0ea1ad3d5548f248b4a3e73711ee5") << endl
+          << endl;
 
-    // cout << "The number of leading zeros in digest "
-    //         "'00000a184d72f39730312554e0df25e6f95a05d4' is "
-    //      << leading_zeros("00000a184d72f39730312554e0df25e6f95a05d4") << endl
-    //      << endl;
+     cout << "The number of leading zeros in digest "
+             "'00000a184d72f39730312554e0df25e6f95a05d4' is "
+          << leading_zeros("00000a184d72f39730312554e0df25e6f95a05d4") << endl
+          << endl;
 
-    // cout << "The number of leading zeros in digest '000000not-actually-a-hash' "
-    //         "is "
-    //      << leading_zeros("000000not-actually-a-hash") << endl
-    //      << endl;
+     cout << "The number of leading zeros in digest '000000not-actually-a-hash' "
+             "is "
+          << leading_zeros("000000not-actually-a-hash") << endl
+          << endl;
 
     // cout << "====================== Question 2 ======================" << endl
     //      << endl;

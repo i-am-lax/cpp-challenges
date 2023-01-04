@@ -35,4 +35,22 @@ void text_to_SHA1_digest(const char *text, char *digest) {
     convert_hash(hash, digest, SHA_DIGEST_LENGTH);
 }
 
+int leading_zeros(const char* digest) {
+	// counter for leading zeros
+	int count = 0;
+	bool front = true;
+	while(*digest != '\0') {
+		if (!isalnum(*digest) && !islower(*digest)) {
+			return -1;
+		}
+		if (*digest == '0' && front) {
+			count++;
+		}
+		else {
+			front = false;
+		}
+		digest++;
+	}
+	return count;
+}
 /* add your function definitions here */
