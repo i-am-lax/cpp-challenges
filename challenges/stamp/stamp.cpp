@@ -9,8 +9,8 @@
 
 using namespace std;
 
-/* Internal helper function which transforms raw binary hash value 'str' into
- * human-friendly hexademical form and writes to 'output' */
+/* Pre-supplied internal helper function which transforms raw binary hash value
+ * 'str' into human-friendly hexademical form and writes to 'output' */
 void convert_hash(const unsigned char *str, char *output, int hash_length) {
     char append[16];
     strcpy(output, "");
@@ -89,7 +89,7 @@ bool file_to_SHA1_digest(const char *filename, char *digest) {
  * ('recipient'), the SHA1 digest ('digest') and the 'counter', all separated
  * with colons. The output is written to 'header' in the format:
  * <recipient email address>:<SHA1 digest of message body>:<counter> */
-void build_header(const char *recipient, const char *digest, int counter,
+void build_header(const char *recipient, const char *digest, const int &counter,
                   char *header) {
     // clear contents of header
     strcpy(header, "");
