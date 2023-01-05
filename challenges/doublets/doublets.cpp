@@ -101,13 +101,7 @@ bool display_chain(const char *chain[], ostream &output_stream) {
 /* Internal helper function which returns true if the input 'word' is present in
  * the vector 'words' otherwise returns false */
 bool word_exists(const char *word, vector<const char *> &words) {
-    for (auto const &w : words) {
-        // check if the words are equal
-        if (!strcmp(w, word)) {
-            return true;
-        }
-    }
-    return false;
+    return find(words.begin(), words.end(), word) != words.end();
 }
 
 /* Returns true if and only if the given 'chain' (NULL-terminated array of

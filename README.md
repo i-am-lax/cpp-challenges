@@ -17,3 +17,4 @@ Series of C++ challenges typically involving recursion:
 14. [Scrabblegram](challenges/scrabble/)
 15. [Multitap](challenges/multitap/)
 16. [Doublets](challenges/doublets/)
+17. [Sudoku](challenges/sudoku/)

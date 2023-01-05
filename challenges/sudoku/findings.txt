@@ -1,0 +1,7 @@
+Summarise your findings here (see specification).
+
+The difficulties would vary depending on the algorithm that is used, but using the backtracking algorithm
+in my solution gives the following results:
+- 'mystery1.dat' - this is the one with "extremely hard" difficulty as 421,546 iterations were required to solve.
+- 'mystery2.dat' - this one cannot be solved.
+- 'mystery3.dat' - this is the one with "hard" difficulty as 25,665 iterations were required to solve.
