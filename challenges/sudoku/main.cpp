@@ -47,10 +47,10 @@ void test_solve_board(const char *filename) {
 
     if (solve_board(board)) {
         cout << "The '" << filename << "' board has a solution:\n";
-        display_board(board);
     } else {
         cout << "A solution cannot be found.\n";
     }
+    display_board(board);
     cout << '\n';
 }
 

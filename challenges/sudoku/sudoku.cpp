@@ -196,6 +196,11 @@ bool make_move(const char *position, const char &digit, char board[9][9]) {
  * contains the solution found. Return value is false if a solution does not
  * exist and 'board' is unchanged. */
 bool solve_board(char board[9][9]) {
+    // board complete - terminate
+    if (is_complete(board)) {
+        return true;
+    }
+
     // iterate through board
     for (char r = 'A'; r <= 'I'; r++) {
         for (char c = '1'; c <= '9'; c++) {
@@ -226,5 +231,5 @@ bool solve_board(char board[9][9]) {
             }
         }
     }
-    return true;
+    return false;
 }
