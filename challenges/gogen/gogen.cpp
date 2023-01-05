@@ -380,7 +380,8 @@ void recursive_update(char **board, char *word, int idx,
 
 /* Recursive backtracking function to brute force a solution with the smaller
  * set of remaining letters which could not be placed from recursive_update() */
-bool brute_force(char **board, char **words, vector<char> &letters) {
+bool brute_force(char **board, char **words, vector<char> &letters,
+                 map<char, Mask> &masks) {
     // counter to keep track of recursive calls
     static int calls = 0;
     calls++;
@@ -392,7 +393,7 @@ bool brute_force(char **board, char **words, vector<char> &letters) {
     }
 
     // call constraint reached then no solution - terminate
-    if (calls > 1000) {
+    if (calls > 100000) {
         return false;
     }
 
@@ -400,13 +401,15 @@ bool brute_force(char **board, char **words, vector<char> &letters) {
     int row, col;
     if (get_position(board, '.', row, col)) {
         for (auto const &l : letters) {
-            // add letter to board
-            board[row][col] = l;
-            if (brute_force(board, words, letters)) {
-                return true;
+            // add letter to board if the corresponding mask position is true
+            if (masks.at(l)[row][col]) {
+                board[row][col] = l;
+                if (brute_force(board, words, letters, masks)) {
+                    return true;
+                }
+                // backtrack and try next letter
+                board[row][col] = '.';
             }
-            // backtrack and try next letter
-            board[row][col] = '.';
         }
     }
     return false;
@@ -445,7 +448,7 @@ bool solve_board(char **board, char **words) {
 
     /* identify solution by trying combination of remaining letters through
      * backtracking */
-    if (brute_force(board, words, remaining)) {
+    if (brute_force(board, words, remaining, masks)) {
         return true;
     }
     print_board(board);
