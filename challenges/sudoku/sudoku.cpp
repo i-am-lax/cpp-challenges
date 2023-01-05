@@ -150,4 +150,29 @@ bool make_move(const char* position, const char digit, char board[9][9]) {
 	board[row][col] = digit;	
 
 	return true;
+}
+
+bool save_board(const char* filename, const char board[9][9]) {
+	ofstream out(filename);
+	if (out.fail()) {
+		cerr << "Error opening file." << endl;
+		return false;
+	}
+	for (int row = 0; row < 9; row++) {
+		for (int col = 0; col < 9; col++) {
+			if (out.good()) {
+				out.put(board[row][col]);
+			}
+			else {
+				return false;
+			}
+		}
+		if (out.good()) {
+			out.put('\n');
+		}
+		else {
+			return false;
+		}
+	}
+	return true;
 }	
