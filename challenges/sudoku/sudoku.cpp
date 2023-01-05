@@ -175,4 +175,30 @@ bool save_board(const char* filename, const char board[9][9]) {
 		}
 	}
 	return true;
+}
+
+bool solve_board(char board[9][9]) {
+	if (is_complete(board)) {
+		return true;
+	}
+	char position[3];
+	for (int r = 0; r < 9; r++) {
+		for (int c = 0; c < 9; c++) {
+			if (board[r][c] == '.') {
+				for (char digit = '1'; digit <= '9'; digit++) {
+					position[0] = r + 'A';
+					position[1] = c + '1';
+					position[2] = '\0';
+					if (make_move(position, digit, board)) {
+						if (solve_board(board)) {
+							return true;
+						}
+						board[r][c] = '.';
+					}
+				}
+				return false;
+			}
+		}
+	}
+	return false;
 }	
