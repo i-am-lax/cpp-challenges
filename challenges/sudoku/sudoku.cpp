@@ -36,7 +36,7 @@ void load_board(const char *filename, char board[9][9]) {
 }
 
 // Internal helper function to print frame of board
-void print_frame(int row) {
+void print_frame(const int &row) {
     if (!(row % 3)) {
         cout << "  +===========+===========+===========+\n";
     } else {
@@ -44,8 +44,8 @@ void print_frame(int row) {
     }
 }
 
-// Internal helper function to print a given row
-void print_row(const char *data, int row) {
+// Internal helper function to print a given 'row'
+void print_row(const char *data, const int &row) {
     cout << (char) ('A' + row) << " ";
     for (int i = 0; i < 9; i++) {
         cout << ((i % 3) ? ':' : '|') << " ";
@@ -68,22 +68,22 @@ void display_board(const char board[9][9]) {
     print_frame(9);
 }
 
-// Internal helper function to check if entry in board is empty or not
-bool entry_is_empty(const char entry) { return entry == '.'; }
+// Internal helper function to check if 'entry' in board is empty or not
+bool entry_is_empty(const char &entry) { return entry == '.'; }
 
-// Internal helper function to ensure that digit has a valid value between 1 to
-// 9
-bool valid_digit(char digit) { return (digit >= '1' && digit <= '9'); }
+/* Internal helper function to ensure that digit has a valid value between 1 to
+ * 9 */
+bool valid_digit(const char &digit) { return (digit >= '1' && digit <= '9'); }
 
-/* Function which takes a 9 × 9 array of characters representing a Sudoku
-board and returns true if all board positions are occupied by digits, and false
-otherwise. */
+/* Function which takes a 9 × 9 array of characters ('board') representing a
+ * Sudoku board and returns true if all board positions are occupied by digits,
+ * and false otherwise */
 bool is_complete(const char board[9][9]) {
     // iterate through each entry
     for (int r = 0; r < 9; r++) {
         for (int c = 0; c < 9; c++) {
-            // return false if entry missing or entry invalid value
-            if (entry_is_empty(board[r][c]) || !valid_digit(board[r][c]))
+            // return false if entry is an invalid digit
+            if (!valid_digit(board[r][c]))
                 return false;
         }
     }
@@ -91,27 +91,37 @@ bool is_complete(const char board[9][9]) {
 }
 
 /* Function which outputs the 2-D character array board to a file with name
-given by filename. The return value is true if the file was successfully
-written. */
+ * given by 'filename'. The return value is true if the file was successfully
+ * written. */
 bool save_board(const char *filename, const char board[9][9]) {
-    // write out board while ensuring output stream is healthy
+    // create output file stream
     ofstream out(filename);
-    while (out.good()) {
-        for (int r = 0; r < 9; r++) {
-            for (int c = 0; c < 9; c++) {
-                out.put(board[r][c]);
-            }
-            out.put('\n');
-        }
-        out.close();
-        return true;
+    if (out.fail()) {
+        cerr << "Error opening file: " << filename << endl;
+        return false;
     }
-    return false;
+    // write out board while ensuring output stream is healthy
+    for (int r = 0; r < 9; r++) {
+        for (int c = 0; c < 9; c++) {
+            if (out.good()) {
+                out.put(board[r][c]);
+            } else {
+                return false;
+            }
+        }
+        if (out.good()) {
+            out.put('\n');
+        } else {
+            return false;
+        }
+    }
+    out.close();
+    return true;
 }
 
-/* Internal helper function to check if it is valid to place digit in a given
-row. Each row must contain numbers from 1 to 9 once. */
-bool valid_row(char digit, int row, const char board[9][9]) {
+/* Internal helper function to check if it is valid to place 'digit' in a given
+ * 'row'. Each row must contain numbers from 1 to 9 once. */
+bool valid_row(const char &digit, const int &row, const char board[9][9]) {
     for (int col = 0; col < 9; col++) {
         if (board[row][col] == digit)
             return false;
@@ -119,9 +129,9 @@ bool valid_row(char digit, int row, const char board[9][9]) {
     return true;
 }
 
-/* Internal helper function to check if it is valid to place digit in a given
-column. Each column can only contain numbers from 1 to 9 once. */
-bool valid_col(char digit, int col, const char board[9][9]) {
+/* Internal helper function to check if it is valid to place 'digit' in a given
+ * column, 'col'. Each column can only contain numbers from 1 to 9 once. */
+bool valid_col(const char &digit, const int &col, const char board[9][9]) {
     for (int row = 0; row < 9; row++) {
         if (board[row][col] == digit)
             return false;
@@ -129,9 +139,11 @@ bool valid_col(char digit, int col, const char board[9][9]) {
     return true;
 }
 
-/* Internal helper function to check if it is valid to place digit in its
-respective 3x3 block. Each 3x3 square must contain numbers from 1 to 9 once. */
-bool valid_square(char digit, int row, int col, const char board[9][9]) {
+/* Internal helper function to check if it is valid to place 'digit' in its
+ * respective 3x3 block. Each 3x3 square must contain numbers from 1 to 9 once.
+ */
+bool valid_square(const char &digit, const int &row, const int &col,
+                  const char board[9][9]) {
     // get starting indices for 3x3 block corresponding to row and column
     int row_start = (row / 3) * 3, col_start = (col / 3) * 3;
 
@@ -144,18 +156,19 @@ bool valid_square(char digit, int row, int col, const char board[9][9]) {
     return true;
 }
 
-// Internal helper function to see if a digit entry is valid based on row,
-// column and 3x3 square rules
-bool entry_is_valid(char digit, int row, int col, const char board[9][9]) {
+/* Internal helper function to see if a 'digit' entry is valid based on row,
+ * column and 3x3 square rules */
+bool entry_is_valid(const char &digit, const int &row, const int &col,
+                    const char board[9][9]) {
     return valid_row(digit, row, board) && valid_col(digit, col, board) &&
            valid_square(digit, row, col, board);
 }
 
 /* Function which attempts to place a digit onto a Sudoku board at a given
-position. Returns true if successfully updated position. */
-bool make_move(const char *position, char digit, char board[9][9]) {
+ * position. Returns true if successfully updated position. */
+bool make_move(const char *position, const char &digit, char board[9][9]) {
     // ensure length of position is 2
-    if (strlen(position) != 2)
+    if (!position || strlen(position) != 2)
         return false;
 
     // check if digit out of range
@@ -179,26 +192,33 @@ bool make_move(const char *position, char digit, char board[9][9]) {
 }
 
 /* Function which attempts to solve the Sudoku puzzle in input/output parameter
-board. Return value is true if a solution is found, in which case board contains
-the solution found. Return value is false if a solution does not exist and board
-is unchanged. */
+ * 'board'. Return value is true if a solution is found, in which case 'board'
+ * contains the solution found. Return value is false if a solution does not
+ * exist and 'board' is unchanged. */
 bool solve_board(char board[9][9]) {
+    // iterate through board
     for (char r = 'A'; r <= 'I'; r++) {
         for (char c = '1'; c <= '9'; c++) {
+
             // get integer row and column indices
             int row = r - 'A', col = c - '1';
 
             // if no entry exists then explore digits to add
             if (entry_is_empty(board[row][col])) {
-                // try each possible digit which satisfies rules
+
+                // try each possible digit from 1-9
                 for (char digit = '1'; digit <= '9'; digit++) {
                     char position[3] = {r, c};
+
+                    // update board if move possible
                     if (make_move(position, digit, board)) {
+
                         // recursive call
                         if (solve_board(board))
                             return true;
 
-                        // clear position if not possible to add digit
+                        /* backtrack - clear position if not possible to add
+                         * digit */
                         board[row][col] = '.';
                     }
                 }
