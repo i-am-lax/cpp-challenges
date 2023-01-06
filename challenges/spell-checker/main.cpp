@@ -25,8 +25,8 @@ int main() {
 
 //     cout << endl;
 
-    cout << "====================== Question 2 ======================" << endl
-         << endl;
+//     cout << "====================== Question 2 ======================" << endl
+//          << endl;
 
 //     cout << "The edit distance between 'an' and 'na' is "
 //          << edit_distance("an", "na") << endl;
@@ -46,41 +46,41 @@ int main() {
 //     cout << "The edit distance between 'korrectud' and 'corrected' is "
 //          << edit_distance("korrectud", "corrected") << endl;
 
-    cout << "The edit distance between 'nonexistential' and 'nonexistent' is "
-         << edit_distance("nonexistential", "nonexistent") << endl;
+//     cout << "The edit distance between 'nonexistential' and 'nonexistent' is "
+//          << edit_distance("nonexistential", "nonexistent") << endl;
 
-    cout << endl;
+//     cout << endl;
 
-//     cout << "====================== Question 3 ======================" << endl
-//          << endl;
+    cout << "====================== Question 3 ======================" << endl
+         << endl;
 
-//     char fixed[MAX_LENGTH];
+    char fixed[MAX_LENGTH];
 
-//     bool corrected = spell_correct("poetry", fixed);
-//     cout << "The corrected spelling of 'poetry' is '" << fixed << "'" << endl;
-//     cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
-//          << endl
-//          << endl;
+    bool corrected = spell_correct("poetry", fixed);
+    cout << "The corrected spelling of 'poetry' is '" << fixed << "'" << endl;
+    cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
+         << endl
+         << endl;
 
-//     corrected = spell_correct("thay", fixed);
-//     cout << "The corrected spelling of 'thay' is '" << fixed << "'" << endl;
-//     cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
-//          << endl
-//          << endl;
+    corrected = spell_correct("thay", fixed);
+    cout << "The corrected spelling of 'thay' is '" << fixed << "'" << endl;
+    cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
+         << endl
+         << endl;
 
-//     corrected = spell_correct("korrectud", fixed);
-//     cout << "The corrected spelling of 'korrectud' is '" << fixed << "'"
-//          << endl;
-//     cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
-//          << endl
-//          << endl;
+    corrected = spell_correct("korrectud", fixed);
+    cout << "The corrected spelling of 'korrectud' is '" << fixed << "'"
+         << endl;
+    cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
+         << endl
+         << endl;
 
-//     corrected = spell_correct("nonexistential", fixed);
-//     cout << "The corrected spelling of 'nonexistential' is '" << fixed << "'"
-//          << endl;
-//     cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
-//          << endl
-//          << endl;
+    corrected = spell_correct("nonexistential", fixed);
+    cout << "The corrected spelling of 'nonexistential' is '" << fixed << "'"
+         << endl;
+    cout << "The spell checker was " << (corrected ? "" : "NOT ") << "needed."
+         << endl
+         << endl;
     /*
     cout << "=================== Bonus Question =====================" << endl
     << endl; cout << "The edit distance between 'an' and 'na' is " <<

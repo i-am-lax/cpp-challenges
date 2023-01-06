@@ -9,7 +9,8 @@ const int MAX_LENGTH = 512;
 // File containing words and frequencies
 const std::string WORDS = "words.dat";
 
-int frequency(std::string target);
-int edit_distance(std::string a, std::string b);
+int frequency(const std::string target);
+int edit_distance(const std::string a, const std::string b);
+bool spell_correct(const std::string word, char* fixed);
 
 #endif

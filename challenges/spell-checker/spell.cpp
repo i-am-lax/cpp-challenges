@@ -29,7 +29,7 @@ bool generate_map(map<string, int> &m) {
     return true;
 }
 
-int frequency(const string &target) {
+int frequency(const std::string target) {
     map<string, int> mapping;
     if (!generate_map(mapping)) {
         return 0;
@@ -41,9 +41,9 @@ int frequency(const string &target) {
     return 0;
 }
 
-int indicator(const char x, const char y) { return x == y ? 0 : 1; }
+int indicator(const char &x, const char &y) { return x == y ? 0 : 1; }
 
-int d(string &a, string &b, const int &i, const int &j) {
+int d(const string &a, const string &b, const int &i, const int &j) {
     if (min(i, j) == 0) {
         return max(i, j);
     }
@@ -67,6 +67,15 @@ int d(string &a, string &b, const int &i, const int &j) {
     return *min_element(edits.begin(), edits.end());
 }
 
-int edit_distance(string a, string b) {
+int edit_distance(const string a, string b) {
     return d(a, b, a.length(), b.length());
+}
+
+bool spell_correct(const std::string word, char* fixed) {
+    // word already in dictionary - no need for spell checker
+    if (frequency(word)) {
+        strcpy(fixed, word.c_str());
+        return false;
+    }
+    return true;
 }
