@@ -5,28 +5,28 @@ using namespace std;
 
 int main() {
 
-    cout << "====================== Question 1 ======================" << endl
-         << endl;
-
-    cout << "The frequency of the word 'a' in the corpus is " << frequency("a")
-         << endl;
-
-    cout << "The frequency of the word 'the' in the corpus is "
-         << frequency("the") << endl;
-
-    cout << "The frequency of the word 'bicycle' in the corpus is "
-         << frequency("bicycle") << endl;
-
-    cout << "The frequency of the word 'quintessential' in the corpus is "
-         << frequency("quintessential") << endl;
-
-    cout << "The frequency of the word 'nonexistential' is "
-         << frequency("nonexistential") << endl;
-
-    cout << endl;
-
-//     cout << "====================== Question 2 ======================" << endl
+//     cout << "====================== Question 1 ======================" << endl
 //          << endl;
+
+//     cout << "The frequency of the word 'a' in the corpus is " << frequency("a")
+//          << endl;
+
+//     cout << "The frequency of the word 'the' in the corpus is "
+//          << frequency("the") << endl;
+
+//     cout << "The frequency of the word 'bicycle' in the corpus is "
+//          << frequency("bicycle") << endl;
+
+//     cout << "The frequency of the word 'quintessential' in the corpus is "
+//          << frequency("quintessential") << endl;
+
+//     cout << "The frequency of the word 'nonexistential' is "
+//          << frequency("nonexistential") << endl;
+
+//     cout << endl;
+
+    cout << "====================== Question 2 ======================" << endl
+         << endl;
 
 //     cout << "The edit distance between 'an' and 'na' is "
 //          << edit_distance("an", "na") << endl;
@@ -46,10 +46,10 @@ int main() {
 //     cout << "The edit distance between 'korrectud' and 'corrected' is "
 //          << edit_distance("korrectud", "corrected") << endl;
 
-//     cout << "The edit distance between 'nonexistential' and 'nonexistent' is "
-//          << edit_distance("nonexistential", "nonexistent") << endl;
+    cout << "The edit distance between 'nonexistential' and 'nonexistent' is "
+         << edit_distance("nonexistential", "nonexistent") << endl;
 
-//     cout << endl;
+    cout << endl;
 
 //     cout << "====================== Question 3 ======================" << endl
 //          << endl;

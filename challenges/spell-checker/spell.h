@@ -10,5 +10,6 @@ const int MAX_LENGTH = 512;
 const std::string WORDS = "words.dat";
 
 int frequency(std::string target);
+int edit_distance(std::string a, std::string b);
 
 #endif
