@@ -18,3 +18,4 @@ Series of C++ challenges typically involving recursion:
 15. [Multitap](challenges/multitap/)
 16. [Doublets](challenges/doublets/)
 17. [Sudoku](challenges/sudoku/)
+18. [Spell Checker](challenges/spell-checker/)
