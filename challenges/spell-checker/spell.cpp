@@ -43,6 +43,7 @@ int frequency(const std::string target) {
     if (!generate_map(mapping)) {
         return 0;
     }
+
     // identify word from mapping and get frequency
     if (mapping.count(target)) {
         return mapping.at(target);
@@ -59,10 +60,13 @@ int indicator(const char &x, const char &y) { return x == y ? 0 : 1; }
  * restrict the maximum edit distance and speed up the computation */
 int d(const string &a, const string &b, const int &i, const int &j, int total,
       int limit) {
+
+    // first case
     if (min(i, j) == 0) {
         return max(i, j);
     }
 
+    // restrict calculation
     if (total >= limit) {
         return limit;
     }
@@ -106,68 +110,56 @@ int edit_distance(const string a, string b, int limit) {
 return the one that occurs most frequently
  * - otherwise return the original word */
 bool spell_correct(const std::string word, char *fixed) {
-    // word already in dictionary - no need for spell checker
-    if (frequency(word)) {
-        strcpy(fixed, word.c_str());
-        return false;
-    }
-    // limit is edit distance of 2
-    int limit = 2;
-
-    // store word and candidate lengths for initial search narrowing
-    int wl = word.length(), cl;
+    // copy input word into fixed as default case
+    strcpy(fixed, word.c_str());
 
     // get map of words
     map<string, int> words;
     generate_map(words);
 
-    // find suitable candidates and compute their edit distances
-    map<int, vector<string>> distances;
-    int d;
-    for (auto const &w : words) {
-        cl = w.first.length();
-        if (abs(wl - cl) <= limit) {
-            d = edit_distance(word, w.first, limit);
-            if (d <= limit) {
-                if (distances.count(d)) {
-                    distances.at(d).push_back(w.first);
-                } else {
-                    distances[d] = {w.first};
-                }
-            }
-        }
+    // word already in dictionary - no need for spell checker
+    if (words.count(word)) {
+        return false;
     }
+
+    // limit is edit distance of 2
+    int limit = 2;
 
     // store information about word with highest frequency
     string max_word;
     int max_frequency = 0;
 
-    // words with edit distance of 1 exist - retrieve highest frequency
-    if (distances.count(1) && distances.at(1).size() > 0) {
-        for (auto const &w : distances.at(1)) {
-            int f = words.at(w);
-            if (f > max_frequency) {
-                max_frequency = f;
-                max_word = w;
+    // store word and candidate lengths for initial search narrowing
+    int wl = word.length(), cl;
+
+    // find suitable candidates and compute their edit distances
+    int d, lowestd = limit;
+    for (auto const &w : words) {
+        cl = w.first.length();
+        // if the difference in lengths is > limit then don't compute distance
+        if (abs(wl - cl) <= limit) {
+            d = edit_distance(word, w.first, limit);
+            // reached new low distance - update max word and frequency
+            if (d < lowestd) {
+                lowestd = d;
+                max_word = w.first;
+                max_frequency = w.second;
+            }
+            /* matched lowest distance - check if word frequency higher than
+             * current winner */
+            else if (d == lowestd) {
+                if (w.second > max_frequency) {
+                    max_word = w.first;
+                    max_frequency = w.second;
+                }
             }
         }
     }
-    // otherwise move on to words with edit distance of 2
-    else if (distances.count(2) && distances.at(2).size() > 0) {
-        for (auto const &w : distances.at(2)) {
-            int f = words.at(w);
-            if (f > max_frequency) {
-                max_frequency = f;
-                max_word = w;
-            }
-        }
-    }
-    // any distance beyond that, return original word
-    else {
-        strcpy(fixed, word.c_str());
+    // return original word if can't find word in distance limit
+    if (!max_frequency) {
         return false;
     }
-
+    // otherwise return word with lowest distance and highest frequency
     strcpy(fixed, max_word.c_str());
     return true;
 }
