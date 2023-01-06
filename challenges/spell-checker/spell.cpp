@@ -7,7 +7,10 @@
 
 using namespace std;
 
-/* Internal helper function */
+/* Internal helper function to create a map (key is word and value is frequency
+ * in corpus) and write to 'm' from filename specified by WORDS. If the map is
+ * created successfully then the function returns true, otherwise it returns
+ * false and clears all elements in 'm' */
 bool generate_map(map<string, int> &m) {
     // create input file stream
     ifstream in(WORDS);
@@ -24,13 +27,18 @@ bool generate_map(map<string, int> &m) {
             in >> frequency >> word;
             m[word] = frequency;
         } else {
+            m.clear();
             return false;
         }
     }
     return true;
 }
 
+/* Takes as input a word 'target' and returns the frequency (number of times the
+ * word appears in the corpus (WORDS)). If the word cannot be found then the
+ * function returns 0 */
 int frequency(const std::string target) {
+    // generate mapping from corpus
     map<string, int> mapping;
     if (!generate_map(mapping)) {
         return 0;
@@ -42,8 +50,13 @@ int frequency(const std::string target) {
     return 0;
 }
 
+/* Internal helper function to compute the indicator such that if char inputs
+ * 'x' and 'y' are equal then the function returns 0 otherwise 1 */
 int indicator(const char &x, const char &y) { return x == y ? 0 : 1; }
 
+/* Implementaton of the recursive Damerau–Levenshtein distance function for
+ * input strings 'a' and 'b'. Additional parameters 'total' and 'limit' added to
+ * restrict the maximum edit distance and speed up the computation */
 int d(const string &a, const string &b, const int &i, const int &j, int total,
       int limit) {
     if (min(i, j) == 0) {
@@ -77,10 +90,21 @@ int d(const string &a, const string &b, const int &i, const int &j, int total,
     return *min_element(edits.begin(), edits.end());
 }
 
+/* Returns the Damerau–Levenshtein distance between input strings 'a' and 'b'
+ * constrained by 'limit' such that distances beyond this are not considered */
 int edit_distance(const string a, string b, int limit) {
     return d(a, b, a.length(), b.length(), 0, limit);
 }
 
+/* Suggests a spell checked variant of the input 'word' and returns true with
+ * the correction in 'fixed' if one is found, otherwise 'fixed' stores the
+ * original 'word' and the function returns false. Logic:
+ * - if word is in the corpus, return word
+ * - if there are 1 or more words in corpus at an edit distance of 1 from w,
+ * return the one that occurs most frequently
+ * - if there are 1 or more words in the corpus at an edit distance of 2 from w,
+return the one that occurs most frequently
+ * - otherwise return the original word */
 bool spell_correct(const std::string word, char *fixed) {
     // word already in dictionary - no need for spell checker
     if (frequency(word)) {
