@@ -1,4 +1,14 @@
-/* you may assume a maximum word length of 512 characters*/
-#define MAX_LENGTH 512
+#ifndef SPELL_H
+#define SPELL_H
 
-/* insert your function prototypes here */
+#include <string>
+
+// Assume maximum word length of 512 characters
+const int MAX_LENGTH = 512;
+
+// File containing words and frequencies
+const std::string WORDS = "words.dat";
+
+int frequency(std::string target);
+
+#endif
