@@ -1,8 +1,8 @@
 #include "spell.h"
+#include <array>
 #include <fstream>
 #include <iostream>
 #include <map>
-#include <vector>
 
 using namespace std;
 
@@ -41,27 +41,29 @@ int frequency(const string &target) {
     return 0;
 }
 
-bool indicator(string &a, string &b, const int &i, const int &j) {
-    return a[i - 1] != b[j - 1];
-}
+int indicator(const char x, const char y) { return x == y ? 0 : 1; }
 
 int d(string &a, string &b, const int &i, const int &j) {
     if (min(i, j) == 0) {
         return max(i, j);
     }
 
-    vector<int> edits;
-    // character deletion
-    edits.push_back(d(a, b, i - 1, j) + 1);
-    // character insertion
-    edits.push_back(d(a, b, i, j - 1) + 1);
-    // character replacement or perfect match
-    edits.push_back(d(a, b, i - 1, j - 1) + indicator(a, b, i, j));
+    // indicator value
+    int ind = indicator(a[i - 1], b[j - 1]);
 
-    if (i > 1 && j > 1 && (a[i - 1] == b[j - 2]) && (a[i - 2] == b[j - 1])) {
-        // transposition of two successive characters
-        edits.push_back(d(a, b, i - 2, j - 2) + 1);
+    // array to store distinct edit outcomes
+    array<int, 4> edits = {
+        d(a, b, i - 1, j) + 1,         // char deletion
+        d(a, b, i, j - 1) + 1,         // char insertion
+        d(a, b, i - 1, j - 1) + ind,   // char replacement or perfect match
+        MAX_LENGTH                     // large placeholder value
+    };
+
+    // transposition of two successive chars
+    if (i > 1 && j > 1 && a[i - 1] == b[j - 2] && a[i - 2] == b[j - 1]) {
+        edits[3] = d(a, b, i - 2, j - 2) + 1;
     }
+
     return *min_element(edits.begin(), edits.end());
 }
 
