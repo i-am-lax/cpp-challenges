@@ -10,7 +10,7 @@ const int MAX_LENGTH = 512;
 const std::string WORDS = "words.dat";
 
 int frequency(const std::string target);
-int edit_distance(const std::string a, const std::string b);
+int edit_distance(const std::string a, const std::string b, int limit = MAX_LENGTH);
 bool spell_correct(const std::string word, char* fixed);
 
 #endif
