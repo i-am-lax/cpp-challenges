@@ -254,21 +254,21 @@ MoveResult make_move(const char *position, const char mines[9][9],
     // flag the square if it is set
     if (flag) {
         revealed[row][col] = '*';
-        return VALID_MOVE;
     }
+    else {
+        // check if the underlying square is a mine
+        if (mines[row][col] == '*') {
+            return BLOWN_UP;
+        }
 
-    // check if the underlying square is a mine
-    if (mines[row][col] == '*') {
-        return BLOWN_UP;
-    }
-
-    // count the number of mines
-    int count = count_mines(position, mines);
-    if (count == 0) {
-        // recursive uncovering of adjacent squares
-        uncover(mines, revealed, row, col);
-    } else {
-        revealed[row][col] = int_to_char(count);
+        // count the number of mines
+        int count = count_mines(position, mines);
+        if (count == 0) {
+            // recursive uncovering of adjacent squares
+            uncover(mines, revealed, row, col);
+        } else {
+            revealed[row][col] = int_to_char(count);
+        }
     }
 
     // board is solved if all non-mine squares have been uncovered
