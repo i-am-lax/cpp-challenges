@@ -1,5 +1,7 @@
 #include "spell.h"
+#include <algorithm>
 #include <array>
+#include <cstring>
 #include <fstream>
 #include <iostream>
 #include <map>
